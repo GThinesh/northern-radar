@@ -75,4 +75,21 @@ jobs:
           git add docs/archive docs/data/index.json
           git diff --cached --quiet && echo "nothing new" && exit 0
           git commit -m "[bot] KKL $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
-          git push
+          # Remote may have moved between checkout and push (manual commit or
+          # another run) -> plain `git push` fails non-fast-forward.
+          # Rebase onto latest and retry so one new frame never drops the run.
+          for i in 1 2 3; do
+            if git push; then
+              break
+            fi
+            echo "push rejected (attempt $i), pulling --rebase and retrying..."
+            git fetch origin
+            if ! git pull --rebase --autostash origin "${GITHUB_REF_NAME:-main}"; then
+              echo "rebase conflict, aborting rebase and retrying fetch..."
+              git rebase --abort || true
+              sleep 5
+              continue
+            fi
+            sleep 2
+          done
+          git status --short --branch

@@ -13,7 +13,7 @@
   --r:10px; --r-s:6px;
   --sh:0 18px 50px -18px rgba(0,0,0,.7);
   --disp:"Fraunces",Georgia,serif; --body:"IBM Plex Sans",Verdana,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
-  --scope-bg:#000;
+  --scope-bg:#0b1a22;
 }
 html[data-theme="light"]{
   --bg:var(--paper); --card:var(--paper2); --card2:#dfd5ba;
@@ -116,6 +116,14 @@ select{background:var(--bg);color:var(--text);border:1px solid var(--line2);bord
   border:1px solid var(--line2);background:var(--scope-bg);display:grid;place-items:center;min-height:200px;
   box-shadow:inset 0 0 60px rgba(0,0,0,.45)}
 .scope img{width:100%;height:auto;max-height:clamp(200px,46vh,560px);object-fit:contain;display:block;cursor:zoom-in;background:var(--scope-bg)}
+/* bg-lab #4 Technical · Cool — dark scope only, light theme untouched */
+html:not([data-theme="light"]) .scope{background-color:var(--scope-bg);
+  background-image:
+    linear-gradient(rgba(155,225,255,.14) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(155,225,255,.14) 1px,transparent 1px),
+    linear-gradient(rgba(155,225,255,.07) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(155,225,255,.07) 1px,transparent 1px);
+  background-size:120px 120px,120px 120px,24px 24px,24px 24px}
 .expand{position:absolute;right:10px;bottom:10px;min-width:2.75rem;border-radius:8px;opacity:.92}
 .corner{position:absolute;width:22px;height:22px;border:2px solid var(--signal);opacity:.9}
 .tl{top:10px;left:10px;border-right:0;border-bottom:0}.tr{top:10px;right:10px;border-left:0;border-bottom:0}
@@ -149,6 +157,8 @@ input[type="range"]{accent-color:var(--signal);width:100%;height:2rem}
 .empty,.error{border:1px dashed var(--line2);border-radius:var(--r-s);padding:var(--s5);color:var(--muted);font-family:var(--mono)}
 
 footer{border-top:1px solid var(--line);padding:var(--s4) var(--s5);color:var(--muted)}
+.about{width:100%;max-width:none;font-size:.85rem;line-height:1.45}
+.about p{margin:0}
 footer small{font-size:.8rem}
 dialog{background:var(--card);color:var(--text);border:1px solid var(--line2);border-radius:var(--r);padding:1rem;max-width:min(92vw,900px)}
 dialog img{max-width:100%;display:block;background:var(--scope-bg)}
@@ -173,6 +183,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
   .live{font-size:.72rem;padding:.35rem .6rem;min-width:0;flex:1}
   .theme-slot{display:inline-flex;margin-inline-start:auto}
   .theme-slot #themeBtn{padding:.4rem .6rem;font-size:.85rem}
+  .about{width:100%;max-width:none}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}

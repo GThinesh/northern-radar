@@ -62,7 +62,18 @@ async function load() {
     if (saved === "light" && document.documentElement.dataset.theme === "dark") $("themeBtn").click();
   } catch {}
 
-  // storyboard arrow-key scrub
+  // Mobile keeps the titlebar to title + date: relocate the theme toggle
+  // next to the day stepper instead.
+  const narrow = matchMedia("(max-width: 720px)");
+  const placeTheme = () => {
+    const btn = $("themeBtn"), slot = $("themeSlot");
+    if (narrow.matches) slot.append(btn);
+    else document.querySelector(".top-actions").append(btn);
+  };
+  narrow.addEventListener?.("change", placeTheme);
+  placeTheme();
+
+  // filmstrip arrow-key scrub
   $("film").addEventListener("keydown", (e) => {
     if (e.key === "ArrowRight") { e.preventDefault(); setSlot(state.slotIx + 1); }
     if (e.key === "ArrowLeft") { e.preventDefault(); setSlot(state.slotIx - 1); }
@@ -191,8 +202,14 @@ function setSlot(i) {
   $("heroBadge").textContent = state.playing ? `PLAYING ${state.slotIx + 1}/${frames.length}` : "STILL";
   $("heroBadge").classList.toggle("still", !state.playing);
   hero.onclick = () => openLB(hero.src, $("viewerCap").textContent);
-  const active = $("film").querySelector('[aria-current="true"]');
-  if (active) active.scrollIntoView({ block: "nearest", inline: "nearest", behavior: reduceMotion ? "auto" : "smooth" });
+  const film = $("film");
+  const active = film.querySelector('[aria-current="true"]');
+  if (active) {
+    // Scroll the strip itself, never the page — keeps the hero image
+    // visible on mobile instead of yanking the viewport to the timeline.
+    const target = active.offsetLeft - film.clientWidth / 2 + active.clientWidth / 2;
+    film.scrollTo({ left: target, behavior: reduceMotion ? "auto" : "smooth" });
+  }
 }
 
 function openLB(src, cap) {

@@ -79,6 +79,7 @@ html[data-theme="light"] #themeBtn:hover{color:#2a4d00}
   border:1px solid var(--line2);border-radius:var(--r-s);padding:.55rem .8rem;cursor:pointer;
   font-family:var(--mono);font-size:.85rem}
 .day-stepper button{padding:.28rem .55rem;font-size:.75rem}
+.theme-slot{display:none}
 .day-stepper button:hover,.transport button:hover{border-color:var(--signal)}
 select{background:var(--bg);color:var(--text);border:1px solid var(--line2);border-radius:var(--r-s);
   padding:.55rem;font-family:var(--mono);font-size:.82rem;min-width:0}
@@ -151,6 +152,14 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
   .controlbar{padding:var(--s2)}
   .stats{margin-inline-start:0}
   .scope img{max-height:38vh}
+  /* minimal titlebar: title + date only */
+  .topbar{padding:var(--s2);gap:var(--s2)}
+  .kicker,.top-actions{display:none}
+  .brand-name{font-size:1.15rem}
+  .scope-mark{display:none}
+  .live{font-size:.72rem;padding:.35rem .6rem}
+  .theme-slot{display:inline-flex;margin-inline-start:auto}
+  .theme-slot #themeBtn{padding:.28rem .55rem;font-size:.75rem}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}

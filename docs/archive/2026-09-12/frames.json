@@ -21,7 +21,15 @@
   "2a70b1d5a1d6135f",
   "efd7d02d8dcd34af",
   "1ae32c6d6542fc15",
-  "69a3cacf30ef02b0"
+  "69a3cacf30ef02b0",
+  "5bc6c0d6adb54502",
+  "f620a55a63749041",
+  "a1260d23ab001cce",
+  "82ab289fdb7562d8",
+  "6d2536f0d1badc3e",
+  "a26c4dd115af0339",
+  "e904c3df388fa7f2",
+  "c09adbb9362cf494"
  ],
  "frames": [
   {
@@ -199,6 +207,70 @@
    "img": "frames/145728_021.jpg",
    "slot": "14:30",
    "estimated": true
+  },
+  {
+   "h": "5bc6c0d6adb54502",
+   "t_utc": "2026-09-12 10:13:36Z",
+   "t_ist": "2026-09-12 15:43 IST",
+   "img": "frames/154336_022.jpg",
+   "slot": "15:30",
+   "estimated": false
+  },
+  {
+   "h": "f620a55a63749041",
+   "t_utc": "2026-09-12 10:22:29Z",
+   "t_ist": "2026-09-12 15:52 IST",
+   "img": "frames/155229_023.jpg",
+   "slot": "15:30",
+   "estimated": false
+  },
+  {
+   "h": "a1260d23ab001cce",
+   "t_utc": "2026-09-12 10:32:29Z",
+   "t_ist": "2026-09-12 16:02 IST",
+   "img": "frames/160229_024.jpg",
+   "slot": "16:00",
+   "estimated": false
+  },
+  {
+   "h": "82ab289fdb7562d8",
+   "t_utc": "2026-09-12 10:42:29Z",
+   "t_ist": "2026-09-12 16:12 IST",
+   "img": "frames/161229_025.jpg",
+   "slot": "16:00",
+   "estimated": false
+  },
+  {
+   "h": "6d2536f0d1badc3e",
+   "t_utc": "2026-09-12 10:52:29Z",
+   "t_ist": "2026-09-12 16:22 IST",
+   "img": "frames/162229_026.jpg",
+   "slot": "16:00",
+   "estimated": false
+  },
+  {
+   "h": "a26c4dd115af0339",
+   "t_utc": "2026-09-12 12:02:21Z",
+   "t_ist": "2026-09-12 17:32 IST",
+   "img": "frames/173221_027.jpg",
+   "slot": "17:30",
+   "estimated": false
+  },
+  {
+   "h": "e904c3df388fa7f2",
+   "t_utc": "2026-09-12 12:32:24Z",
+   "t_ist": "2026-09-12 18:02 IST",
+   "img": "frames/180224_028.jpg",
+   "slot": "18:00",
+   "estimated": false
+  },
+  {
+   "h": "c09adbb9362cf494",
+   "t_utc": "2026-09-12 12:43:01Z",
+   "t_ist": "2026-09-12 18:13 IST",
+   "img": "frames/181301_029.jpg",
+   "slot": "18:00",
+   "estimated": false
   }
  ],
  "slots": [
@@ -249,17 +321,91 @@
    "time": "14:37",
    "img": "frames/143728_019.jpg",
    "estimated": true
+  },
+  {
+   "slot": "15:30",
+   "time": "15:43",
+   "img": "frames/154336_022.jpg",
+   "estimated": false
+  },
+  {
+   "slot": "16:00",
+   "time": "16:02",
+   "img": "frames/160229_024.jpg",
+   "estimated": false
+  },
+  {
+   "slot": "17:30",
+   "time": "17:32",
+   "img": "frames/173221_027.jpg",
+   "estimated": false
+  },
+  {
+   "slot": "18:00",
+   "time": "18:02",
+   "img": "frames/180224_028.jpg",
+   "estimated": false
   }
  ],
  "stats": {
-  "snapshots": 1,
-  "decoded_total": 95,
-  "unique_frames": 22,
-  "dupes_dropped": 73
+  "snapshots": 2,
+  "decoded_total": 114,
+  "unique_frames": 30,
+  "dupes_dropped": 84
  },
  "blob_shas": [
-  "0c4f4d29f7c5a7296c2de946ee9aa3d25d54c0c19c260db3ee096defddf653a7"
+  "0c4f4d29f7c5a7296c2de946ee9aa3d25d54c0c19c260db3ee096defddf653a7",
+  "a778ea9b6bf9067f92598167ad59128db4d0192cc1902aecb3a4ca6c58883580"
  ],
  "ocr_v": 2,
- "ocr": {}
+ "ocr": {
+  "9790840f7569d173": {
+   "t_utc": "2026-09-12 06:44:54Z"
+  },
+  "cfbc8e9c8241832c": {
+   "t_utc": "2026-09-12 06:55:25Z"
+  },
+  "e2a53e02f0671fd2": {
+   "t_utc": "2026-09-12 08:12:26Z"
+  },
+  "feb89d01915bb787": {
+   "t_utc": "2026-09-12 08:22:27Z"
+  },
+  "2a70b1d5a1d6135f": {
+   "t_utc": "2026-09-12 08:32:28Z"
+  },
+  "efd7d02d8dcd34af": {
+   "t_utc": "2026-09-12 08:42:28Z"
+  },
+  "1ae32c6d6542fc15": {
+   "t_utc": "2026-09-12 08:53:37Z"
+  },
+  "69a3cacf30ef02b0": {
+   "t_utc": "2026-09-12 09:03:08Z"
+  },
+  "5bc6c0d6adb54502": {
+   "t_utc": "2026-09-12 10:13:36Z"
+  },
+  "f620a55a63749041": {
+   "t_utc": "2026-09-12 10:22:29Z"
+  },
+  "a1260d23ab001cce": {
+   "t_utc": "2026-09-12 10:32:29Z"
+  },
+  "82ab289fdb7562d8": {
+   "t_utc": "2026-09-12 10:42:29Z"
+  },
+  "6d2536f0d1badc3e": {
+   "t_utc": "2026-09-12 10:52:29Z"
+  },
+  "a26c4dd115af0339": {
+   "t_utc": "2026-09-12 12:02:21Z"
+  },
+  "e904c3df388fa7f2": {
+   "t_utc": "2026-09-12 12:32:24Z"
+  },
+  "c09adbb9362cf494": {
+   "t_utc": "2026-09-12 12:43:01Z"
+  }
+ }
 }

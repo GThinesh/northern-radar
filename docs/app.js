@@ -16,7 +16,13 @@ async function load() {
   } catch (e) {
     meta.textContent = "Archive unreachable — check Pages / data/index.json";
     $("liveDot").classList.add("bad");
-    $("slots").innerHTML = `<p class="error" role="alert">Failed to load data/index.json: ${e.message}</p>`;
+    const wrap = $("film");
+    wrap.innerHTML = "";
+    const p = document.createElement("p");
+    p.className = "error";
+    p.setAttribute("role", "alert");
+    p.textContent = `Failed to load data/index.json: ${e.message}`;
+    wrap.append(p);
     return;
   }
   const { idx } = state;
@@ -27,7 +33,9 @@ async function load() {
   for (const d of idx.days) {
     const o = document.createElement("option");
     o.value = d.date;
-    o.textContent = `${d.date} · ${((d.frames && d.frames.length ? d.frames : d.slots) || []).length} frames`;
+    const n = (d.frames && d.frames.length) || (d.slots && d.slots.length)
+      || (d.daily_gif || d.strip ? 1 : 0);
+    o.textContent = `${d.date} · ${n} frames${(d.daily_gif || d.strip) && !((d.frames && d.frames.length) || (d.slots && d.slots.length)) ? " (daily)" : ""}`;
     sel.appendChild(o);
   }
   const q = new URLSearchParams(location.search).get("date");
@@ -35,23 +43,26 @@ async function load() {
   else if (sel.options.length) sel.selectedIndex = 0;
 
   sel.onchange = () => render(true);
-  $("prevDay").onclick = () => stepDay(-1);
-  $("nextDay").onclick = () => stepDay(1);
+  // days sorted newest-first (index 0 = newest): older day is +1.
+  $("prevDay").onclick = () => stepDay(1);
+  $("nextDay").onclick = () => stepDay(-1);
   $("playBtn").onclick = togglePlay;
   $("scrub").oninput = (e) => { state.playing = false; stopTimer(); syncPlayBtn(); setSlot(+e.target.value); };
   $("themeBtn").onclick = () => {
     const html = document.documentElement;
-    const light = html.dataset.theme !== "light";
-    html.dataset.theme = light ? "light" : "dark";
-    $("themeBtn").textContent = light ? "● night" : "☀ paper";
-    $("themeBtn").setAttribute("aria-pressed", String(light));
+    const toDark = html.dataset.theme !== "dark";
+    html.dataset.theme = toDark ? "dark" : "light";
+    $("themeBtn").textContent = toDark ? "☀ paper" : "● night";
+    $("themeBtn").setAttribute("aria-pressed", String(toDark));
     try { localStorage.setItem("kkl-theme-v2", html.dataset.theme); } catch {}
   };
   try {
-    if (localStorage.getItem("kkl-theme-v2") === "dark") $("themeBtn").click();
+    const saved = localStorage.getItem("kkl-theme-v2");
+    if (saved === "dark" && document.documentElement.dataset.theme !== "dark") $("themeBtn").click();
+    if (saved === "light" && document.documentElement.dataset.theme === "dark") $("themeBtn").click();
   } catch {}
 
-  // filmstrip arrow-key scrub
+  // storyboard arrow-key scrub
   $("film").addEventListener("keydown", (e) => {
     if (e.key === "ArrowRight") { e.preventDefault(); setSlot(state.slotIx + 1); }
     if (e.key === "ArrowLeft") { e.preventDefault(); setSlot(state.slotIx - 1); }
@@ -87,21 +98,39 @@ function syncPlayBtn() {
 function currentSlots() {
   if (!state.day) return [];
   if (state.day.frames && state.day.frames.length) return state.day.frames;
-  return state.day.slots || [];
+  if (state.day.slots && state.day.slots.length) return state.day.slots;
+  // Pruned days have no frames/ but keep daily.gif/strip.jpg — fall back
+  // so they don't render "No frames yet" permanently.
+  if (state.day.daily_gif) {
+    return [{ slot: "daily", time: "daily", t_ist: state.day.date,
+              img: state.day.daily_gif, estimated: false, isDaily: true }];
+  }
+  if (state.day.strip) {
+    return [{ slot: "strip", time: "strip", t_ist: state.day.date,
+              img: state.day.strip, estimated: false, isDaily: true }];
+  }
+  return [];
+}
+
+function dayHasPerFrame(day) {
+  return Boolean((day.frames && day.frames.length) || (day.slots && day.slots.length));
 }
 
 function render(resetSlot) {
   const sel = $("daySel");
   const day = state.idx.days.find((d) => d.date === sel.value);
   state.day = day;
-  history.replaceState(null, "", `?date=${sel.value}`);
+  try { history.replaceState(null, "", `?date=${sel.value}`); } catch {}
   if (resetSlot) state.slotIx = 0;
   if (!day) return;
 
-  $("slotsSub").textContent = `${currentSlots().length} distinct frames · press play for the story`;
+  if (!dayHasPerFrame(day) && (day.daily_gif || day.strip)) {
+    $("filmSub").textContent = "pruned daily summary · daily.gif/strip kept";
+  } else {
+    $("filmSub").textContent = `${currentSlots().length} distinct frames · press play for the story`;
+  }
 
   buildFilm();
-  buildSlots();
   syncPlayBtn();
   stopTimer();
   if (state.playing && currentSlots().length > 1) {
@@ -120,11 +149,19 @@ function buildFilm() {
   slots.forEach((s, i) => {
     const b = document.createElement("button");
     b.type = "button";
+    b.className = "reveal";
+    b.style.animationDelay = `${Math.min(i * 0.05, 0.6)}s`;
     b.setAttribute("aria-label", `Frame ${s.time} IST${s.estimated ? ", estimated" : ""} (${i + 1} of ${slots.length})`);
     const img = document.createElement("img");
     img.loading = "lazy"; img.src = s.img; img.alt = "";
     const cap = document.createElement("span");
-    cap.innerHTML = `${s.time}${s.estimated ? ' <span class="est">~est</span>' : ""}`;
+    cap.textContent = s.time;
+    if (s.estimated) {
+      const est = document.createElement("span");
+      est.className = "est";
+      est.textContent = " ~est";
+      cap.append(" ", est);
+    }
     b.append(img, cap);
     b.onclick = () => { state.playing = false; stopTimer(); syncPlayBtn(); setSlot(i); };
     b.ondblclick = () => openLB(s.img, `${s.time} IST`);
@@ -154,30 +191,8 @@ function setSlot(i) {
   $("heroBadge").textContent = state.playing ? `PLAYING ${state.slotIx + 1}/${frames.length}` : "STILL";
   $("heroBadge").classList.toggle("still", !state.playing);
   hero.onclick = () => openLB(hero.src, $("viewerCap").textContent);
-}
-
-function buildSlots() {
-  const wrap = $("slots");
-  wrap.innerHTML = "";
-  const slots = currentSlots();
-  if (!slots.length) { wrap.innerHTML = `<p class="empty">No 30-min frames yet.</p>`; return; }
-  slots.forEach((s, i) => {
-    const f = document.createElement("figure");
-    f.className = "slot reveal";
-    f.style.animationDelay = `${Math.min(i * 0.05, 0.6)}s`;
-    const img = document.createElement("img");
-    img.loading = "lazy"; img.src = s.img; img.alt = `Radar ${s.time} IST (${i + 1} of ${slots.length})`;
-    const cap = document.createElement("figcaption");
-    cap.innerHTML = `<span><b>${s.slot}</b> · ${s.time}${s.estimated ? ' <span class="est">~est</span>' : ""}</span><span>#${String(i).padStart(2, "0")}</span>`;
-    f.append(img, cap);
-    f.tabIndex = 0;
-    f.setAttribute("role", "button");
-    f.setAttribute("aria-label", `Show frame ${s.time} IST full size`);
-    const open = () => openLB(s.img, `${s.time} IST`);
-    f.onclick = () => { state.playing = false; stopTimer(); syncPlayBtn(); setSlot(i); open(); };
-    f.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); f.onclick(); } };
-    wrap.appendChild(f);
-  });
+  const active = $("film").querySelector('[aria-current="true"]');
+  if (active) active.scrollIntoView({ block: "nearest", inline: "nearest", behavior: reduceMotion ? "auto" : "smooth" });
 }
 
 function openLB(src, cap) {

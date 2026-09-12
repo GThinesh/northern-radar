@@ -2,7 +2,7 @@ name: KKL radar archive (every 3h)
 
 on:
   schedule:
-    - cron: "15 */3 * * *"   # 8x/day, :15 past hour to let IMD finish updating
+    - cron: "15 * * * *"   # hourly, :15 past hour to let IMD finish updating
   workflow_dispatch: {}       # manual run / backfill button
 
 permissions:
@@ -34,12 +34,21 @@ jobs:
       - name: Fetch KKL snapshot + rebuild daily
         run: python scripts/fetch_kkl.py
 
-      - name: Prune raw GIFs older than 90 days (keep daily summaries)
+      - name: Prune per-frame JPGs older than 30 days (keep daily summaries)
+        env:
+          RETENTION_DAYS: "30"
         run: |
+          # Raw GIFs are never committed (frames are extracted in memory and
+          # the GIF is discarded). This only prunes per-frame JPGs (+ any
+          # legacy *-IST.gif) so old days keep daily.gif/strip.jpg/_last.jpg.
+          # NOTE: deleting files only shrinks the working tree; git history
+          # still retains old blobs, so squash history if the clone gets
+          # heavy (see README "Repo size").
           python - <<'EOF'
           from pathlib import Path
-          import datetime
-          cutoff = datetime.date.today() - datetime.timedelta(days=90)
+          import datetime, os
+          retention = int(os.environ.get("RETENTION_DAYS", "30"))
+          cutoff = datetime.date.today() - datetime.timedelta(days=retention)
           for d in sorted(Path("docs/archive").glob("????-??-??")):
               try:
                   dt = datetime.date.fromisoformat(d.name)
@@ -50,7 +59,7 @@ jobs:
                       f.unlink(missing_ok=True)
                   import shutil
                   shutil.rmtree(d / "frames", ignore_errors=True)
-                  print(f"pruned raws in {d.name} (kept daily.gif/strip.jpg)")
+                  print(f"pruned frames in {d.name} (kept daily.gif/strip.jpg/_last.jpg)")
           EOF
           python - <<'EOF'
           # re-index after prune

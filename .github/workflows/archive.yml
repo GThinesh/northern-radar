@@ -1,0 +1,69 @@
+name: KKL radar archive (every 3h)
+
+on:
+  schedule:
+    - cron: "15 */3 * * *"   # 8x/day, :15 past hour to let IMD finish updating
+  workflow_dispatch: {}       # manual run / backfill button
+
+permissions:
+  contents: write
+
+concurrency:
+  group: kkl-archive
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Install Tesseract OCR (free, for clock-overlay reading)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq tesseract-ocr
+
+      - name: Fetch KKL snapshot + rebuild daily
+        run: python scripts/fetch_kkl.py
+
+      - name: Prune raw GIFs older than 90 days (keep daily summaries)
+        run: |
+          python - <<'EOF'
+          from pathlib import Path
+          import datetime
+          cutoff = datetime.date.today() - datetime.timedelta(days=90)
+          for d in sorted(Path("docs/archive").glob("????-??-??")):
+              try:
+                  dt = datetime.date.fromisoformat(d.name)
+              except ValueError:
+                  continue
+              if dt < cutoff:
+                  for f in d.glob("*-IST.gif"):
+                      f.unlink(missing_ok=True)
+                  import shutil
+                  shutil.rmtree(d / "frames", ignore_errors=True)
+                  print(f"pruned raws in {d.name} (kept daily.gif/strip.jpg)")
+          EOF
+          python - <<'EOF'
+          # re-index after prune
+          import sys; sys.path.insert(0, "scripts")
+          from fetch_kkl import rebuild_index
+          rebuild_index()
+          EOF
+
+      - name: Commit + push
+        run: |
+          git config user.name "kkl-archiver[bot]"
+          git config user.email "kkl-archiver[bot]@users.noreply.github.com"
+          git add docs/archive docs/data/index.json
+          git diff --cached --quiet && echo "nothing new" && exit 0
+          git commit -m "[bot] KKL $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+          git push

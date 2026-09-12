@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>KKL Karaikal Radar — Day-wise Archive</title>
-<meta name="description" content="Day-wise Karaikal Doppler radar archive. Scrub 30-min slots and play the day animation. Times in IST.">
+<title>KKL Radar</title>
+<meta name="description" content="Karaikal radar archive. Times in IST.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200..900;1,9..144,200..900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -12,7 +12,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='none' stroke='%23C8F04A' stroke-width='2'/%3E%3Cline x1='16' y1='16' x2='26' y2='7' stroke='%23FFB224' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23C8F04A'/%3E%3C/svg%3E">
 </head>
 <body>
-<a class="skip" href="#film">Skip to images</a>
+<a class="skip" href="#film">Skip to timeline</a>
 <div class="grain" aria-hidden="true"></div>
 
 <header class="topbar">
@@ -21,71 +21,73 @@
       <svg viewBox="0 0 32 32" width="28" height="28"><circle cx="16" cy="16" r="13" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".7"/><circle cx="16" cy="16" r="8.5" fill="none" stroke="currentColor" stroke-width="1" opacity=".45"/><line id="sweep" x1="16" y1="16" x2="26" y2="7" stroke="var(--signal)" stroke-width="1.6"/><circle cx="16" cy="16" r="2.4" fill="var(--signal)"/></svg>
     </span>
     <div>
-      <p class="kicker">IMD · Doppler · KKL Karaikal · 10.9°N 79.8°E</p>
-      <h1 class="brand-name">Day-wise <span>radar</span> archive</h1>
+      <p class="kicker">IMD · KKL · 10.9°N 79.8°E</p>
+      <h1 class="brand-name">KKL <span>radar</span></h1>
     </div>
   </div>
   <div class="live" role="status" aria-live="polite">
-    <span class="dot" id="liveDot" aria-hidden="true"></span>
-    <span id="meta">Loading archive…</span>
+    <span class="live-row"><span class="dot" id="liveDot" aria-hidden="true"></span><span id="meta">…</span></span>
+    <span class="daytick" aria-hidden="true"><span id="daySlices"></span><span id="dayNeedle"></span></span>
+    <span class="daylabels" aria-hidden="true"><span>00</span><span>06</span><span>12</span><span>18</span><span>24</span></span>
   </div>
   <nav class="top-actions" aria-label="Page">
-    <a class="link" href="https://mausam.imd.gov.in/Radar/animation/Converted/KKL_MAXZ.gif">IMD source ↗</a>
-    <button id="themeBtn" type="button" aria-pressed="false" title="Toggle night mode">● night</button>
+    <a class="link" href="https://mausam.imd.gov.in/Radar/animation/Converted/KKL_MAXZ.gif" aria-label="IMD source">IMD ↗</a>
+    <button id="themeBtn" type="button" aria-pressed="false" aria-label="Toggle night mode" title="Toggle night mode">●</button>
   </nav>
 </header>
 
 <main class="deck deck-full">
-  <section class="controlbar card" aria-label="Day controls">
+  <section class="controlbar card" aria-label="Day">
     <div class="cb-group">
-      <label for="daySel">Day <span>IST</span></label>
+      <label class="vh" for="daySel">Day (IST)</label>
       <div class="day-stepper">
         <button id="prevDay" type="button" aria-label="Older day">←</button>
-        <select id="daySel"></select>
+        <select id="daySel" aria-label="Choose day"></select>
         <button id="nextDay" type="button" aria-label="Newer day">→</button>
       </div>
       <span id="themeSlot" class="theme-slot"></span>
     </div>
   </section>
 
-  <section class="stage" aria-label="Radar images">
+  <section class="stage" aria-label="Radar">
     <article class="viewer card reveal" id="viewer" aria-labelledby="viewerH">
       <div class="viewer-head">
-        <h2 id="viewerH">Now on scope</h2>
-        <p id="viewerCap" class="mono">—</p>
+        <h2 id="viewerH" class="vh">Scope</h2>
+        <p id="viewerCap" class="mono time-big">—</p>
+        <p id="heroBadge" class="badge">…</p>
       </div>
       <div class="scope">
-        <img id="heroImg" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Selected radar frame" fetchpriority="high">
+        <img id="heroImg" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Selected radar frame" fetchpriority="high" tabindex="0">
         <span class="corner tl" aria-hidden="true"></span><span class="corner tr" aria-hidden="true"></span>
         <span class="corner bl" aria-hidden="true"></span><span class="corner br" aria-hidden="true"></span>
         <span class="scan" aria-hidden="true"></span>
-        <p id="heroBadge" class="badge">LIVE LOOP</p>
+        <button id="expandBtn" class="expand" type="button" aria-label="Expand frame">⤢</button>
       </div>
       <div class="transport">
-        <button id="playBtn" type="button" aria-pressed="true" aria-label="Pause day loop">⏸ pause</button>
-        <label class="scrub">Scrub IST
-          <input id="scrub" type="range" min="0" max="0" value="0" step="1" list="slotTicks">
+        <button id="playBtn" type="button" aria-pressed="true" aria-label="Pause">⏸</button>
+        <label class="scrub"><span class="vh">Scrub time</span>
+          <input id="scrub" type="range" min="0" max="0" value="0" step="1" list="slotTicks" aria-label="Scrub time">
           <datalist id="slotTicks"></datalist>
         </label>
         <span id="scrubVal" class="mono" aria-live="polite">—</span>
       </div>
       <div class="film-head">
-        <h2 id="filmH">Timeline</h2>
+        <h2 id="filmH">Day</h2>
         <p id="filmSub" class="mono"></p>
       </div>
-      <div id="film" class="film" role="group" aria-label="Storyboard timeline. Activate a thumbnail to freeze the scope." tabindex="0"></div>
+      <div id="film" class="film" role="group" aria-label="Timeline. Activate a thumbnail to show it." tabindex="0"></div>
     </article>
   </section>
 </main>
 
 <footer>
-  <small>Source <a href="https://mausam.imd.gov.in/Radar/animation/Converted/KKL_MAXZ.gif">IMD KKL_MAXZ.gif</a> · snapshots hourly via GitHub Actions · all times IST.</small>
+  <small><a href="https://mausam.imd.gov.in/Radar/animation/Converted/KKL_MAXZ.gif">IMD</a> · hourly · IST</small>
 </footer>
 
 <dialog id="lightbox" aria-labelledby="lbCap">
   <img id="lbImg" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" alt="">
   <p id="lbCap" class="mono"></p>
-  <form method="dialog"><button type="submit" aria-label="Close">✕ close</button></form>
+  <form method="dialog"><button type="submit" aria-label="Close">✕</button></form>
 </dialog>
 
 <script src="app.js" defer></script>

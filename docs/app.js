@@ -14,19 +14,27 @@ async function load() {
     if (!res.ok) throw new Error(`index ${res.status}`);
     state.idx = await res.json();
   } catch (e) {
-    meta.textContent = "Archive unreachable — check Pages / data/index.json";
+    meta.textContent = "…";
+    meta.title = `Archive unreachable: ${e.message}`;
     $("liveDot").classList.add("bad");
     const wrap = $("film");
     wrap.innerHTML = "";
     const p = document.createElement("p");
     p.className = "error";
     p.setAttribute("role", "alert");
-    p.textContent = `Failed to load data/index.json: ${e.message}`;
+    p.textContent = "Retry";
+    const r = document.createElement("button");
+    r.type = "button";
+    r.textContent = "↻";
+    r.setAttribute("aria-label", "Retry loading archive");
+    r.onclick = () => location.reload();
+    p.append(" ", r);
     wrap.append(p);
     return;
   }
   const { idx } = state;
-  meta.textContent = `${idx.radar} · ${idx.updated_ist} · ${idx.days.length} day(s)`;
+  meta.textContent = `${shortTime(idx.updated_ist)} · ${idx.days.length}d`;
+  meta.title = `${idx.radar} · ${idx.updated_ist} · ${idx.days.length} day(s)`;
 
   const sel = $("daySel");
   sel.innerHTML = "";
@@ -35,7 +43,8 @@ async function load() {
     o.value = d.date;
     const n = (d.frames && d.frames.length) || (d.slots && d.slots.length)
       || (d.daily_gif || d.strip ? 1 : 0);
-    o.textContent = `${d.date} · ${n} frames${(d.daily_gif || d.strip) && !((d.frames && d.frames.length) || (d.slots && d.slots.length)) ? " (daily)" : ""}`;
+    o.textContent = `${shortDate(d.date)} · ${n}`;
+    o.title = `${d.date} · ${n} frames`;
     sel.appendChild(o);
   }
   const q = new URLSearchParams(location.search).get("date");
@@ -47,13 +56,12 @@ async function load() {
   $("prevDay").onclick = () => stepDay(1);
   $("nextDay").onclick = () => stepDay(-1);
   $("playBtn").onclick = togglePlay;
-  $("scrub").oninput = (e) => { state.playing = false; stopTimer(); syncPlayBtn(); setSlot(+e.target.value); };
+  $("scrub").oninput = (e) => { pause(); setSlot(+e.target.value); };
   $("themeBtn").onclick = () => {
     const html = document.documentElement;
     const toDark = html.dataset.theme !== "dark";
     html.dataset.theme = toDark ? "dark" : "light";
-    $("themeBtn").textContent = toDark ? "☀ paper" : "● night";
-    $("themeBtn").setAttribute("aria-pressed", String(toDark));
+    syncThemeBtn();
     try { localStorage.setItem("kkl-theme-v2", html.dataset.theme); } catch {}
   };
   try {
@@ -72,12 +80,46 @@ async function load() {
   };
   narrow.addEventListener?.("change", placeTheme);
   placeTheme();
+  syncThemeBtn();
 
   // filmstrip arrow-key scrub
   $("film").addEventListener("keydown", (e) => {
-    if (e.key === "ArrowRight") { e.preventDefault(); setSlot(state.slotIx + 1); }
-    if (e.key === "ArrowLeft") { e.preventDefault(); setSlot(state.slotIx - 1); }
+    if (e.key === "ArrowRight") { e.preventDefault(); pause(); setSlot(state.slotIx + 1); }
+    if (e.key === "ArrowLeft") { e.preventDefault(); pause(); setSlot(state.slotIx - 1); }
   });
+
+  // Global keys: space = play, ←/→ = frame, shift+←/→ = day.
+  document.addEventListener("keydown", (e) => {
+    const t = e.target;
+    if (t && (t.tagName === "INPUT" || t.tagName === "SELECT" || t.tagName === "TEXTAREA")) return;
+    if (e.key === " ") { e.preventDefault(); togglePlay(); }
+    else if (e.key === "ArrowRight" && e.shiftKey) { e.preventDefault(); stepDay(-1); }
+    else if (e.key === "ArrowLeft" && e.shiftKey) { e.preventDefault(); stepDay(1); }
+  });
+
+  // Swipe on scope: horizontal = scrub, edge-swipe at ends = day.
+  const scope = document.querySelector(".scope");
+  let tx = null;
+  scope.addEventListener("touchstart", (e) => { tx = e.touches[0].clientX; }, { passive: true });
+  scope.addEventListener("touchend", (e) => {
+    if (tx == null) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    tx = null;
+    if (Math.abs(dx) < 32) return;
+    const n = currentSlots().length;
+    if (dx < 0) {
+      if (state.slotIx < n - 1) { pause(); setSlot(state.slotIx + 1); }
+      else stepDay(-1);
+    } else {
+      if (state.slotIx > 0) { pause(); setSlot(state.slotIx - 1); }
+      else stepDay(1);
+    }
+  }, { passive: true });
+
+  const openHero = () => openLB($("heroImg").src, $("viewerCap").title || $("viewerCap").textContent);
+  $("heroImg").addEventListener("click", openHero);
+  $("heroImg").addEventListener("keydown", (e) => { if (e.key === "Enter") openHero(); });
+  $("expandBtn").onclick = openHero;
 
   render(true);
 }
@@ -100,12 +142,65 @@ function togglePlay() {
     setSlot(state.slotIx);
   }
 }
+function pause() { state.playing = false; stopTimer(); syncPlayBtn(); }
 function syncPlayBtn() {
   const b = $("playBtn");
   b.setAttribute("aria-pressed", String(state.playing));
-  b.textContent = state.playing ? "⏸ pause" : "▶ play story";
+  b.setAttribute("aria-label", state.playing ? "Pause" : "Play");
+  b.textContent = state.playing ? "⏸" : "▶";
+}
+function syncThemeBtn() {
+  const b = $("themeBtn");
+  const dark = document.documentElement.dataset.theme === "dark";
+  b.textContent = dark ? "☀" : "●";
+  b.setAttribute("aria-pressed", String(dark));
+}
+function shortDate(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || "");
+  if (!m) return iso || "";
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return `${+m[3]} ${months[+m[2] - 1]}`;
+}
+function shortTime(s) {
+  const m = /(\d{2}):(\d{2})/.exec(s || "");
+  return m ? `${m[1]}:${m[2]}` : (s || "…");
 }
 
+function hourOf(t) {
+  const m = /^(\d{1,2}):(\d{2})/.exec(t || "");
+  if (!m) return null;
+  const h = +m[1], mi = +m[2];
+  if (h < 0 || h > 23 || mi < 0 || mi > 59) return null;
+  return { h, mi };
+}
+function buildDayTick() {
+  const wrap = $("daySlices");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+  const hours = new Set();
+  for (const s of currentSlots()) {
+    const p = hourOf(s.time);
+    if (p) hours.add(p.h);
+  }
+  for (let h = 0; h < 24; h++) {
+    const i = document.createElement("i");
+    if (hours.has(h)) i.className = "has";
+    i.dataset.h = String(h);
+    wrap.appendChild(i);
+  }
+}
+function moveDayNeedle(t) {
+  const needle = $("dayNeedle"), wrap = $("daySlices");
+  if (!needle || !wrap) return;
+  const p = hourOf(t);
+  if (!p) { needle.style.display = "none"; return; }
+  needle.style.display = "";
+  const frac = (p.h * 60 + p.mi) / (24 * 60);
+  needle.style.left = `calc(${(frac * 100).toFixed(2)}% - 1px)`;
+  [...wrap.children].forEach((el) => {
+    el.classList.toggle("now", +el.dataset.h === p.h);
+  });
+}
 function currentSlots() {
   if (!state.day) return [];
   if (state.day.frames && state.day.frames.length) return state.day.frames;
@@ -135,12 +230,12 @@ function render(resetSlot) {
   if (resetSlot) state.slotIx = 0;
   if (!day) return;
 
-  if (!dayHasPerFrame(day) && (day.daily_gif || day.strip)) {
-    $("filmSub").textContent = "pruned daily summary · daily.gif/strip kept";
-  } else {
-    $("filmSub").textContent = `${currentSlots().length} distinct frames · press play for the story`;
-  }
+  const n = currentSlots().length;
+  const pruned = !dayHasPerFrame(day) && (day.daily_gif || day.strip);
+  $("filmSub").textContent = pruned ? "daily" : `${n}`;
+  $("filmSub").title = pruned ? "Pruned daily summary" : `${n} frames`;
 
+  buildDayTick();
   buildFilm();
   syncPlayBtn();
   stopTimer();
@@ -162,25 +257,26 @@ function buildFilm() {
     b.type = "button";
     b.className = "reveal";
     b.style.animationDelay = `${Math.min(i * 0.05, 0.6)}s`;
-    b.setAttribute("aria-label", `Frame ${s.time} IST${s.estimated ? ", estimated" : ""} (${i + 1} of ${slots.length})`);
+    b.setAttribute("aria-label", `${s.time} (${i + 1} of ${slots.length})${s.estimated ? ", estimated" : ""}`);
     const img = document.createElement("img");
     img.loading = "lazy"; img.src = s.img; img.alt = "";
     const cap = document.createElement("span");
     cap.textContent = s.time;
     if (s.estimated) {
-      const est = document.createElement("span");
-      est.className = "est";
-      est.textContent = " ~est";
-      cap.append(" ", est);
+      const dot = document.createElement("span");
+      dot.className = "est-dot";
+      dot.setAttribute("aria-hidden", "true");
+      dot.title = "estimated";
+      cap.append(" ", dot);
     }
     b.append(img, cap);
-    b.onclick = () => { state.playing = false; stopTimer(); syncPlayBtn(); setSlot(i); };
-    b.ondblclick = () => openLB(s.img, `${s.time} IST`);
+    b.onclick = () => { pause(); setSlot(i); };
+    b.ondblclick = () => openLB(s.img, `${s.time} · ${i + 1}/${slots.length}`);
     film.appendChild(b);
     const o = document.createElement("option"); o.value = String(i); o.label = s.slot;
     ticks.appendChild(o);
   });
-  if (!slots.length) film.innerHTML = `<p class="empty">No frames yet today — check back after the next 3-hourly snap.</p>`;
+  if (!slots.length) film.innerHTML = `<p class="empty">—</p>`;
 }
 
 function setSlot(i) {
@@ -191,17 +287,25 @@ function setSlot(i) {
   const hero = $("heroImg"), scrub = $("scrub");
 
   scrub.value = String(state.slotIx);
-  $("scrubVal").textContent = `${s.time} IST · ${state.slotIx + 1}/${frames.length}`;
+  scrub.setAttribute("aria-valuetext", `${s.time}, ${state.slotIx + 1} of ${frames.length}`);
+  const pos = `${state.slotIx + 1}/${frames.length}`;
+  $("scrubVal").textContent = `${s.time} · ${pos}`;
   [...$("film").children].forEach((el, k) => {
     if (el.setAttribute) el.setAttribute("aria-current", String(k === state.slotIx));
   });
 
   hero.src = s.img;
-  hero.alt = `Radar reflectivity ${s.time} IST, frame ${state.slotIx + 1} of ${frames.length}`;
-  $("viewerCap").textContent = `${state.day.date} · ${s.time} IST · ${state.slotIx + 1}/${frames.length}${s.estimated ? " · ~estimated" : ""}`;
-  $("heroBadge").textContent = state.playing ? `PLAYING ${state.slotIx + 1}/${frames.length}` : "STILL";
+  hero.alt = `${s.time}, ${pos}`;
+  $("viewerCap").textContent = s.time;
+  $("viewerCap").title = `${state.day.date} · ${s.time} IST · ${pos}${s.estimated ? " · estimated" : ""}`;
+  $("heroBadge").textContent = state.playing ? `▶ ${pos}` : pos;
   $("heroBadge").classList.toggle("still", !state.playing);
-  hero.onclick = () => openLB(hero.src, $("viewerCap").textContent);
+  moveDayNeedle(s.time);
+  // Preload neighbours for instant scrub.
+  for (const d of [-1, 1]) {
+    const nx = frames[(state.slotIx + d + frames.length) % frames.length];
+    if (nx && nx.img) { const im = new Image(); im.src = nx.img; }
+  }
   const film = $("film");
   const active = film.querySelector('[aria-current="true"]');
   if (active) {

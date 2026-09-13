@@ -2,7 +2,7 @@ name: KKL radar archive
 
 on:
   schedule:
-    - cron: "14 * * * *"   # hourly, :15 past hour to let IMD finish updating
+    - cron: "24 * * * *"   # hourly, :15 past hour to let IMD finish updating
   workflow_dispatch: {}       # manual run / backfill button
 
 permissions:

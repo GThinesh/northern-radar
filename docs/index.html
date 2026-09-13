@@ -7,13 +7,12 @@
 <meta name="description" content="Karaikal radar archive. Times in IST.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200..900;1,9..144,200..900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='none' stroke='%23C8F04A' stroke-width='2'/%3E%3Cline x1='16' y1='16' x2='26' y2='7' stroke='%23FFB224' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23C8F04A'/%3E%3C/svg%3E">
 </head>
 <body>
 <a class="skip" href="#film">Skip to timeline</a>
-<div class="grain" aria-hidden="true"></div>
 
 <header class="topbar">
   <div class="brand">
@@ -32,7 +31,7 @@
   </div>
   <nav class="top-actions" aria-label="Page">
     <a class="link" href="https://mausam.imd.gov.in/Radar/animation/Converted/KKL_MAXZ.gif" aria-label="IMD source">IMD ↗</a>
-    <button id="themeBtn" type="button" aria-pressed="false" aria-label="Toggle night mode" title="Toggle night mode">●</button>
+    <button id="themeBtn" type="button" aria-pressed="false" aria-label="Toggle night mode" title="Toggle night mode">Light</button>
   </nav>
 </header>
 
@@ -50,7 +49,7 @@
   </section>
 
   <section class="stage" aria-label="Radar">
-    <article class="viewer card reveal" id="viewer" aria-labelledby="viewerH">
+    <article class="viewer card" id="viewer" aria-labelledby="viewerH">
       <div class="viewer-head">
         <h2 id="viewerH" class="vh">Scope</h2>
         <p id="viewerCap" class="mono time-big">—</p>
@@ -58,13 +57,10 @@
       </div>
       <div class="scope">
         <img id="heroImg" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Selected radar frame" fetchpriority="high" tabindex="0">
-        <span class="corner tl" aria-hidden="true"></span><span class="corner tr" aria-hidden="true"></span>
-        <span class="corner bl" aria-hidden="true"></span><span class="corner br" aria-hidden="true"></span>
-        <span class="scan" aria-hidden="true"></span>
-        <button id="expandBtn" class="expand" type="button" aria-label="Expand frame">⤢</button>
+        <button id="expandBtn" class="expand" type="button" aria-label="Expand frame">Expand</button>
       </div>
       <div class="transport">
-        <button id="playBtn" type="button" aria-pressed="true" aria-label="Pause">⏸</button>
+        <button id="playBtn" type="button" aria-pressed="false" aria-label="Play">Play</button>
         <label class="scrub"><span class="vh">Scrub time</span>
           <input id="scrub" type="range" min="0" max="0" value="0" step="1" list="slotTicks" aria-label="Scrub time">
           <datalist id="slotTicks"></datalist>
@@ -90,7 +86,7 @@
 <dialog id="lightbox" aria-labelledby="lbCap">
   <img id="lbImg" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" alt="">
   <p id="lbCap" class="mono"></p>
-  <form method="dialog"><button type="submit" aria-label="Close">✕</button></form>
+  <form method="dialog"><button type="submit" aria-label="Close">Close</button></form>
 </dialog>
 
 <script src="app.js" defer></script>

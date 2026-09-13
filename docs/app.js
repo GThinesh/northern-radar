@@ -2,7 +2,7 @@
 const $ = (id) => document.getElementById(id);
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-const state = { idx: null, day: null, slotIx: 0, playing: !reduceMotion };
+const state = { idx: null, day: null, slotIx: 0, playing: false };
 let playTimer = null;
 const FRAME_MS = 900;
 function stopTimer() { if (playTimer) { clearInterval(playTimer); playTimer = null; } }
@@ -22,10 +22,10 @@ async function load() {
     const p = document.createElement("p");
     p.className = "error";
     p.setAttribute("role", "alert");
-    p.textContent = "Retry";
+    p.textContent = "Couldn't load the archive.";
     const r = document.createElement("button");
     r.type = "button";
-    r.textContent = "↻";
+    r.textContent = "Retry";
     r.setAttribute("aria-label", "Retry loading archive");
     r.onclick = () => location.reload();
     p.append(" ", r);
@@ -147,12 +147,12 @@ function syncPlayBtn() {
   const b = $("playBtn");
   b.setAttribute("aria-pressed", String(state.playing));
   b.setAttribute("aria-label", state.playing ? "Pause" : "Play");
-  b.textContent = state.playing ? "⏸" : "▶";
+  b.textContent = state.playing ? "Pause" : "Play";
 }
 function syncThemeBtn() {
   const b = $("themeBtn");
   const dark = document.documentElement.dataset.theme === "dark";
-  b.textContent = dark ? "☀" : "●";
+  b.textContent = dark ? "Dark" : "Light";
   b.setAttribute("aria-pressed", String(dark));
 }
 function shortDate(iso) {
@@ -261,8 +261,6 @@ function buildFilm() {
   slots.forEach((s, i) => {
     const b = document.createElement("button");
     b.type = "button";
-    b.className = "reveal";
-    b.style.animationDelay = `${Math.min(i * 0.05, 0.6)}s`;
     b.setAttribute("aria-label", `${s.time} (${i + 1} of ${slots.length})${s.estimated ? ", estimated" : ""}`);
     const img = document.createElement("img");
     img.loading = "lazy"; img.src = s.img; img.alt = "";
@@ -304,8 +302,7 @@ function setSlot(i) {
   hero.alt = `${s.time}, ${pos}`;
   $("viewerCap").textContent = s.time;
   $("viewerCap").title = `${state.day.date} · ${s.time} IST · ${pos}${s.estimated ? " · estimated" : ""}`;
-  $("heroBadge").textContent = state.playing ? `▶ ${pos}` : pos;
-  $("heroBadge").classList.toggle("still", !state.playing);
+  $("heroBadge").textContent = pos;
   moveDayNeedle(s.time);
   // Preload neighbours for instant scrub.
   for (const d of [-1, 1]) {

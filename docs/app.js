@@ -203,7 +203,13 @@ function moveDayNeedle(t) {
 }
 function currentSlots() {
   if (!state.day) return [];
-  if (state.day.frames && state.day.frames.length) return state.day.frames;
+  // All times are IST; index.json is written pre-sorted, but sort
+  // defensively by full IST timestamp so the timeline can never show
+  // e.g. 22:xx after 06:xx.
+  const byIst = (a, b) => String(a.t_ist || a.time || "")
+    .localeCompare(String(b.t_ist || b.time || ""));
+  if (state.day.frames && state.day.frames.length)
+    return [...state.day.frames].sort(byIst);
   if (state.day.slots && state.day.slots.length) return state.day.slots;
   // Pruned days have no frames/ but keep daily.gif/strip.jpg — fall back
   // so they don't render "No frames yet" permanently.

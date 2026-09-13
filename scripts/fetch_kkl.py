@@ -257,9 +257,34 @@ def parse_timestamp(txt: str) -> str | None:
 FRAME_STEP = datetime.timedelta(minutes=10)
 SNAP_LAG = datetime.timedelta(minutes=15)
 
+# Physical invariant for a radar frame clock read: a frame can never be from
+# the future, and the IMD GIF holds ~3h of history. OCR day digits glitch, so
+# a fallback-date mis-pick can shift a frame a full day forward (e.g. a
+# 22:32Z frame read against the post-midnight snapshot date lands ~22h in the
+# future, surfacing as 04:02 IST "tomorrow"). Clamp those back; old frames
+# are left alone (a long GIF / delayed cron can legitimately lag hours).
+FUTURE_TOL = datetime.timedelta(minutes=15)
+
+
+def clamp_frame_utc(dt: datetime.datetime,
+                    snap_utc: datetime.datetime) -> datetime.datetime:
+    """Pull an OCR-parsed UTC time at or before snap_utc + FUTURE_TOL.
+
+    Day-boundary fallback picks (and OCR day-digit glitches) shift by whole
+    days, so correct with whole-day steps only; intra-day times are trusted.
+    """
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=datetime.timezone.utc)
+    for _ in range(2):
+        if dt > snap_utc + FUTURE_TOL:
+            dt -= datetime.timedelta(days=1)
+        else:
+            break
+    return dt
+
 # OCR cache version: bump when CLOCK_BOX/TS_BOX/parse logic changes so stale
 # cached times are ignored instead of silently reused.
-OCR_CACHE_V = 2
+OCR_CACHE_V = 3
 OCR_TS_FMT = "%Y-%m-%d %H:%M:%SZ"
 
 # Strip overview: most recent per-snapshot JPGs only, so hourly snapshots
@@ -303,6 +328,14 @@ def snapshot_utc_time(path: Path,
 
 def slot_key(dt_ist: datetime.datetime) -> str:
     return f"{dt_ist.hour:02d}:{(dt_ist.minute // 30) * 30:02d}"
+
+
+def _day_date(day_dir: Path) -> datetime.date | None:
+    """IST date from a day-dir name, else None."""
+    try:
+        return datetime.date.fromisoformat(day_dir.name)
+    except ValueError:
+        return None
 
 
 def prev_day_hashes(day_dir: Path, tail: int = 40) -> set[str]:
@@ -384,7 +417,13 @@ def _timestamp_decoded(frames: list[tuple[str, Image.Image]],
         if dt is None:
             dt, _ = parse_frame_time(ocr_timestamp(img) or "", fallback_date)
             if dt is not None:
+                dt = clamp_frame_utc(dt, snap_utc)
                 ocr_cache[h] = dt
+        else:
+            # Cached times predate the clamp fix (or a newer snapshot gives a
+            # tighter bound): re-clamp so stale future dates self-heal.
+            dt = clamp_frame_utc(dt, snap_utc)
+            ocr_cache[h] = dt
         ocr_times.append(dt)
     # Fill unreadable frames by interpolation between OCR anchors
     # in the same GIF (IMD cadence ~10min); last resort: snapshot time.
@@ -415,8 +454,13 @@ def _rebuild_artifacts(day_dir: Path,
                        blob_shas: list[str],
                        decoded_total: int,
                        dupes: int) -> dict:
-    """Sort entries, rebuild slots/daily.gif/strip.jpg, rewrite manifest."""
-    entries.sort(key=lambda e: e.get("t_utc", ""))
+    """Sort entries, rebuild slots/daily.gif/strip.jpg, rewrite manifest.
+
+    All times are IST (`t_ist`); `t_utc` is only the sort key (same order).
+    Every list written here is chronological so the gallery never shows
+    e.g. 22:xx after 06:xx within one IST day.
+    """
+    entries.sort(key=lambda e: (e.get("t_utc", ""), e.get("img", "")))
     slots: dict[str, dict] = {}
     for e in entries:
         sk = e.get("slot")
@@ -441,7 +485,8 @@ def _rebuild_artifacts(day_dir: Path,
         ordered[0].save(daily_path, save_all=True, append_images=ordered[1:],
                         duration=600, loop=0, optimize=True)
         info["daily_gif"] = daily_path.name
-    lasts = sorted(day_dir.glob("*_last.jpg"))
+    lasts = sorted(day_dir.glob("*_last.jpg"),
+                   key=lambda p: snapshot_utc_time(p, _day_date(day_dir)))
     # Cap the strip at the most recent snapshots (see STRIP_MAX); older
     # frames remain available in frames/.
     lasts = lasts[-STRIP_MAX:]
@@ -490,25 +535,12 @@ def _rebuild_artifacts(day_dir: Path,
     return info
 
 
-def ingest_day(day_dir: Path, blob: bytes,
-               snap_utc: datetime.datetime, stamp: str) -> dict:
-    """Decode one downloaded GIF and merge its frames into the day.
-
-    Raw GIF bytes are never written to disk: only frames/*.jpg,
-    {stamp}_last.jpg, daily.gif, strip.jpg and frames.json are kept.
-    Dedupes via masked hashes (in-GIF filler, 3h-window overlap across
-    snapshots, prev-day tail) and via blob sha (identical re-downloads).
-    """
-    day_dir.mkdir(parents=True, exist_ok=True)
+def _load_day_state(day_dir: Path) -> dict:
+    """Manifest entries (files present), cache, shas and counters for one day."""
     m = _load_manifest(day_dir)
     old_entries = [e for e in m.get("frames", []) if isinstance(e, dict)]
-    # Drop manifest rows whose files are gone (post-prune), keep the rest.
     entries = [e for e in old_entries
                if isinstance(e.get("img"), str) and (day_dir / e["img"]).is_file()]
-    n_old_kept = len(entries)
-    have = {e["h"] for e in entries if "h" in e}
-    seen = set(prev_day_hashes(day_dir)) | have
-    ocr_cache = load_ocr_cache(day_dir)
     blob_shas = [s for s in m.get("blob_shas", []) if isinstance(s, str)]
     old_stats = m.get("stats", {}) if isinstance(m.get("stats"), dict) else {}
     try:
@@ -519,57 +551,134 @@ def ingest_day(day_dir: Path, blob: bytes,
         dupes = int(old_stats.get("dupes_dropped", 0))
     except (TypeError, ValueError):
         dupes = 0
+    return {"entries": entries, "n_old_kept": len(entries),
+            "blob_shas": blob_shas, "decoded_total": decoded_total,
+            "dupes": dupes}
+
+
+def ingest_day(day_dir: Path, blob: bytes,
+               snap_utc: datetime.datetime, stamp: str) -> dict:
+    """Decode one downloaded GIF and merge its frames by each frame's IST day.
+
+    Raw GIF bytes are never written to disk: only frames/*.jpg,
+    {stamp}_last.jpg, daily.gif, strip.jpg and frames.json are kept.
+    Dedupes via masked hashes (in-GIF filler, 3h-window overlap across
+    snapshots, prev-day tail) and via blob sha (identical re-downloads).
+
+    The snapshot JPG stays in the snapshot's IST day (`day_dir`), but every
+    radar frame is filed under its own clock-derived IST date — so 22:xx IST
+    frames from a post-midnight snapshot land on the previous IST day instead
+    of leaking into the next day's gallery.
+    """
+    snap_dir = day_dir
+    snap_dir.mkdir(parents=True, exist_ok=True)
+
+    # Shared OCR cache across the snapshot day + neighbours (a 3h GIF always
+    # straddles at most one midnight). Re-clamped inside _timestamp_decoded.
+    ocr_cache = load_ocr_cache(snap_dir)
 
     frames, n_decoded = iter_unique_frames(blob)
-    decoded_total += n_decoded
-    dupes += max(0, n_decoded - len(frames))
-    pending: list[dict] = []
-    for (h, img), (t_utc, estimated) in zip(
-            frames, _timestamp_decoded(frames, ocr_cache, snap_utc)):
-        if h in seen:
-            dupes += 1
-            continue
-        seen.add(h)
+    timed = _timestamp_decoded(frames, ocr_cache, snap_utc)
+
+    # Group new frames by their own IST calendar date before touching disk.
+    by_day: dict[str, list[dict]] = {}
+    order: list[str] = []
+    for (h, img), (t_utc, estimated) in zip(frames, timed):
         t_ist = t_utc.astimezone(IST)
-        pending.append({"h": h, "img_obj": img, "t_utc": t_utc,
-                        "t_ist": t_ist, "estimated": estimated})
+        key = t_ist.strftime("%Y-%m-%d")
+        if key not in by_day:
+            by_day[key] = []
+            order.append(key)
+        by_day[key].append({"h": h, "img_obj": img, "t_utc": t_utc,
+                            "t_ist": t_ist, "estimated": estimated})
+
+    # Load state for the snapshot day + every frame day it touches.
+    touched = [snap_dir.name] + [k for k in order if k != snap_dir.name]
+    states: dict[str, dict] = {}
+    for key in touched:
+        d = ARCHIVE / key
+        d.mkdir(parents=True, exist_ok=True)
+        states[key] = _load_day_state(d)
+        for h, dt in _ocr_from_manifest(d / "frames.json").items():
+            ocr_cache.setdefault(h, dt)
+
+    # Snapshot-day stats own the decode counters (one GIF == one download).
+    snap_state = states[snap_dir.name]
+    snap_state["decoded_total"] += n_decoded
+    snap_state["dupes"] += max(0, n_decoded - len(frames))
+
+    seen: set[str] = set()
+    for key in touched:
+        d = ARCHIVE / key
+        seen |= {e["h"] for e in states[key]["entries"] if "h" in e}
+        seen |= prev_day_hashes(d)
 
     sha = hashlib.sha256(blob).hexdigest()
-    if sha not in blob_shas:
-        blob_shas.append(sha)
 
-    # Save new frame files with collision-safe names, then materialize rows.
-    frames_dir = day_dir / "frames"
-    frames_dir.mkdir(parents=True, exist_ok=True)
-    used_names = {Path(e.get("img", "")).name for e in entries
-                  if isinstance(e.get("img"), str)}
-    n_next = len(entries)
-    for p in pending:
-        t_ist = p["t_ist"]
-        while True:
-            name = f"{t_ist.strftime('%H%M%S')}_{n_next:03d}.jpg"
-            n_next += 1
-            if name not in used_names and not (frames_dir / name).exists():
-                break
-        used_names.add(name)
-        img = p["img_obj"]
-        img.resize((img.width // 2, img.height // 2)).save(
-            frames_dir / name, quality=72)
-        entries.append({"h": p["h"],
-                        "t_utc": p["t_utc"].strftime("%Y-%m-%d %H:%M:%SZ"),
-                        "t_ist": t_ist.strftime("%Y-%m-%d %H:%M IST"),
-                        "img": f"frames/{name}",
-                        "slot": slot_key(t_ist),
-                        "estimated": p["estimated"]})
+    new_total = 0
+    for key in touched:
+        st = states[key]
+        if sha not in st["blob_shas"]:
+            st["blob_shas"].append(sha)
+        for p in by_day.get(key, []):
+            if p["h"] in seen:
+                st["dupes"] += 1
+                continue
+            seen.add(p["h"])
+            st.setdefault("pending", []).append(p)
+
+    # Materialize each day's new frames with collision-safe names.
+    for key in touched:
+        st = states[key]
+        target = ARCHIVE / key
+        entries = st["entries"]
+        used_names = {Path(e.get("img", "")).name for e in entries
+                      if isinstance(e.get("img"), str)}
+        n_next = len(entries)
+        frames_dir = target / "frames"
+        frames_dir.mkdir(parents=True, exist_ok=True)
+        for p in st.get("pending", []):
+            t_ist = p["t_ist"]
+            while True:
+                name = f"{t_ist.strftime('%H%M%S')}_{n_next:03d}.jpg"
+                n_next += 1
+                if name not in used_names and not (frames_dir / name).exists():
+                    break
+            used_names.add(name)
+            img = p["img_obj"]
+            img.resize((img.width // 2, img.height // 2)).save(
+                frames_dir / name, quality=72)
+            entries.append({"h": p["h"],
+                            "t_utc": p["t_utc"].strftime("%Y-%m-%d %H:%M:%SZ"),
+                            "t_ist": t_ist.strftime("%Y-%m-%d %H:%M IST"),
+                            "img": f"frames/{name}",
+                            "slot": slot_key(t_ist),
+                            "estimated": p["estimated"]})
+        new_total += len(st.get("pending", []))
 
     try:
-        extract_last_frame(blob).save(day_dir / f"{stamp}_last.jpg", quality=80)
+        extract_last_frame(blob).save(snap_dir / f"{stamp}_last.jpg", quality=80)
     except Exception as exc:  # noqa: BLE001
         print(f"last-frame save failed: {exc}", file=sys.stderr)
 
-    info = _rebuild_artifacts(day_dir, entries, ocr_cache,
-                              blob_shas, decoded_total, dupes)
-    info["new_frames"] = len(entries) - n_old_kept
+    info: dict = {"new_frames": 0, "days": []}
+    for key in touched:
+        st = states[key]
+        target = ARCHIVE / key
+        day_info = _rebuild_artifacts(target, st["entries"], ocr_cache,
+                                      st["blob_shas"], st["decoded_total"],
+                                      st["dupes"])
+        day_info["day"] = key
+        day_info["new_frames"] = len(st.get("pending", []))
+        info["days"].append(day_info)
+    info["new_frames"] = sum(d["new_frames"] for d in info["days"])
+    # Back-compat: top-level snapshots/new_frames describe the snapshot day.
+    for d in info["days"]:
+        if d["day"] == snap_dir.name:
+            info.update({k: d[k] for k in
+                         ("snapshots", "decoded_total", "unique_frames",
+                          "dupes_dropped", "daily_gif", "strip") if k in d})
+            break
     return info
 
 
@@ -623,14 +732,18 @@ def rebuild_index() -> dict:
                 continue
             # Snapshots are per-download _last.jpg files; raw GIFs are
             # deleted after frame extraction and never committed.
-            lasts = sorted(day_dir.glob("*_last.jpg"))
+            # Sort by actual capture time (filename starts with UTC HHMM, so
+            # plain lexicographic order misplaces overnight snapshots);
+            # labels are IST-only for display.
+            day_date = _day_date(day_dir)
+            lasts = sorted(day_dir.glob("*_last.jpg"),
+                           key=lambda p: snapshot_utc_time(p, day_date))
             snaps = []
             for jpg in lasts:
-                label = (jpg.name[:-len("_last.jpg")]
-                         if jpg.name.endswith("_last.jpg") else jpg.stem)
+                ist = snapshot_utc_time(jpg, day_date).astimezone(IST)
                 snaps.append({
                     "jpg": f"archive/{day_dir.name}/{jpg.name}",
-                    "label": label,  # e.g. 0130-UTC_0700-IST
+                    "label": ist.strftime("%H:%M IST"),
                     "bytes": jpg.stat().st_size,
                 })
             has_daily = (day_dir / "daily.gif").exists()
@@ -643,7 +756,9 @@ def rebuild_index() -> dict:
             except (OSError, ValueError):
                 stats, raw_slots, manifest_frames = {}, [], []
             slots = []
-            for s in raw_slots:
+            for s in sorted(raw_slots,
+                            key=lambda s: (s.get("slot", ""), s.get("time", ""),
+                                           s.get("img", ""))):
                 img = day_dir / s["img"]
                 if img.exists():
                     slots.append({
@@ -652,7 +767,8 @@ def rebuild_index() -> dict:
                         "img": f"archive/{day_dir.name}/{s['img']}",
                     })
             frames = []
-            for e in manifest_frames:
+            for e in sorted(manifest_frames,
+                            key=lambda e: (e.get("t_ist", ""), e.get("img", ""))):
                 img = day_dir / e["img"]
                 if img.exists():
                     t = (e.get("t_ist", "") or "")
@@ -711,9 +827,18 @@ def main() -> int:
     day_dir = ARCHIVE / day
     day_dir.mkdir(parents=True, exist_ok=True)
 
-    # dedupe without raw files: skip blobs already ingested.
+    # dedupe without raw files: skip blobs already ingested (a 3h GIF
+    # straddles midnight, so search every day manifest, not just today's).
     sha = hashlib.sha256(blob).hexdigest()
-    if not args.force and sha in _load_manifest(day_dir).get("blob_shas", []):
+    seen_blob = sha in _load_manifest(day_dir).get("blob_shas", [])
+    if not seen_blob and not args.force:
+        for other in ARCHIVE.glob("????-??-??"):
+            if other.name == day:
+                continue
+            if sha in _load_manifest(other).get("blob_shas", []):
+                seen_blob = True
+                break
+    if not args.force and seen_blob:
         print("identical to an ingested snapshot, rebuilding index only")
         rebuild_index()
         print("noop-save (duplicate)")

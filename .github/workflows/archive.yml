@@ -2,7 +2,7 @@ name: KKL radar archive
 
 on:
   schedule:
-    - cron: "45 * * * *"   # hourly, :45 past hour
+    - cron: "5 * * * *"    # hourly, :05 past hour
   workflow_dispatch: {}       # manual run / backfill button
 
 permissions:

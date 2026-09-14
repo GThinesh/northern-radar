@@ -2,17 +2,17 @@
 """KKL (Karaikal) IMD radar archiver.
 
 Downloads https://mausam.imd.gov.in/Radar/animation/Converted/KKL_MAXZ.gif
-(full ~3h animated GIF), extracts unique frames to frames/HHMMSS_NNN.jpg,
-rebuilds per-day summary (daily.gif + strip.jpg), updates docs/data/index.json.
+(full ~3h animated GIF), extracts unique frames to frames/HHMMSS_NNN.png,
+rebuilds per-day summary (daily.gif + strip.png), updates docs/data/index.json.
 
 Raw snapshots are NOT kept: the downloaded GIF is decoded in memory and
-only per-snapshot _last.jpg + extracted frames are committed.
+only per-snapshot _last.png + extracted frames are committed.
 
 Layout (all under docs/ so GitHub Pages can serve it):
-  docs/archive/YYYY-MM-DD/HHMM-UTC_HHMM-IST_last.jpg
-  docs/archive/YYYY-MM-DD/frames/HHMMSS_NNN.jpg
+  docs/archive/YYYY-MM-DD/HHMM-UTC_HHMM-IST_last.png
+  docs/archive/YYYY-MM-DD/frames/HHMMSS_NNN.png
   docs/archive/YYYY-MM-DD/daily.gif
-  docs/archive/YYYY-MM-DD/strip.jpg
+  docs/archive/YYYY-MM-DD/strip.png
   docs/data/index.json
 
 Usage:
@@ -454,7 +454,7 @@ def _rebuild_artifacts(day_dir: Path,
                        blob_shas: list[str],
                        decoded_total: int,
                        dupes: int) -> dict:
-    """Sort entries, rebuild slots/daily.gif/strip.jpg, rewrite manifest.
+    """Sort entries, rebuild slots/daily.gif/strip.png, rewrite manifest.
 
     All times are IST (`t_ist`); `t_utc` is only the sort key (same order).
     Every list written here is chronological so the gallery never shows
@@ -485,7 +485,7 @@ def _rebuild_artifacts(day_dir: Path,
         ordered[0].save(daily_path, save_all=True, append_images=ordered[1:],
                         duration=600, loop=0, optimize=True)
         info["daily_gif"] = daily_path.name
-    lasts = sorted(day_dir.glob("*_last.jpg"),
+    lasts = sorted([*day_dir.glob("*_last.jpg"), *day_dir.glob("*_last.png")],
                    key=lambda p: snapshot_utc_time(p, _day_date(day_dir)))
     # Cap the strip at the most recent snapshots (see STRIP_MAX); older
     # frames remain available in frames/.
@@ -513,9 +513,16 @@ def _rebuild_artifacts(day_dir: Path,
             # Aspect-preserving fit into the cell; never stretch mixed sizes.
             cell = ImageOps.fit(t, (tw, th), method=Image.BILINEAR)
             strip.paste(cell, ((i % cols) * tw, (i // cols) * th))
-        strip_path = day_dir / "strip.jpg"
-        strip.save(strip_path, quality=72)
+        strip_path = day_dir / "strip.png"
+        strip.save(strip_path, optimize=True)
         info["strip"] = strip_path.name
+        # Drop the legacy lossy overview now that PNG replaces it.
+        legacy_strip = day_dir / "strip.jpg"
+        if legacy_strip != strip_path and legacy_strip.exists():
+            try:
+                legacy_strip.unlink()
+            except OSError:
+                pass
     slot_list = [slots[k] for k in sorted(slots)]
     # Persist OCR times only for frames saved in this day. Writing back the
     # merged prev-day cache would accumulate one extra stale day per rebuild.
@@ -560,8 +567,8 @@ def ingest_day(day_dir: Path, blob: bytes,
                snap_utc: datetime.datetime, stamp: str) -> dict:
     """Decode one downloaded GIF and merge its frames by each frame's IST day.
 
-    Raw GIF bytes are never written to disk: only frames/*.jpg,
-    {stamp}_last.jpg, daily.gif, strip.jpg and frames.json are kept.
+    Raw GIF bytes are never written to disk: only frames/*.png,
+    {stamp}_last.png, daily.gif, strip.png and frames.json are kept.
     Dedupes via masked hashes (in-GIF filler, 3h-window overlap across
     snapshots, prev-day tail) and via blob sha (identical re-downloads).
 
@@ -640,14 +647,14 @@ def ingest_day(day_dir: Path, blob: bytes,
         for p in st.get("pending", []):
             t_ist = p["t_ist"]
             while True:
-                name = f"{t_ist.strftime('%H%M%S')}_{n_next:03d}.jpg"
+                name = f"{t_ist.strftime('%H%M%S')}_{n_next:03d}.png"
                 n_next += 1
                 if name not in used_names and not (frames_dir / name).exists():
                     break
             used_names.add(name)
             img = p["img_obj"]
-            img.resize((img.width // 2, img.height // 2)).save(
-                frames_dir / name, quality=72)
+            # Full quality: original resolution, lossless PNG.
+            img.save(frames_dir / name, optimize=True)
             entries.append({"h": p["h"],
                             "t_utc": p["t_utc"].strftime("%Y-%m-%d %H:%M:%SZ"),
                             "t_ist": t_ist.strftime("%Y-%m-%d %H:%M IST"),
@@ -657,7 +664,7 @@ def ingest_day(day_dir: Path, blob: bytes,
         new_total += len(st.get("pending", []))
 
     try:
-        extract_last_frame(blob).save(snap_dir / f"{stamp}_last.jpg", quality=80)
+        extract_last_frame(blob).save(snap_dir / f"{stamp}_last.png", optimize=True)
     except Exception as exc:  # noqa: BLE001
         print(f"last-frame save failed: {exc}", file=sys.stderr)
 
@@ -685,8 +692,8 @@ def ingest_day(day_dir: Path, blob: bytes,
 def build_daily(day_dir: Path) -> dict:
     """Rebuild a day's artifacts from committed files (no raw GIFs).
 
-    Regenerates daily.gif, strip.jpg, slots and frames.json from the
-    frames/*.jpg + *_last.jpg already on disk. Used after prune or repair;
+    Regenerates daily.gif, strip.png, slots and frames.json from the
+    frames/*.png (or legacy *.jpg) + *_last.png (or legacy *_last.jpg)
     the fetch path uses ingest_day() instead.
     """
     m = _load_manifest(day_dir)
@@ -730,13 +737,14 @@ def rebuild_index() -> dict:
         for day_dir in sorted(ARCHIVE.iterdir()):
             if not day_dir.is_dir():
                 continue
-            # Snapshots are per-download _last.jpg files; raw GIFs are
-            # deleted after frame extraction and never committed.
+            # Snapshots are per-download _last.png files (legacy _last.jpg
+            # also listed); raw GIFs are deleted after frame extraction
+            # and never committed.
             # Sort by actual capture time (filename starts with UTC HHMM, so
             # plain lexicographic order misplaces overnight snapshots);
             # labels are IST-only for display.
             day_date = _day_date(day_dir)
-            lasts = sorted(day_dir.glob("*_last.jpg"),
+            lasts = sorted([*day_dir.glob("*_last.jpg"), *day_dir.glob("*_last.png")],
                            key=lambda p: snapshot_utc_time(p, day_date))
             snaps = []
             for jpg in lasts:
@@ -747,7 +755,7 @@ def rebuild_index() -> dict:
                     "bytes": jpg.stat().st_size,
                 })
             has_daily = (day_dir / "daily.gif").exists()
-            has_strip = (day_dir / "strip.jpg").exists()
+            has_strip = (day_dir / "strip.png").exists() or (day_dir / "strip.jpg").exists()
             try:
                 manifest = json.loads((day_dir / "frames.json").read_text())
                 stats = manifest.get("stats", {})
@@ -785,7 +793,9 @@ def rebuild_index() -> dict:
                 "slots": slots,
                 "frames": frames,
                 "daily_gif": f"archive/{day_dir.name}/daily.gif" if has_daily else None,
-                "strip": f"archive/{day_dir.name}/strip.jpg" if has_strip else None,
+                "strip": (f"archive/{day_dir.name}/strip.png"
+                          if (day_dir / "strip.png").exists()
+                          else f"archive/{day_dir.name}/strip.jpg" if has_strip else None),
                 "daily_frames": stats.get("unique_frames"),
                 "dupes_dropped": stats.get("dupes_dropped"),
             })
@@ -820,7 +830,7 @@ def main() -> int:
         out = Path("/tmp/opencode/kkl_test")
         out.mkdir(parents=True, exist_ok=True)
         (out / f"{stamp}.gif").write_bytes(blob)
-        extract_last_frame(blob).save(out / f"{stamp}_last.jpg", quality=80)
+        extract_last_frame(blob).save(out / f"{stamp}_last.png", optimize=True)
         print(f"TEST OK -> {out}")
         return 0
 

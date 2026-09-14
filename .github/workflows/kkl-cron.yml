@@ -34,13 +34,13 @@ jobs:
       - name: Fetch KKL snapshot + rebuild daily
         run: python scripts/fetch_kkl.py
 
-      - name: Prune per-frame JPGs older than 30 days (keep daily summaries)
+      - name: Prune per-frame images older than 30 days (keep daily summaries)
         env:
           RETENTION_DAYS: "30"
         run: |
           # Raw GIFs are never committed (frames are extracted in memory and
-          # the GIF is discarded). This only prunes per-frame JPGs (+ any
-          # legacy *-IST.gif) so old days keep daily.gif/strip.jpg/_last.jpg.
+          # the GIF is discarded). This only prunes per-frame images (+ any
+          # legacy *-IST.gif) so old days keep daily.gif/strip.png/_last.png.
           # NOTE: deleting files only shrinks the working tree; git history
           # still retains old blobs, so squash history if the clone gets
           # heavy (see README "Repo size").
@@ -59,7 +59,7 @@ jobs:
                       f.unlink(missing_ok=True)
                   import shutil
                   shutil.rmtree(d / "frames", ignore_errors=True)
-                  print(f"pruned frames in {d.name} (kept daily.gif/strip.jpg/_last.jpg)")
+                  print(f"pruned frames in {d.name} (kept daily.gif/strip.png/_last.png)")
           EOF
           python - <<'EOF'
           # re-index after prune

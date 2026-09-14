@@ -1,24 +1,51 @@
 {
  "radar": "KKL_MAXZ (Karaikal)",
  "source": "https://mausam.imd.gov.in/Radar/animation/Converted/KKL_MAXZ.gif",
- "updated_ist": "2026-09-15 00:00 IST",
+ "updated_ist": "2026-09-15 00:31 IST",
  "days": [
   {
    "date": "2026-09-15",
-   "count": 1,
+   "count": 2,
    "snaps": [
     {
      "jpg": "archive/2026-09-15/1830-UTC_0000-IST_last.png",
      "label": "00:00 IST",
      "bytes": 151446
+    },
+    {
+     "jpg": "archive/2026-09-15/1901-UTC_0031-IST_last.png",
+     "label": "00:31 IST",
+     "bytes": 142155
     }
    ],
-   "slots": [],
-   "frames": [],
-   "daily_gif": null,
+   "slots": [
+    {
+     "slot": "00:00",
+     "time": "00:02",
+     "estimated": false,
+     "img": "archive/2026-09-15/frames/000248_000.png"
+    }
+   ],
+   "frames": [
+    {
+     "slot": "00:00",
+     "time": "00:02",
+     "t_ist": "2026-09-15 00:02 IST",
+     "estimated": false,
+     "img": "archive/2026-09-15/frames/000248_000.png"
+    },
+    {
+     "slot": "00:00",
+     "time": "00:12",
+     "t_ist": "2026-09-15 00:12 IST",
+     "estimated": false,
+     "img": "archive/2026-09-15/frames/001227_001.png"
+    }
+   ],
+   "daily_gif": "archive/2026-09-15/daily.gif",
    "strip": "archive/2026-09-15/strip.png",
-   "daily_frames": 0,
-   "dupes_dropped": 4
+   "daily_frames": 2,
+   "dupes_dropped": 8
   },
   {
    "date": "2026-09-14",
@@ -922,12 +949,19 @@
      "t_ist": "2026-09-14 23:32 IST",
      "estimated": false,
      "img": "archive/2026-09-14/frames/233242_079.png"
+    },
+    {
+     "slot": "23:30",
+     "time": "23:53",
+     "t_ist": "2026-09-14 23:53 IST",
+     "estimated": false,
+     "img": "archive/2026-09-14/frames/235338_080.png"
     }
    ],
    "daily_gif": "archive/2026-09-14/daily.gif",
    "strip": "archive/2026-09-14/strip.png",
-   "daily_frames": 80,
-   "dupes_dropped": 296
+   "daily_frames": 81,
+   "dupes_dropped": 308
   },
   {
    "date": "2026-09-13",

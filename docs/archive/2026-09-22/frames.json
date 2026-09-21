@@ -10,7 +10,12 @@
   "1dad95162de2973e",
   "ed20975e4c7d1139",
   "cab9e4499d46c557",
-  "07ce24daa2735d01"
+  "07ce24daa2735d01",
+  "d0d474d5f75157c6",
+  "c9d76fb3c2cee2ed",
+  "1e476323b68fd2da",
+  "ca209f0148a5956f",
+  "e65afb880e7d5c85"
  ],
  "frames": [
   {
@@ -100,6 +105,46 @@
    "img": "frames/021222_010.png",
    "slot": "02:00",
    "estimated": false
+  },
+  {
+   "h": "d0d474d5f75157c6",
+   "t_utc": "2026-09-21 20:52:22Z",
+   "t_ist": "2026-09-22 02:22 IST",
+   "img": "frames/022222_011.png",
+   "slot": "02:00",
+   "estimated": false
+  },
+  {
+   "h": "c9d76fb3c2cee2ed",
+   "t_utc": "2026-09-21 21:12:22Z",
+   "t_ist": "2026-09-22 02:42 IST",
+   "img": "frames/024222_012.png",
+   "slot": "02:30",
+   "estimated": false
+  },
+  {
+   "h": "1e476323b68fd2da",
+   "t_utc": "2026-09-21 21:22:22Z",
+   "t_ist": "2026-09-22 02:52 IST",
+   "img": "frames/025222_013.png",
+   "slot": "02:30",
+   "estimated": false
+  },
+  {
+   "h": "ca209f0148a5956f",
+   "t_utc": "2026-09-21 21:32:22Z",
+   "t_ist": "2026-09-22 03:02 IST",
+   "img": "frames/030222_014.png",
+   "slot": "03:00",
+   "estimated": false
+  },
+  {
+   "h": "e65afb880e7d5c85",
+   "t_utc": "2026-09-21 21:42:22Z",
+   "t_ist": "2026-09-22 03:12 IST",
+   "img": "frames/031222_015.png",
+   "slot": "03:00",
+   "estimated": false
   }
  ],
  "slots": [
@@ -132,19 +177,32 @@
    "time": "02:02",
    "img": "frames/020222_009.png",
    "estimated": false
+  },
+  {
+   "slot": "02:30",
+   "time": "02:42",
+   "img": "frames/024222_012.png",
+   "estimated": false
+  },
+  {
+   "slot": "03:00",
+   "time": "03:02",
+   "img": "frames/030222_014.png",
+   "estimated": false
   }
  ],
  "stats": {
-  "snapshots": 4,
-  "decoded_total": 76,
-  "unique_frames": 11,
-  "dupes_dropped": 36
+  "snapshots": 5,
+  "decoded_total": 95,
+  "unique_frames": 16,
+  "dupes_dropped": 50
  },
  "blob_shas": [
   "49b8cd8d619f15757ecdc53e1b15ede6abbf99a25a9502f90057fade3cc19a10",
   "f6bd69d2239216e90133086e28ca0bcbe59cba5507208dcb28b57fb4f0683209",
   "5f5f04633b6048be7023117ca54bde6cd9c2131dbaf592f63d1783e3034182a4",
-  "9c5fd32711156308f36fc956e149d51f80679b698c53c20defca7903514e8071"
+  "9c5fd32711156308f36fc956e149d51f80679b698c53c20defca7903514e8071",
+  "4c865bd89894b88004a1b991f23992aaa41c48b7d8938b764fb128b68dad0938"
  ],
  "ocr_v": 3,
  "ocr": {
@@ -180,6 +238,21 @@
   },
   "07ce24daa2735d01": {
    "t_utc": "2026-09-21 20:42:22Z"
+  },
+  "d0d474d5f75157c6": {
+   "t_utc": "2026-09-21 20:52:22Z"
+  },
+  "c9d76fb3c2cee2ed": {
+   "t_utc": "2026-09-21 21:12:22Z"
+  },
+  "1e476323b68fd2da": {
+   "t_utc": "2026-09-21 21:22:22Z"
+  },
+  "ca209f0148a5956f": {
+   "t_utc": "2026-09-21 21:32:22Z"
+  },
+  "e65afb880e7d5c85": {
+   "t_utc": "2026-09-21 21:42:22Z"
   }
  }
 }

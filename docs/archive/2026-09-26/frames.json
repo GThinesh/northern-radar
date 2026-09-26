@@ -2,7 +2,10 @@
  "hashes": [
   "4f3a875797e3dd41",
   "ab495857cdf5e018",
-  "32e2c9d96a085d50"
+  "32e2c9d96a085d50",
+  "f979c53d327369b0",
+  "a6ff3d6deadaa7c1",
+  "fe673976b269c468"
  ],
  "frames": [
   {
@@ -28,6 +31,30 @@
    "img": "frames/083222_002.png",
    "slot": "08:30",
    "estimated": false
+  },
+  {
+   "h": "f979c53d327369b0",
+   "t_utc": "2026-09-26 04:12:23Z",
+   "t_ist": "2026-09-26 09:42 IST",
+   "img": "frames/094223_003.png",
+   "slot": "09:30",
+   "estimated": false
+  },
+  {
+   "h": "a6ff3d6deadaa7c1",
+   "t_utc": "2026-09-26 04:22:22Z",
+   "t_ist": "2026-09-26 09:52 IST",
+   "img": "frames/095222_004.png",
+   "slot": "09:30",
+   "estimated": false
+  },
+  {
+   "h": "fe673976b269c468",
+   "t_utc": "2026-09-26 04:32:22Z",
+   "t_ist": "2026-09-26 10:02 IST",
+   "img": "frames/100222_005.png",
+   "slot": "10:00",
+   "estimated": false
   }
  ],
  "slots": [
@@ -42,17 +69,30 @@
    "time": "08:32",
    "img": "frames/083222_002.png",
    "estimated": false
+  },
+  {
+   "slot": "09:30",
+   "time": "09:42",
+   "img": "frames/094223_003.png",
+   "estimated": false
+  },
+  {
+   "slot": "10:00",
+   "time": "10:02",
+   "img": "frames/100222_005.png",
+   "estimated": false
   }
  ],
  "stats": {
-  "snapshots": 2,
-  "decoded_total": 38,
-  "unique_frames": 3,
-  "dupes_dropped": 35
+  "snapshots": 3,
+  "decoded_total": 57,
+  "unique_frames": 6,
+  "dupes_dropped": 51
  },
  "blob_shas": [
   "ebc6435ab2ca901691b695da1f26fb987d0ecd687aceb4e4afc18b814c72c448",
-  "28755084fab6aa7f30590806ef0a9a89574ecea801ef307e28d5a358120f8242"
+  "28755084fab6aa7f30590806ef0a9a89574ecea801ef307e28d5a358120f8242",
+  "ca5e17c6444b1d96aff94852401a56089c04d13eb0aeb10f0da03ea77e309e1d"
  ],
  "ocr_v": 3,
  "ocr": {
@@ -61,6 +101,15 @@
   },
   "32e2c9d96a085d50": {
    "t_utc": "2026-09-26 03:02:22Z"
+  },
+  "f979c53d327369b0": {
+   "t_utc": "2026-09-26 04:12:23Z"
+  },
+  "a6ff3d6deadaa7c1": {
+   "t_utc": "2026-09-26 04:22:22Z"
+  },
+  "fe673976b269c468": {
+   "t_utc": "2026-09-26 04:32:22Z"
   }
  }
 }

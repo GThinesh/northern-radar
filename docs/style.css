@@ -70,6 +70,13 @@ a{color:var(--link);text-underline-offset:.2em}
 .dot{width:.65rem;height:.65rem;border-radius:50%;background:var(--signal);flex:none}
 .dot.bad{background:var(--danger)}
 .top-actions{display:flex;gap:var(--s2);align-items:center}
+.pagelinks{display:inline-flex;gap:.5rem;align-items:center}
+.navlink{display:inline-flex;align-items:center;gap:.45rem;
+  font-family:var(--mono);font-size:.85rem;color:var(--text);text-decoration:none;
+  border:1px solid var(--line2);border-radius:999px;padding:.45rem .9rem;min-height:2.75rem}
+.navlink:hover{background:var(--fill-hover)}
+.navlink svg{width:1rem;height:1rem;flex:none}
+.navlink[aria-current="page"]{background:var(--text);color:var(--bg);border-color:var(--text)}
 .link{font-family:var(--mono);font-size:.8rem}
 #themeBtn{font-family:var(--mono);font-size:.85rem;background:transparent;color:var(--text);
   border:1px solid var(--line2);border-radius:999px;min-width:2.75rem;min-height:2.75rem;padding:.45rem .9rem;cursor:pointer}
@@ -138,7 +145,52 @@ input[type="range"]{accent-color:var(--signal);width:100%;height:2rem}
 
 .sec-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--s3)}
 .sec-head p{margin:0;color:var(--muted)}
-.empty,.error{border:1px solid var(--line);border-radius:var(--r-s);padding:var(--s5);color:var(--muted);font-family:var(--mono)}
+/* rain table — dense operational grid: places × IST hours.
+   Zebra fill separates rows (no per-row rules); radar legend colors are
+   data encoding and stay saturated in both themes. */
+.tablecard{overflow:hidden}
+.tablewrap{overflow:auto;max-height:70vh;border-bottom:1px solid var(--line)}
+#raintable{border-collapse:collapse;width:100%;font-family:var(--mono);font-size:.78rem}
+#raintable thead th{
+  position:sticky;top:0;z-index:3;background:var(--card);
+  font-weight:500;color:var(--muted);font-size:.72rem;
+  padding:.5rem .35rem;min-width:2.4rem;
+  border-bottom:1px solid var(--line2)}
+#raintable thead th.nodata{color:var(--faint)}
+#raintable tbody th.place{
+  position:sticky;left:0;z-index:2;background:var(--card);
+  text-align:left;font-family:var(--body);
+  padding:.32rem .8rem .32rem .9rem;white-space:nowrap;
+  border-right:1px solid var(--line2)}
+#raintable tbody tr:nth-child(even) th.place,
+#raintable tbody tr:nth-child(even) td.dry,
+#raintable tbody tr:nth-child(even) td.nodata{background:var(--card2)}
+#raintable .pname{display:block;font-weight:500;font-size:.85rem;line-height:1.3}
+#raintable .pdist{display:block;font-family:var(--mono);font-size:.68rem;color:var(--faint);line-height:1.3}
+#raintable tbody td{
+  text-align:center;padding:.32rem .2rem;min-width:2.4rem;
+  font-variant-numeric:tabular-nums}
+#raintable td.wet{font-weight:600;border-radius:2px}
+#raintable td.dry{color:var(--faint)}
+#raintable .empty-cell{padding:var(--s5);color:var(--muted);text-align:left;font-size:.85rem}
+#raintable .empty-cell button{background:var(--card);color:var(--text);
+  border:1px solid var(--line2);border-radius:var(--r-s);padding:.55rem .8rem;cursor:pointer;
+  font-family:var(--mono);font-size:.85rem;min-height:2.75rem}
+.tablefoot{display:flex;align-items:center;gap:var(--s3);padding:var(--s3) var(--s4)}
+.dbscale{flex:1;display:flex;height:.6rem;border-radius:3px;overflow:hidden;min-width:8rem}
+.dbscale i{flex:1}
+.scalelabels{display:flex;gap:.6rem;color:var(--faint);font-size:.7rem}
+.summary{margin:0 0 0 auto;color:var(--muted);font-size:.78rem}
+.flabel{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.controlbar input[type="search"]{background:var(--bg);color:var(--text);
+  border:1px solid var(--line2);border-radius:var(--r-s);
+  padding:.55rem .7rem;font-family:var(--mono);font-size:.82rem;
+  min-height:2.75rem;width:11rem;max-width:40vw}
+@media (max-width:720px){
+  #raintable{font-size:.72rem}
+  #raintable tbody th.place{padding:.3rem .6rem}
+  .tablefoot{padding:var(--s2)}
+}
 
 footer{border-top:1px solid var(--line);padding:var(--s4) var(--s5);color:var(--muted);width:100%;box-sizing:border-box}
 .about{width:100%;max-width:none;font-size:.85rem;line-height:1.6}
@@ -161,8 +213,10 @@ dialog::backdrop{background:rgb(0 0 0 / 44%)}
   .brand-name{font-size:1.15rem}
   .scope-mark{display:none}
   .live{font-size:.72rem;padding:.35rem .6rem;min-width:0;flex:1}
-  .theme-slot{display:inline-flex;margin-inline-start:auto}
+  .theme-slot{display:inline-flex;margin-inline-start:auto;gap:.5rem;align-items:center}
   .theme-slot #themeBtn{padding:.4rem .6rem;font-size:.85rem}
+  .theme-slot .navlink{padding:.4rem .55rem}
+  .theme-slot .navlink span{display:none}
   .about{width:100%;max-width:none}
 }
 @media (prefers-reduced-motion:reduce){

@@ -70,13 +70,15 @@ async function load() {
     if (saved === "light" && document.documentElement.dataset.theme === "dark") $("themeBtn").click();
   } catch {}
 
-  // Mobile keeps the titlebar to title + date: relocate the theme toggle
-  // next to the day stepper instead.
+  // Mobile keeps the titlebar to title + date: relocate the page links and
+  // theme toggle next to the day stepper instead.
   const narrow = matchMedia("(max-width: 720px)");
   const placeTheme = () => {
-    const btn = $("themeBtn"), slot = $("themeSlot");
-    if (narrow.matches) slot.append(btn);
-    else document.querySelector(".top-actions").append(btn);
+    const btn = $("themeBtn"), slot = $("themeSlot"),
+      links = document.querySelector(".pagelinks"),
+      bar = document.querySelector(".top-actions");
+    if (narrow.matches) { slot.append(links, btn); }
+    else { bar.prepend(links); bar.append(btn); }
   };
   narrow.addEventListener?.("change", placeTheme);
   placeTheme();

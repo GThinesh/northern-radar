@@ -4,6 +4,13 @@ __pycache__/
 .venv/
 venv/
 
+# SQLite working DB: rebuildable cache via `kkl_db.py backfill`,
+# persisted in CI via actions/cache — never commit (binary, hourly churn).
+data/kkl.db
+data/kkl.db-wal
+data/kkl.db-shm
+data/kkl.db-journal
+
 # OS
 .DS_Store
 

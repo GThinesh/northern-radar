@@ -3,16 +3,16 @@
 
 Downloads https://mausam.imd.gov.in/Radar/animation/Converted/KKL_MAXZ.gif
 (full ~3h animated GIF), extracts unique frames to frames/HHMMSS_NNN.png,
-rebuilds per-day summary (daily.gif + strip.png), updates docs/data/index.json.
+updates docs/data/index.json.
 
 Raw snapshots are NOT kept: the downloaded GIF is decoded in memory and
-only per-snapshot _last.png + extracted frames are committed.
+only extracted frames + frames.json are committed. No daily.gif, strip.png
+or per-snapshot _last.png are generated (legacy files may still exist on
+disk for old days and are served if present).
 
 Layout (all under docs/ so GitHub Pages can serve it):
-  docs/archive/YYYY-MM-DD/HHMM-UTC_HHMM-IST_last.png
   docs/archive/YYYY-MM-DD/frames/HHMMSS_NNN.png
-  docs/archive/YYYY-MM-DD/daily.gif
-  docs/archive/YYYY-MM-DD/strip.png
+  docs/archive/YYYY-MM-DD/frames.json
   docs/data/index.json
 
 Usage:
@@ -77,16 +77,6 @@ def download(retries: int = 3) -> bytes:
 
 def sha_short(b: bytes) -> str:
     return hashlib.sha256(b).hexdigest()[:12]
-
-
-def extract_last_frame(gif_bytes: bytes) -> Image.Image:
-    im = Image.open(io.BytesIO(gif_bytes))
-    try:
-        n = getattr(im, "n_frames", 1)
-        im.seek(n - 1)
-    except EOFError:
-        im.seek(0)
-    return im.convert("RGB")
 
 
 def frame_count(gif_bytes: bytes) -> int:
@@ -287,11 +277,9 @@ def clamp_frame_utc(dt: datetime.datetime,
 OCR_CACHE_V = 3
 OCR_TS_FMT = "%Y-%m-%d %H:%M:%SZ"
 
-# Strip overview: most recent per-snapshot JPGs only, so hourly snapshots
-# don't grow it unbounded (24+/day). Older frames remain in frames/.
-STRIP_MAX = 8
-
 # Raw snapshot filename: HHMM-UTC_HHMM-IST (e.g. 0704-UTC_1234-IST).
+# Legacy _last.png files already on disk are still indexed; no new ones
+# are written.
 SNAP_NAME_RE = re.compile(r"(\d{4})-UTC_(\d{4})-IST")
 
 
@@ -454,11 +442,12 @@ def _rebuild_artifacts(day_dir: Path,
                        blob_shas: list[str],
                        decoded_total: int,
                        dupes: int) -> dict:
-    """Sort entries, rebuild slots/daily.gif/strip.png, rewrite manifest.
+    """Sort entries, rebuild slots, rewrite manifest (frames-only).
 
     All times are IST (`t_ist`); `t_utc` is only the sort key (same order).
     Every list written here is chronological so the gallery never shows
-    e.g. 22:xx after 06:xx within one IST day.
+    e.g. 22:xx after 06:xx within one IST day. No daily.gif / strip.png /
+    _last.png are generated; legacy files already on disk are left alone.
     """
     entries.sort(key=lambda e: (e.get("t_utc", ""), e.get("img", "")))
     slots: dict[str, dict] = {}
@@ -474,55 +463,6 @@ def _rebuild_artifacts(day_dir: Path,
     info: dict = {"snapshots": len(blob_shas), "decoded_total": decoded_total,
                   "unique_frames": len(entries), "dupes_dropped": dupes,
                   "daily_gif": None, "strip": None}
-    ordered: list[Image.Image] = []
-    for e in entries:
-        try:
-            ordered.append(Image.open(day_dir / e["img"]).convert("RGB"))
-        except (OSError, KeyError):
-            continue
-    if ordered:
-        daily_path = day_dir / "daily.gif"
-        ordered[0].save(daily_path, save_all=True, append_images=ordered[1:],
-                        duration=600, loop=0, optimize=True)
-        info["daily_gif"] = daily_path.name
-    lasts = sorted([*day_dir.glob("*_last.jpg"), *day_dir.glob("*_last.png")],
-                   key=lambda p: snapshot_utc_time(p, _day_date(day_dir)))
-    # Cap the strip at the most recent snapshots (see STRIP_MAX); older
-    # frames remain available in frames/.
-    lasts = lasts[-STRIP_MAX:]
-    thumbs: list[Image.Image] = []
-    for p in lasts:
-        try:
-            thumbs.append(Image.open(p).convert("RGB"))
-        except OSError:
-            continue
-    if not thumbs:
-        # No per-snapshot JPGs: sample saved frames instead.
-        for e in entries[:: max(1, len(entries) // 8)][:8]:
-            try:
-                thumbs.append(Image.open(day_dir / e["img"]).convert("RGB"))
-            except (OSError, KeyError):
-                continue
-    if thumbs:
-        from PIL import ImageOps
-        cols = 4 if len(thumbs) > 4 else len(thumbs)
-        rows = (len(thumbs) + cols - 1) // cols
-        tw, th = 320, 240
-        strip = Image.new("RGB", (cols * tw, rows * th), "white")
-        for i, t in enumerate(thumbs):
-            # Aspect-preserving fit into the cell; never stretch mixed sizes.
-            cell = ImageOps.fit(t, (tw, th), method=Image.BILINEAR)
-            strip.paste(cell, ((i % cols) * tw, (i // cols) * th))
-        strip_path = day_dir / "strip.png"
-        strip.save(strip_path, optimize=True)
-        info["strip"] = strip_path.name
-        # Drop the legacy lossy overview now that PNG replaces it.
-        legacy_strip = day_dir / "strip.jpg"
-        if legacy_strip != strip_path and legacy_strip.exists():
-            try:
-                legacy_strip.unlink()
-            except OSError:
-                pass
     slot_list = [slots[k] for k in sorted(slots)]
     # Persist OCR times only for frames saved in this day. Writing back the
     # merged prev-day cache would accumulate one extra stale day per rebuild.
@@ -567,15 +507,14 @@ def ingest_day(day_dir: Path, blob: bytes,
                snap_utc: datetime.datetime, stamp: str) -> dict:
     """Decode one downloaded GIF and merge its frames by each frame's IST day.
 
-    Raw GIF bytes are never written to disk: only frames/*.png,
-    {stamp}_last.png, daily.gif, strip.png and frames.json are kept.
+    Raw GIF bytes are never written to disk: only frames/*.png and
+    frames.json are kept. No _last.png / daily.gif / strip.png are written.
     Dedupes via masked hashes (in-GIF filler, 3h-window overlap across
     snapshots, prev-day tail) and via blob sha (identical re-downloads).
 
-    The snapshot JPG stays in the snapshot's IST day (`day_dir`), but every
-    radar frame is filed under its own clock-derived IST date — so 22:xx IST
-    frames from a post-midnight snapshot land on the previous IST day instead
-    of leaking into the next day's gallery.
+    Every radar frame is filed under its own clock-derived IST date — so
+    22:xx IST frames from a post-midnight snapshot land on the previous IST
+    day instead of leaking into the next day's gallery.
     """
     snap_dir = day_dir
     snap_dir.mkdir(parents=True, exist_ok=True)
@@ -663,11 +602,6 @@ def ingest_day(day_dir: Path, blob: bytes,
                             "estimated": p["estimated"]})
         new_total += len(st.get("pending", []))
 
-    try:
-        extract_last_frame(blob).save(snap_dir / f"{stamp}_last.png", optimize=True)
-    except Exception as exc:  # noqa: BLE001
-        print(f"last-frame save failed: {exc}", file=sys.stderr)
-
     info: dict = {"new_frames": 0, "days": []}
     for key in touched:
         st = states[key]
@@ -690,11 +624,11 @@ def ingest_day(day_dir: Path, blob: bytes,
 
 
 def build_daily(day_dir: Path) -> dict:
-    """Rebuild a day's artifacts from committed files (no raw GIFs).
+    """Rebuild a day's manifest from committed files (no raw GIFs).
 
-    Regenerates daily.gif, strip.png, slots and frames.json from the
-    frames/*.png (or legacy *.jpg) + *_last.png (or legacy *_last.jpg)
-    the fetch path uses ingest_day() instead.
+    Regenerates slots and frames.json from frames/*.png; legacy
+    daily.gif / strip.png / *_last.png already on disk are left alone.
+    The fetch path uses ingest_day() instead.
     """
     m = _load_manifest(day_dir)
     entries = [e for e in m.get("frames", []) if isinstance(e, dict)
@@ -830,7 +764,6 @@ def main() -> int:
         out = Path("/tmp/opencode/kkl_test")
         out.mkdir(parents=True, exist_ok=True)
         (out / f"{stamp}.gif").write_bytes(blob)
-        extract_last_frame(blob).save(out / f"{stamp}_last.png", optimize=True)
         print(f"TEST OK -> {out}")
         return 0
 

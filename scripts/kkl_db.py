@@ -13,7 +13,9 @@ Usage:
   python scripts/kkl_db.py init [--db data/kkl.db]
   python scripts/kkl_db.py ingest --src docs/archive/.../HHMMSS_NNN.png \
       --frame-utc "2026-09-14 16:34:02Z" --frame-ist "2026-09-14 22:04 IST"
-  python scripts/kkl_db.py backfill   # every PNG in docs/archive (idempotent)
+   python scripts/kkl_db.py backfill   # every PNG in docs/archive (idempotent)
+   python scripts/kkl_db.py fill-missing  # readings for places added
+                                          # after their frames (idempotent)
   python scripts/kkl_db.py hourly     # rebuild hourly_rain from readings
   python scripts/kkl_db.py export     # data/latest.csv + data/timeseries.csv
                                        # + data/frames.csv + docs/data/rain.json
@@ -557,6 +559,156 @@ def backfill(db: Path, window_px: int = 5) -> int:
     return new
 
 
+def _resolve_src(src: str) -> tuple[Path, bool]:
+    """Usable image path for a frame src; falls back to git history.
+
+    Legacy `*_last.png` snapshots were deleted from HEAD (frames-only
+    archive) but their blobs survive in history — recoverable via
+    `git log --diff-filter=A`. Returns (path, is_temp); callers must
+    unlink temp paths. Raises FileNotFoundError when unresolvable
+    (shallow clone, git missing, path never committed).
+    """
+    import subprocess
+    import tempfile
+    p = Path(src)
+    if not p.is_absolute():
+        p = ROOT / p
+    if p.is_file():
+        return p, False
+    rel = str(p.relative_to(ROOT)) if p.is_absolute() else src
+    try:
+        r = subprocess.run(
+            ["git", "log", "--all", "--format=%H", "--diff-filter=A", "--", rel],
+            cwd=ROOT, capture_output=True, text=True, timeout=60)
+        revs = r.stdout.split()
+        if r.returncode == 0 and revs:
+            show = subprocess.run(
+                ["git", "show", f"{revs[0]}:{rel}"],
+                cwd=ROOT, capture_output=True, timeout=120)
+            if show.returncode == 0 and show.stdout[:6] in (b"GIF87a", b"GIF89a",
+                    b"\x89PNG\r\n"):
+                tmp = tempfile.NamedTemporaryFile(
+                    suffix=Path(rel).suffix or ".png", delete=False)
+                tmp.write(show.stdout)
+                tmp.close()
+                return Path(tmp.name), True
+    except (OSError, ValueError, subprocess.SubprocessError):
+        pass
+    raise FileNotFoundError(f"src gone and not in git history: {src}")
+
+
+def fill_missing(db: Path, window_px: int = 5,
+                 limit: int | None = None) -> int:
+    """Insert readings for (frame, place) pairs missing from readings.
+
+    Covers places added after their frames were ingested (and any other
+    gap): old frames get proper readings for new places instead of
+    rendering as implied-dry. Reuses each frame's stored center/km_per_px
+    (no recalibration, so geometry matches the original ingest);
+    echo-free frames skip image work entirely. Idempotent: pairs already
+    present are never touched.
+    """
+    import numpy as np
+    con = connect(db)
+    migrate(con)
+    q = ("SELECT f.frame_id FROM frames f WHERE EXISTS "
+         "(SELECT 1 FROM places p LEFT JOIN readings r "
+         "ON r.frame_id = f.frame_id AND r.place_id = p.place_id "
+         "WHERE r.reading_id IS NULL) ORDER BY f.frame_utc")
+    if limit is not None:
+        q += f" LIMIT {int(limit)}"
+    frame_ids = [r[0] for r in con.execute(q)]
+    if not frame_ids:
+        print("fill-missing: no gaps")
+        con.close()
+        return 0
+    h = window_px // 2
+    done = 0
+    for fid in frame_ids:
+        fr = con.execute(
+            "SELECT frame_utc, src_path, center_px_x, center_px_y, km_per_px, "
+            "echo_pixels FROM frames WHERE frame_id = ?", (fid,)).fetchone()
+        miss = con.execute(
+            "SELECT p.place_id, p.lat, p.lon FROM places p "
+            "LEFT JOIN readings r ON r.frame_id = ? AND r.place_id = p.place_id "
+            "WHERE r.reading_id IS NULL", (fid,)).fetchall()
+        if not miss:
+            continue
+        frame_utc, src, cx, cy, km_per_px, echo_pixels = fr
+        R250 = 250.0 / km_per_px
+        if echo_pixels is not None and not echo_pixels:
+            # Echo-free frame: dry rows without touching the image.
+            for pid, lat, lon in miss:
+                ek, nk = latlon_to_km(lat, lon, RADAR_LAT, RADAR_LON)
+                dist_km = math.hypot(ek, nk)
+                px, py = cx + ek / km_per_px, cy - nk / km_per_px
+                in_range = math.hypot(px - cx, py - cy) <= R250 + 2
+                con.execute(
+                    "INSERT OR IGNORE INTO readings (frame_id, place_id, dist_km, "
+                    "max_dbz, cover_pct, nearest_echo_km, category, window_px) "
+                    "VALUES (?,?,?,?,?,?,?,?)",
+                    (fid, pid, round(dist_km, 1), None, 0.0, 999.9,
+                     category_of(None, in_range), window_px))
+                done += 1
+            con.commit()
+            continue
+        src_path = Path(src)
+        if not src_path.is_absolute():
+            src_path = ROOT / src_path
+        try:
+            src_path, is_temp = _resolve_src(str(src_path))
+        except FileNotFoundError:
+            print(f"fill-missing: {frame_utc}: src gone ({src}), skipping")
+            continue
+        try:
+            im = Image.open(src_path).convert("RGB")
+            echo, dbz_arr, lut, _ = segment(im, cx, cy, km_per_px)
+        finally:
+            if is_temp:
+                try:
+                    src_path.unlink()
+                except OSError:
+                    pass
+        ph, pw = echo.shape
+        YY, XX = np.mgrid[0:ph, 0:pw]
+        dx_km = (XX - cx) * km_per_px
+        dy_km = (cy - YY) * km_per_px
+        rho = np.sqrt(dx_km ** 2 + dy_km ** 2)
+        ang = rho / R_EARTH
+        la0 = math.radians(RADAR_LAT)
+        LAT = np.degrees(np.arcsin(np.cos(ang) * math.sin(la0)
+                                   + np.where(rho == 0, 0,
+                                              dy_km * np.sin(ang) * math.cos(la0) / rho)))
+        LON = np.degrees(math.radians(RADAR_LON) + np.arctan2(
+            dx_km * np.sin(ang),
+            rho * math.cos(la0) * np.cos(ang) - dy_km * math.sin(la0) * np.sin(ang)))
+        eys, exs = np.where(echo)
+        for pid, lat, lon in miss:
+            ek, nk = latlon_to_km(lat, lon, RADAR_LAT, RADAR_LON)
+            dist_km = math.hypot(ek, nk)
+            px, py = cx + ek / km_per_px, cy - nk / km_per_px
+            in_range = math.hypot(px - cx, py - cy) <= R250 + 2
+            in_panel = 0 <= int(round(px)) < pw and 0 <= int(round(py)) < ph
+            max_dbz, cover = None, 0.0
+            if in_range and in_panel:
+                max_dbz, cover = ov_win(echo, dbz_arr,
+                                        int(round(px)), int(round(py)), h)
+            drow = np.hypot((LAT[eys, exs] - lat) * 111.0,
+                            (LON[eys, exs] - lon) * 111.0 * math.cos(math.radians(lat)))
+            nearest = round(float(drow.min()), 1) if drow.size else 999.9
+            con.execute(
+                "INSERT OR IGNORE INTO readings (frame_id, place_id, dist_km, "
+                "max_dbz, cover_pct, nearest_echo_km, category, window_px) "
+                "VALUES (?,?,?,?,?,?,?,?)",
+                (fid, pid, round(dist_km, 1), max_dbz, round(cover * 100, 1),
+                 nearest, category_of(max_dbz, in_range), window_px))
+            done += 1
+        con.commit()
+    con.close()
+    print(f"fill-missing: {done} readings filled across {len(frame_ids)} frames")
+    return done
+
+
 def rebuild_hourly(db: Path) -> int:
     """Rebuild hourly_rain from readings (idempotent full refresh).
 
@@ -742,6 +894,9 @@ def main() -> int:
     p.add_argument("--window", type=int, default=5)
     p = sub.add_parser("backfill")
     p.add_argument("--window", type=int, default=5)
+    p = sub.add_parser("fill-missing")
+    p.add_argument("--window", type=int, default=5)
+    p.add_argument("--limit", type=int, default=None)
     sub.add_parser("hourly")
     sub.add_parser("export")
     sub.add_parser("rainjson")
@@ -756,6 +911,8 @@ def main() -> int:
         ingest(args.db, args.src, args.frame_utc, args.frame_ist, args.window)
     elif args.cmd == "backfill":
         backfill(args.db, args.window)
+    elif args.cmd == "fill-missing":
+        fill_missing(args.db, args.window, args.limit)
     elif args.cmd == "hourly":
         rebuild_hourly(args.db)
     elif args.cmd == "export":

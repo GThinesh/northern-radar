@@ -15,7 +15,7 @@ concurrency:
 jobs:
   archive:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v5
         with:
@@ -56,6 +56,11 @@ jobs:
           # place_id stays stable).
           python scripts/kkl_db.py init
           python scripts/kkl_db.py backfill
+          # Fill readings for places added after their frames were ingested
+          # (idempotent; no-op when nothing is missing). Needs full history
+          # (fetch-depth: 0 above): legacy _last.png sources deleted from
+          # HEAD are recovered from git blobs.
+          python scripts/kkl_db.py fill-missing
           python scripts/kkl_db.py export
 
       - name: Commit + push

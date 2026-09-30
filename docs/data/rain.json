@@ -1,7 +1,7 @@
 {
  "radar": "KKL_MAXZ (Karaikal)",
  "source": "https://mausam.imd.gov.in/Radar/animation/Converted/KKL_MAXZ.gif",
- "updated_ist": "2026-09-30 23:23 IST",
+ "updated_ist": "2026-09-30 23:58 IST",
  "hours": [
   0,
   1,
@@ -536,10 +536,10 @@
     true,
     true,
     true,
-    false,
-    false
+    true,
+    true
    ],
-   "n_frames_hours": 22,
+   "n_frames_hours": 24,
    "frames": [
     {
      "utc": "2026-09-29 18:32:23Z",
@@ -930,6 +930,51 @@
      "utc": "2026-09-30 15:42:22Z",
      "min": 1272.37,
      "t": "21:12"
+    },
+    {
+     "utc": "2026-09-30 15:52:23Z",
+     "min": 1282.38,
+     "t": "21:22"
+    },
+    {
+     "utc": "2026-09-30 16:02:24Z",
+     "min": 1292.4,
+     "t": "21:32"
+    },
+    {
+     "utc": "2026-09-30 16:12:23Z",
+     "min": 1302.38,
+     "t": "21:42"
+    },
+    {
+     "utc": "2026-09-30 16:22:22Z",
+     "min": 1312.37,
+     "t": "21:52"
+    },
+    {
+     "utc": "2026-09-30 16:32:22Z",
+     "min": 1322.37,
+     "t": "22:02"
+    },
+    {
+     "utc": "2026-09-30 16:42:22Z",
+     "min": 1332.37,
+     "t": "22:12"
+    },
+    {
+     "utc": "2026-09-30 17:02:22Z",
+     "min": 1352.37,
+     "t": "22:32"
+    },
+    {
+     "utc": "2026-09-30 17:22:22Z",
+     "min": 1372.37,
+     "t": "22:52"
+    },
+    {
+     "utc": "2026-09-30 17:32:23Z",
+     "min": 1382.38,
+     "t": "23:02"
     }
    ],
    "rows": [
@@ -1047,8 +1092,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": 46.7,
      "spec": [
@@ -1180,8 +1233,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": 44.0,
      "spec": [
@@ -1321,8 +1382,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": 33.3,
      "spec": [
@@ -1462,8 +1531,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": 33.3,
      "spec": [
@@ -1599,8 +1676,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": 30.7,
      "spec": [
@@ -1732,8 +1817,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": 28.0,
      "spec": [
@@ -1865,12 +1958,20 @@
        "cat": "light (20-30 dBZ)"
       },
       {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
        "dbz": null,
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": 28.0,
      "spec": [
@@ -1881,6 +1982,10 @@
       [
        73,
        28.0
+      ],
+      [
+       80,
+       20.0
       ]
      ]
     },
@@ -1998,8 +2103,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": 20.0,
      "spec": [
@@ -2123,8 +2236,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": 20.0,
      "spec": [
@@ -2248,8 +2369,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": 20.0,
      "spec": [
@@ -2377,8 +2506,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": 20.0,
      "spec": [
@@ -2502,8 +2639,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": 20.0,
      "spec": [
@@ -2627,8 +2772,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": 20.0,
      "spec": [
@@ -2752,8 +2905,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": 20.0,
      "spec": [
@@ -2877,8 +3038,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -2997,8 +3166,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -3117,8 +3294,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -3237,8 +3422,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -3357,8 +3550,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -3477,8 +3678,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -3597,8 +3806,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -3717,8 +3934,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -3837,8 +4062,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -3957,8 +4190,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -4077,8 +4318,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -4197,8 +4446,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -4317,8 +4574,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -4437,8 +4702,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -4557,8 +4830,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -4677,8 +4958,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -4797,8 +5086,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -4917,8 +5214,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -5037,8 +5342,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -5157,8 +5470,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -5277,8 +5598,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -5397,8 +5726,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -5517,8 +5854,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -5637,8 +5982,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -5757,8 +6110,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -5877,8 +6238,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -5997,8 +6366,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -6117,8 +6494,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -6237,8 +6622,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -6357,8 +6750,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -6477,8 +6878,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -6597,8 +7006,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -6717,8 +7134,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -6837,8 +7262,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -6957,8 +7390,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -7077,8 +7518,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -7197,8 +7646,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -7317,8 +7774,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -7437,8 +7902,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -7557,8 +8030,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -7677,8 +8158,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -7797,8 +8286,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -7917,8 +8414,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -8037,8 +8542,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -8157,8 +8670,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -8277,8 +8798,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -8397,8 +8926,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -8517,8 +9054,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -8637,8 +9182,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -8757,8 +9310,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -8877,8 +9438,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -8997,8 +9566,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -9117,8 +9694,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []
@@ -9237,8 +9822,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      }
      ],
      "max": null,
      "spec": []

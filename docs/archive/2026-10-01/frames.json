@@ -5,7 +5,11 @@
   "48d8f61f4dfdde50",
   "de69fd8dc89fa992",
   "5d5eb55818fdc37c",
-  "6734ed84fd26acc7"
+  "6734ed84fd26acc7",
+  "ec8404a745f6aa4f",
+  "2207c95ce8c05274",
+  "bf1250089e2e3581",
+  "d07a446a7105a2d8"
  ],
  "frames": [
   {
@@ -55,6 +59,38 @@
    "img": "frames/011223_005.png",
    "slot": "01:00",
    "estimated": false
+  },
+  {
+   "h": "ec8404a745f6aa4f",
+   "t_utc": "2026-09-30 19:52:23Z",
+   "t_ist": "2026-10-01 01:22 IST",
+   "img": "frames/012223_006.png",
+   "slot": "01:00",
+   "estimated": false
+  },
+  {
+   "h": "2207c95ce8c05274",
+   "t_utc": "2026-09-30 20:02:23Z",
+   "t_ist": "2026-10-01 01:32 IST",
+   "img": "frames/013223_007.png",
+   "slot": "01:30",
+   "estimated": false
+  },
+  {
+   "h": "bf1250089e2e3581",
+   "t_utc": "2026-09-30 20:22:22Z",
+   "t_ist": "2026-10-01 01:52 IST",
+   "img": "frames/015222_008.png",
+   "slot": "01:30",
+   "estimated": false
+  },
+  {
+   "h": "d07a446a7105a2d8",
+   "t_utc": "2026-09-30 20:32:23Z",
+   "t_ist": "2026-10-01 02:02 IST",
+   "img": "frames/020223_009.png",
+   "slot": "02:00",
+   "estimated": false
   }
  ],
  "slots": [
@@ -75,17 +111,30 @@
    "time": "01:02",
    "img": "frames/010223_004.png",
    "estimated": false
+  },
+  {
+   "slot": "01:30",
+   "time": "01:32",
+   "img": "frames/013223_007.png",
+   "estimated": false
+  },
+  {
+   "slot": "02:00",
+   "time": "02:02",
+   "img": "frames/020223_009.png",
+   "estimated": false
   }
  ],
  "stats": {
-  "snapshots": 2,
-  "decoded_total": 37,
-  "unique_frames": 6,
-  "dupes_dropped": 11
+  "snapshots": 3,
+  "decoded_total": 55,
+  "unique_frames": 10,
+  "dupes_dropped": 21
  },
  "blob_shas": [
   "29cfb2821c9982db202606c91eec83d00f2e2d9661250b5f23d61123822d77b0",
-  "5e5891561552132bb2312c39d41b55f79b0cc94945ebeb17eaefacb84328f0d2"
+  "5e5891561552132bb2312c39d41b55f79b0cc94945ebeb17eaefacb84328f0d2",
+  "7f391b1074173ab6167cac861da0bfe7dee519e9dd25f9674cbd00d8da9b7eb7"
  ],
  "ocr_v": 3,
  "ocr": {
@@ -106,6 +155,18 @@
   },
   "6734ed84fd26acc7": {
    "t_utc": "2026-09-30 19:42:23Z"
+  },
+  "ec8404a745f6aa4f": {
+   "t_utc": "2026-09-30 19:52:23Z"
+  },
+  "2207c95ce8c05274": {
+   "t_utc": "2026-09-30 20:02:23Z"
+  },
+  "bf1250089e2e3581": {
+   "t_utc": "2026-09-30 20:22:22Z"
+  },
+  "d07a446a7105a2d8": {
+   "t_utc": "2026-09-30 20:32:23Z"
   }
  }
 }

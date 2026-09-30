@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """KKL radar -> places -> SQLite pipeline.
 
-Reads an IMD Karaikal frame, maps dBZ onto every master place, stores the
-result in SQLite. One primary name per place; OSM spelling variants are only
-a match-time concern and are never stored.
+Reads an IMD Karaikal frame, maps dBZ onto every place in
+data/places.json (the single source of truth for locations), stores the
+result in SQLite. One primary name per place; OSM spelling variants are
+only a match-time concern and are never stored.
 
 Schema: places | frames | readings | hourly_rain
         (+ place_timeseries / latest_per_place / hourly_timeseries views)
@@ -36,8 +37,12 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_DB = ROOT / "data" / "kkl.db"
 ARCHIVE_DIR = ROOT / "docs" / "archive"
-MASTER_JSON = ROOT / "samples/kkl-jaffna/master_places.json"
-MASTER_DBZ = ROOT / "samples/kkl-jaffna/master_places_dbz.json"
+MASTER_JSON = ROOT / "data" / "places.json"
+# Legacy reference only (kept for history, never read at runtime):
+#   samples/kkl-jaffna/master_places.json + master_places_dbz.json
+# were merged into data/places.json. Add/update a place there and nothing
+# else needs to change; init upserts it into SQLite and backfill/export
+# refresh the rain table + CSVs.
 LAST_RE = re.compile(r"(\d{4})-UTC_(\d{4})-IST_last\.png$")
 
 RADAR_LAT, RADAR_LON = 10.9327, 79.8319
@@ -185,25 +190,50 @@ def init_db(db: Path) -> None:
     con = connect(db)
     con.executescript(SCHEMA)
     migrate(con)
-    master = json.loads(MASTER_JSON.read_text())
-    tamil = {r["place"]: r.get("name_ta", "") for r in json.loads(MASTER_DBZ.read_text())}
+    places = json.loads(MASTER_JSON.read_text())
+    # Support both the canonical list format and (transitional) the legacy
+    # dict format keyed by "Name, X District, ..." so an old checkout still
+    # seeds instead of crashing.
+    if isinstance(places, dict):
+        tamil: dict[str, str] = {}
+        try:
+            tamil = {r["place"]: r.get("name_ta", "") for r in
+                     json.loads((ROOT / "samples" / "kkl-jaffna" /
+                                 "master_places_dbz.json").read_text())}
+        except (OSError, ValueError):
+            pass
+        items = []
+        for key, v in places.items():
+            parts = key.split(",")
+            name = parts[0].strip()
+            if name.endswith("_dup"):
+                name = name[:-4]
+            district = parts[1].strip().replace(" District", "") if len(parts) > 1 else ""
+            items.append({"name_en": name, "district": district,
+                          "lat": v["lat"], "lon": v["lon"],
+                          "name_ta": tamil.get(name, ""),
+                          "place_type": (v.get("place") or "").split("/")[-1]})
+        places = items
     seen: set[str] = set()
     n = 0
-    for key, v in master.items():
-        parts = key.split(",")
-        name = parts[0].strip()
-        if name.endswith("_dup"):
-            name = name[:-4]
-        district = parts[1].strip().replace(" District", "") if len(parts) > 1 else ""
+    for p in places:
+        name, district = p["name_en"], p["district"]
         if (name, district) in seen:
-            continue  # master's accidental duplicate (Uduvil)
+            continue
         seen.add((name, district))
-        ptype = (v.get("place") or "").split("/")[-1]
+        # Upsert (not INSERT OR IGNORE): coordinate/name fixes in
+        # data/places.json must propagate to cached DBs (CI restores
+        # data/kkl.db via actions/cache), while place_id stays stable so
+        # existing readings keep their join.
         con.execute(
-            "INSERT OR IGNORE INTO places "
+            "INSERT INTO places "
             "(name_en, name_ta, district, place_type, lat, lon, coord_src) "
-            "VALUES (?,?,?,?,?,?, 'master')",
-            (name, tamil.get(name, ""), district, ptype, v["lat"], v["lon"]))
+            "VALUES (?,?,?,?,?,?, 'master') "
+            "ON CONFLICT(name_en, district) DO UPDATE SET "
+            "name_ta=excluded.name_ta, place_type=excluded.place_type, "
+            "lat=excluded.lat, lon=excluded.lon",
+            (name, p.get("name_ta", ""), district, p.get("place_type", ""),
+             p["lat"], p["lon"]))
         n += 1
     con.commit()
     print(f"init {db}: schema ready, {n} places")

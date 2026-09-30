@@ -18,6 +18,7 @@ Archives the IMD Karaikal radar loop, which IMD only keeps ~3h online, into a pe
   - rebuilds `docs/data/index.json` (`radar`, `source`, `updated_ist`, per-day `slots`/`frames`, sorted newest-first)
 - `docs/index.html` + `docs/app.js` + `docs/style.css` is the gallery: day stepper + `?date=YYYY-MM-DD` deep link, hero scope viewer, play (900 ms), scrub slider, filmstrip timeline, 24h coverage tick + needle, light/dark Scandinavian theme (persisted), keyboard (space / ←→ frame / shift+←→ day) + touch swipe, lightbox expand. Timeline runs on `frames`/`slots`.
 - `docs/bg-lab.html` is a prototype-only scope-background lab (10 ideas); nothing live changes until a winner is applied to `style.css`.
+- Rain table (`docs/rain.html` ← `docs/data/rain.json`): `scripts/kkl_db.py` maps dBZ onto every place in **`data/places.json` (single source of truth — add/fix a place there only)**, then `backfill` + `export` refresh `rain.json` + `data/*.csv`. `init` upserts so coordinate fixes propagate to cached DBs.
 - Retention: no pruning — every day keeps `frames/` + `frames.json` indefinitely.
 
 ## Layout (all under `docs/` so Pages can serve it)

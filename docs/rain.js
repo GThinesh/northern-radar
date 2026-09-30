@@ -1,7 +1,7 @@
 /* KKL rain table — places × IST hours from data/rain.json. No deps. */
 const $ = (id) => document.getElementById(id);
 
-const state = { rain: null, day: null, wetOnly: false, district: "all", q: "" };
+const state = { rain: null, day: null, wetOnly: false, district: "all", place: "all", q: "" };
 
 async function load() {
   const meta = $("meta");
@@ -51,6 +51,24 @@ async function load() {
     dist.value = q.get("district");
     state.district = dist.value;
   }
+
+  const psel = $("placeSel");
+  psel.innerHTML = "";
+  const allP = document.createElement("option");
+  allP.value = "all";
+  allP.textContent = "All places";
+  psel.appendChild(allP);
+  for (const p of [...rain.places].sort((a, b) => a.name_en.localeCompare(b.name_en))) {
+    const o = document.createElement("option");
+    o.value = p.name_en;
+    o.textContent = `${p.name_en} · ${p.district}`;
+    o.title = `${p.name_en}, ${p.district}`;
+    psel.appendChild(o);
+  }
+  if (q.get("place") && [...psel.options].some((o) => o.value === q.get("place"))) {
+    psel.value = q.get("place");
+    state.place = psel.value;
+  }
   if (q.get("q")) {
     state.q = q.get("q");
     $("q").value = state.q;
@@ -62,6 +80,7 @@ async function load() {
   $("nextDay").onclick = () => stepDay(-1);
   $("wetOnly").onchange = (e) => { state.wetOnly = e.target.checked; render(); };
   dist.onchange = () => { state.district = dist.value; render(); };
+  psel.onchange = () => { state.place = psel.value; render(); };
   $("q").oninput = (e) => { state.q = e.target.value.trim().toLowerCase(); render(); };
   $("themeBtn").onclick = toggleTheme;
   try {
@@ -159,6 +178,7 @@ function render() {
     const p = new URLSearchParams({ date: sel.value });
     if (state.wetOnly) p.set("wet", "1");
     if (state.district !== "all") p.set("district", state.district);
+    if (state.place !== "all") p.set("place", state.place);
     if (state.q) p.set("q", state.q);
     history.replaceState(null, "", `?${p}`);
   } catch {}
@@ -167,12 +187,13 @@ function render() {
   const needle = state.q;
   const rows = day.rows.filter((r) =>
     (state.district === "all" || r.district === state.district) &&
+    (state.place === "all" || r.place === state.place) &&
     (!state.wetOnly || r.max != null) &&
     (!needle || r.place.toLowerCase().includes(needle) ||
       r.district.toLowerCase().includes(needle)))
     .sort((a, b) => a.place.localeCompare(b.place));
   const wet = day.rows.filter((r) => r.max != null).length;
-  const filtered = state.wetOnly || state.district !== "all" || needle;
+  const filtered = state.wetOnly || state.district !== "all" || state.place !== "all" || needle;
   $("daySummary").textContent =
     `${wet} of ${day.rows.length} rained · ${day.n_frames_hours} of 24 hours` +
     (filtered ? ` · ${rows.length} shown` : "");
@@ -200,7 +221,7 @@ function render() {
     const td = document.createElement("td");
     td.colSpan = 25;
     td.className = "empty-cell";
-    td.textContent = (state.wetOnly || state.district !== "all" || state.q)
+    td.textContent = (state.wetOnly || state.district !== "all" || state.place !== "all" || state.q)
       ? "No places match this filter."
       : "No rain recorded this day.";
     tr.appendChild(td);

@@ -50,8 +50,10 @@ jobs:
           # refresh the CSVs + docs/data/rain.json the rain table reads.
           # (data/kkl.db itself is not committed: binary, regrows hourly,
           # fully rebuildable via backfill.)
-          # init is idempotent (CREATE TABLE IF NOT EXISTS + INSERT OR
-          # IGNORE) and seeds places from samples/kkl-jaffna/ on cold start.
+          # init is idempotent (schema + upsert) and syncs places from
+          # data/places.json — the single source of truth for locations —
+          # on cold start and on every run (coordinate fixes propagate;
+          # place_id stays stable).
           python scripts/kkl_db.py init
           python scripts/kkl_db.py backfill
           python scripts/kkl_db.py export

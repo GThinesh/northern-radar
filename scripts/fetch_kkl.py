@@ -277,6 +277,30 @@ def clamp_frame_utc(dt: datetime.datetime,
 OCR_CACHE_V = 3
 OCR_TS_FMT = "%Y-%m-%d %H:%M:%SZ"
 
+_OCR_AVAILABLE: bool | None = None
+
+
+def _ocr_available() -> bool:
+    """True when the Tesseract engine can actually run (cached).
+
+    Without the binary every frame is 'unreadable', which must not be
+    confused with a frozen/unreadable source (see _timestamp_decoded):
+    the no-engine case keeps the old snapshot-based estimates so the
+    archive still works where tesseract is not installed.
+    """
+    global _OCR_AVAILABLE
+    if _OCR_AVAILABLE is None:
+        try:
+            import pytesseract  # noqa: F401  type: ignore
+        except ImportError:
+            _OCR_AVAILABLE = False
+        else:
+            import os
+            import shutil
+            cmd = os.environ.get("TESSERACT_CMD", "tesseract")
+            _OCR_AVAILABLE = shutil.which(cmd) is not None
+    return _OCR_AVAILABLE
+
 # Raw snapshot filename: HHMM-UTC_HHMM-IST (e.g. 0704-UTC_1234-IST).
 # Legacy _last.png files already on disk are still indexed; no new ones
 # are written.
@@ -394,8 +418,17 @@ def _load_manifest(day_dir: Path) -> dict:
 def _timestamp_decoded(frames: list[tuple[str, Image.Image]],
                        ocr_cache: dict[str, datetime.datetime],
                        snap_utc: datetime.datetime,
-                       ) -> list[tuple[datetime.datetime, bool]]:
-    """Timestamp decoded unique frames: OCR cache, clock overlay, estimates."""
+                       ) -> list[tuple[datetime.datetime | None, bool]]:
+    """Timestamp decoded unique frames: OCR cache, clock overlay, estimates.
+
+    A None datetime means undatable: no clock anywhere in this GIF was
+    readable, so the frame must not be stored (callers drop it). This
+    happens only when the OCR engine ran and failed on every frame (a
+    frozen/unreadable source, e.g. radar down with IMD looping a stale
+    still); without the engine installed the old snapshot-based estimates
+    are kept so the archive still works (README: without tesseract all
+    frame times are estimated).
+    """
     # OCR clock reads a UTC time; the fallback date must be the UTC
     # calendar date (not the IST date) or overnight frames shift a day.
     fallback_date = snap_utc.date()
@@ -415,9 +448,16 @@ def _timestamp_decoded(frames: list[tuple[str, Image.Image]],
         ocr_times.append(dt)
     # Fill unreadable frames by interpolation between OCR anchors
     # in the same GIF (IMD cadence ~10min); last resort: snapshot time.
+    # But when NOTHING in the GIF was readable and OCR actually ran, the
+    # source is frozen/unreadable: fabricating times from the snapshot
+    # clock would file a stale repeat as a new reading (e.g. the 2026-09-24
+    # freeze, archived at a made-up 00:06 IST), so leave every frame
+    # undated and let the caller drop them instead.
     k = len(frames)
     known = {j: dt for j, dt in enumerate(ocr_times) if dt is not None}
-    times: list[tuple[datetime.datetime, bool]] = []
+    if not known and _ocr_available():
+        return [(None, True)] * k
+    times: list[tuple[datetime.datetime | None, bool]] = []
     for j in range(k):
         if j in known:
             times.append((known[j], False))
@@ -526,10 +566,17 @@ def ingest_day(day_dir: Path, blob: bytes,
     frames, n_decoded = iter_unique_frames(blob)
     timed = _timestamp_decoded(frames, ocr_cache, snap_utc)
 
+    # Undatable frames (no readable clock anywhere in the GIF) are never
+    # stored: no timestamps -> no images. They still count as decoded and
+    # dropped so day stats stay consistent (decoded = dupes + unique).
+    undated = sum(1 for t_utc, _ in timed if t_utc is None)
+
     # Group new frames by their own IST calendar date before touching disk.
     by_day: dict[str, list[dict]] = {}
     order: list[str] = []
     for (h, img), (t_utc, estimated) in zip(frames, timed):
+        if t_utc is None:
+            continue  # undated (see above)
         t_ist = t_utc.astimezone(IST)
         key = t_ist.strftime("%Y-%m-%d")
         if key not in by_day:
@@ -551,7 +598,7 @@ def ingest_day(day_dir: Path, blob: bytes,
     # Snapshot-day stats own the decode counters (one GIF == one download).
     snap_state = states[snap_dir.name]
     snap_state["decoded_total"] += n_decoded
-    snap_state["dupes"] += max(0, n_decoded - len(frames))
+    snap_state["dupes"] += max(0, n_decoded - len(frames)) + undated
 
     seen: set[str] = set()
     for key in touched:

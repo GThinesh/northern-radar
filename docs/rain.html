@@ -49,6 +49,15 @@
       <span id="themeSlot" class="theme-slot"></span>
     </div>
     <div class="cb-group">
+      <span class="flabel" id="resLabel">Detail</span>
+      <div class="seg" role="radiogroup" aria-labelledby="resLabel" id="resSeg">
+        <button type="button" role="radio" aria-checked="false" data-res="240" title="4-hour spectrum columns">4H</button>
+        <button type="button" role="radio" aria-checked="true" data-res="60" title="1-hour spectrum columns">1H</button>
+        <button type="button" role="radio" aria-checked="false" data-res="30" title="30-minute spectrum columns">30M</button>
+        <button type="button" role="radio" aria-checked="false" data-res="15" title="15-minute spectrum columns">15M</button>
+      </div>
+    </div>
+    <div class="cb-group">
       <label class="switch"><input type="checkbox" id="wetOnly"> Rained only</label>
     </div>
     <div class="cb-group">
@@ -69,7 +78,7 @@
   <section class="card tablecard" aria-label="Hourly rain">
     <div class="tablewrap" id="tablewrap">
       <table id="raintable">
-        <caption class="vh">Hourly maximum radar echo per place, IST</caption>
+        <caption class="vh">Radar echo spectrum per place, IST</caption>
         <thead><tr id="rainHead"></tr></thead>
         <tbody id="rainBody"></tbody>
       </table>
@@ -83,7 +92,7 @@
 
 <footer>
   <div class="about">
-    <p>Hourly maximum radar echo per place, derived from the Karaikal radar frames. Cell color follows the radar legend; the number is the hour's peak dBZ. A dash means frames exist but show no echo; a blank cell means no frame covered that hour. Times in IST.</p>
+    <p>Hourly maximum radar echo per place, derived from the Karaikal radar frames. Each column is a time spectrum, not an average: within a 4H, 1H, 30M or 15M column every radar frame paints its own slice in legend color, so a brief 10:00–10:15 shower shows as a narrow colored band. White means frames exist but show no echo; a blank cell means no frame covered that time. Times in IST.</p>
   </div>
   <small><a href="index.html">Radar gallery</a> · <a href="https://mausam.imd.gov.in/Radar/animation/Converted/KKL_MAXZ.gif">IMD</a> · hourly · IST</small>
 </footer>

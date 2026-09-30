@@ -102,6 +102,13 @@ select{background:var(--bg);color:var(--text);border:1px solid var(--line2);bord
 .toggles{grid-auto-flow:column;gap:var(--s4);align-items:center}
 .switch{display:flex;gap:.5rem;align-items:center;cursor:pointer;font-family:var(--mono);font-size:.8rem;color:var(--muted)}
 .switch input{accent-color:var(--signal);width:1.1rem;height:1.1rem}
+/* resolution segmented control: 4H / 1H / 30M / 15M spectrum buckets */
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:999px;overflow:hidden}
+.seg button{background:transparent;color:var(--muted);border:0;border-right:1px solid var(--line);
+  font-family:var(--mono);font-size:.78rem;padding:.55rem .8rem;min-height:2.75rem;cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button:hover{background:var(--fill-hover);color:var(--text)}
+.seg button.on{background:var(--text);color:var(--bg);font-weight:600}
 .stats{display:grid;grid-template-columns:repeat(3,auto);gap:var(--s4);margin:0;margin-inline-start:auto}
 .stats div{display:grid;gap:0}
 .stats dt{font-family:var(--mono);font-size:.72rem;color:var(--faint)}
@@ -171,6 +178,15 @@ input[type="range"]{accent-color:var(--signal);width:100%;height:2rem}
   text-align:center;padding:.32rem .2rem;min-width:2.4rem;
   font-variant-numeric:tabular-nums}
 #raintable td.wet{font-weight:600;border-radius:2px}
+/* spectrum cell: time-proportional gradient (wet = legend color,
+   dry = pure white in both themes). Inset ring keeps white gradients
+   readable on a white page; numbers are gone (tooltip carries values). */
+#raintable td.spec{padding:0;height:1.75rem;min-width:2.4rem;
+  box-shadow:inset 0 0 0 1px rgb(127 127 127 / 30%)}
+#raintable[data-res="240"] td.spec{min-width:5rem;height:2rem}
+#raintable[data-res="30"] td.spec{min-width:1.6rem}
+#raintable[data-res="15"] td.spec{min-width:1.1rem}
+#raintable[data-res="15"] thead th{padding:.5rem .15rem}
 #raintable td.dry{color:var(--faint)}
 #raintable .empty-cell{padding:var(--s5);color:var(--muted);text-align:left;font-size:.85rem}
 #raintable .empty-cell button{background:var(--card);color:var(--text);

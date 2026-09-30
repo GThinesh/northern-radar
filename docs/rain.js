@@ -1,7 +1,17 @@
-/* KKL rain table — places × IST hours from data/rain.json. No deps. */
+/* KKL rain table — places × IST spectrum columns from data/rain.json.
+   Each column is a time spectrum, not an average: every radar frame in
+   the bucket paints its own slice (wet = radar-legend color, dry =
+   white). No deps. */
 const $ = (id) => document.getElementById(id);
 
-const state = { rain: null, day: null, wetOnly: false, district: "all", place: "all", q: "" };
+const MODES = [
+  { min: 240, label: "4H" },
+  { min: 60, label: "1H" },
+  { min: 30, label: "30M" },
+  { min: 15, label: "15M" },
+];
+
+const state = { rain: null, day: null, res: 60, wetOnly: false, district: "all", place: "all", q: "" };
 
 async function load() {
   const meta = $("meta");
@@ -13,7 +23,7 @@ async function load() {
     meta.textContent = "…";
     meta.title = `Rain table unreachable: ${e.message}`;
     $("liveDot").classList.add("bad");
-    $("rainBody").innerHTML = `<tr><td class="empty-cell" colspan="25">Couldn't load the rain table. <button type="button" onclick="location.reload()">Retry</button></td></tr>`;
+    $("rainBody").innerHTML = `<tr><td class="empty-cell" colspan="97">Couldn't load the rain table. <button type="button" onclick="location.reload()">Retry</button></td></tr>`;
     return;
   }
   const { rain } = state;
@@ -73,6 +83,8 @@ async function load() {
     state.q = q.get("q");
     $("q").value = state.q;
   }
+  const wantRes = parseInt(q.get("res") || "", 10);
+  if (MODES.some((m) => m.min === wantRes)) state.res = wantRes;
 
   sel.onchange = () => render();
   // days sorted newest-first (index 0 = newest): older day is +1.
@@ -82,6 +94,13 @@ async function load() {
   dist.onchange = () => { state.district = dist.value; render(); };
   psel.onchange = () => { state.place = psel.value; render(); };
   $("q").oninput = (e) => { state.q = e.target.value.trim().toLowerCase(); render(); };
+  syncResSeg();
+  $("resSeg").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-res]");
+    if (!b) return;
+    const v = parseInt(b.dataset.res, 10);
+    if (v !== state.res) { state.res = v; syncResSeg(); render(); }
+  });
   $("themeBtn").onclick = toggleTheme;
   try {
     const saved = localStorage.getItem("kkl-theme-v2");
@@ -170,12 +189,65 @@ function buildScale(lut) {
   }
 }
 
+function syncResSeg() {
+  for (const b of $("resSeg").querySelectorAll("button[data-res]")) {
+    const on = parseInt(b.dataset.res, 10) === state.res;
+    b.setAttribute("aria-checked", String(on));
+    b.classList.toggle("on", on);
+  }
+}
+
+/* Nearest radar-legend color for a dBZ value (lut is high -> low). */
+function lutColor(dbz) {
+  const lut = state.rain.lut || [];
+  let best = null, bd = Infinity;
+  for (const s of lut) {
+    const d = Math.abs(s.dbz - dbz);
+    if (d < bd) { bd = d; best = s.color; }
+  }
+  return best || "#888";
+}
+
+function catFor(dbz) {
+  if (dbz == null) return "no echo (<20 dBZ)";
+  if (dbz >= 50) return "very heavy (>50 dBZ)";
+  if (dbz >= 40) return "heavy (40-50 dBZ)";
+  if (dbz >= 30) return "moderate (30-40 dBZ)";
+  return "light (20-30 dBZ)";
+}
+
+function fmtHM(mins) {
+  const h = Math.floor(mins / 60) % 24, m = Math.floor(mins % 60);
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+/* Time-proportional gradient: one equal slice per frame in time order.
+   Wet slice = legend color, dry slice = pure white. */
+function spectrumGradient(segs) {
+  const n = segs.length;
+  const stops = segs.map((s, i) => {
+    const c = s.dbz == null ? "#ffffff" : lutColor(s.dbz);
+    const a = (i * 100 / n).toFixed(2), z = ((i + 1) * 100 / n).toFixed(2);
+    return `${c} ${a}% ${z}%`;
+  });
+  return `linear-gradient(to right, ${stops.join(", ")})`;
+}
+
+function bucketTip(segs, peak) {
+  const head = peak != null ? `peak ${peak} dBZ · ${catFor(peak)}` : "no echo";
+  const parts = segs.slice(0, 10).map((s) =>
+    s.dbz == null ? `${s.t} dry` : `${s.t} ${s.dbz}`);
+  if (segs.length > 10) parts.push(`…${segs.length - 10} more`);
+  return `${head} — ${parts.join(", ")}`;
+}
+
 function render() {
   const sel = $("daySel");
   const day = state.rain.days.find((d) => d.date === sel.value);
   state.day = day;
   try {
     const p = new URLSearchParams({ date: sel.value });
+    if (state.res !== 60) p.set("res", String(state.res));
     if (state.wetOnly) p.set("wet", "1");
     if (state.district !== "all") p.set("district", state.district);
     if (state.place !== "all") p.set("place", state.place);
@@ -183,6 +255,20 @@ function render() {
     history.replaceState(null, "", `?${p}`);
   } catch {}
   if (!day) return;
+
+  const res = state.res;
+  const nB = 1440 / res;
+
+  // Legacy file without frame grain: fall back to hourly max cells.
+  if (!day.frames) return renderLegacy(day, sel);
+
+  // Bucket frame indices in time order.
+  const buckets = Array.from({ length: nB }, () => []);
+  (day.frames || []).forEach((f, j) => {
+    const b = Math.min(nB - 1, Math.floor(f.min / res));
+    if (b >= 0) buckets[b].push(j);
+  });
+  const nCovered = buckets.filter((b) => b.length).length;
 
   const needle = state.q;
   const rows = day.rows.filter((r) =>
@@ -194,10 +280,13 @@ function render() {
     .sort((a, b) => a.place.localeCompare(b.place));
   const wet = day.rows.filter((r) => r.max != null).length;
   const filtered = state.wetOnly || state.district !== "all" || state.place !== "all" || needle;
+  const modeLabel = (MODES.find((m) => m.min === res) || {}).label || `${res}M`;
   $("daySummary").textContent =
-    `${wet} of ${day.rows.length} rained · ${day.n_frames_hours} of 24 hours` +
+    `${wet} of ${day.rows.length} rained · ${nCovered} of ${nB} ${modeLabel} slots` +
     (filtered ? ` · ${rows.length} shown` : "");
 
+  const table = $("raintable");
+  table.dataset.res = String(res);
   const head = $("rainHead");
   head.innerHTML = "";
   const corner = document.createElement("th");
@@ -205,12 +294,14 @@ function render() {
   corner.className = "corner";
   corner.textContent = "Place";
   head.appendChild(corner);
-  (day.hours_with_data || []).forEach((has, h) => {
+  buckets.forEach((js, b) => {
     const th = document.createElement("th");
     th.scope = "col";
-    th.className = "h" + (has ? "" : " nodata");
-    th.textContent = String(h).padStart(2, "0");
-    th.title = has ? `${String(h).padStart(2, "0")}:00 IST` : `No frames at ${String(h).padStart(2, "0")}:00 IST`;
+    th.className = "h" + (js.length ? "" : " nodata");
+    th.textContent = res >= 60 ? String(Math.floor(b * res / 60)).padStart(2, "0") : fmtHM(b * res);
+    th.title = js.length
+      ? `${fmtHM(b * res)}–${fmtHM((b + 1) * res)} IST · ${js.length} frame(s)`
+      : `No frames ${fmtHM(b * res)}–${fmtHM((b + 1) * res)} IST`;
     head.appendChild(th);
   });
 
@@ -219,7 +310,7 @@ function render() {
   if (!rows.length) {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
-    td.colSpan = 25;
+    td.colSpan = nB + 1;
     td.className = "empty-cell";
     td.textContent = (state.wetOnly || state.district !== "all" || state.place !== "all" || state.q)
       ? "No places match this filter."
@@ -243,10 +334,79 @@ function render() {
     th.append(nm, ds);
     if (r.max != null) th.title = `${r.place} · peak ${r.max} dBZ`;
     tr.appendChild(th);
-    r.cells.forEach((c) => {
+    const echo = new Map(r.spec || []);
+    buckets.forEach((js) => {
+      const td = document.createElement("td");
+      if (!js.length) {
+        td.className = "nodata"; // bucket with no frame coverage
+      } else {
+        const segs = js.map((j) => ({
+          t: day.frames[j].t,
+          dbz: echo.has(j) ? echo.get(j) : null,
+        }));
+        const peak = segs.reduce((m, s) =>
+          (s.dbz != null && (m == null || s.dbz > m)) ? s.dbz : m, null);
+        td.className = "spec" + (peak == null ? " alldry" : "");
+        td.style.background = spectrumGradient(segs);
+        td.title = bucketTip(segs, peak);
+      }
+      tr.appendChild(td);
+    });
+    frag.appendChild(tr);
+  }
+  body.appendChild(frag);
+  $("tablewrap").scrollTo({ left: 0, top: 0 });
+}
+
+/* Fallback for rain.json files without frame grain (old cache). */
+function renderLegacy(day, sel) {
+  const table = $("raintable");
+  table.dataset.res = "60";
+  const needle = state.q;
+  const rows = day.rows.filter((r) =>
+    (state.district === "all" || r.district === state.district) &&
+    (state.place === "all" || r.place === state.place) &&
+    (!state.wetOnly || r.max != null) &&
+    (!needle || r.place.toLowerCase().includes(needle) ||
+      r.district.toLowerCase().includes(needle)))
+    .sort((a, b) => a.place.localeCompare(b.place));
+  const wet = day.rows.filter((r) => r.max != null).length;
+  $("daySummary").textContent =
+    `${wet} of ${day.rows.length} rained · ${day.n_frames_hours} of 24 hours`;
+  const head = $("rainHead");
+  head.innerHTML = "";
+  const corner = document.createElement("th");
+  corner.scope = "col";
+  corner.className = "corner";
+  corner.textContent = "Place";
+  head.appendChild(corner);
+  (day.hours_with_data || []).forEach((has, h) => {
+    const th = document.createElement("th");
+    th.scope = "col";
+    th.className = "h" + (has ? "" : " nodata");
+    th.textContent = String(h).padStart(2, "0");
+    head.appendChild(th);
+  });
+  const body = $("rainBody");
+  body.innerHTML = "";
+  const frag = document.createDocumentFragment();
+  for (const r of rows) {
+    const tr = document.createElement("tr");
+    const th = document.createElement("th");
+    th.scope = "row";
+    th.className = "place";
+    const nm = document.createElement("span");
+    nm.className = "pname";
+    nm.textContent = r.place;
+    const ds = document.createElement("span");
+    ds.className = "pdist";
+    ds.textContent = r.district;
+    th.append(nm, ds);
+    tr.appendChild(th);
+    (r.cells || []).forEach((c) => {
       const td = document.createElement("td");
       if (c == null) {
-        td.className = "nodata"; // hour with no frame coverage
+        td.className = "nodata";
       } else if (c.dbz == null) {
         td.className = "dry";
         td.textContent = "–";
@@ -262,7 +422,6 @@ function render() {
     frag.appendChild(tr);
   }
   body.appendChild(frag);
-  $("tablewrap").scrollTo({ left: 0, top: 0 });
 }
 
 load().catch((e) => {

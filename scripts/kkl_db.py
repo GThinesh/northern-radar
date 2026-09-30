@@ -801,6 +801,14 @@ def export_rain_json(db: Path,
     hour) plus the radar-legend color for the cell background. Hours with
     no PNG frame that day are null (no data); hours with frames but no
     echo hold {"dbz": null, ...} (dry).
+
+    Frame-grain spectrum (for 4H/1H/30M/15M modes): each day also carries
+    `frames` (one entry per PNG frame, IST minute-of-day for bucketing)
+    and each row carries sparse `spec` ([frame_idx, dbz] echo-only pairs;
+    a frame missing from `spec` means dry at that place). The frontend
+    buckets frames client-side and paints each bucket cell as a
+    time-proportional gradient (wet = LUT color, dry = white) instead of
+    a single max/average.
     """
     if out is None:
         out = ROOT / "docs" / "data" / "rain.json"
@@ -812,13 +820,62 @@ def export_rain_json(db: Path,
             "SELECT name_en, district, lat, lon FROM places "
             "ORDER BY district, name_en")]
     rows = con.execute(
-        "SELECT p.name_en, p.district, f.frame_ist, r.max_dbz, r.category "
+        "SELECT p.name_en, p.district, f.frame_utc, f.frame_ist, r.max_dbz "
         "FROM readings r JOIN frames f ON f.frame_id = r.frame_id "
         "JOIN places p ON p.place_id = r.place_id").fetchall()
+    # Frame-grain axis: one entry per frame per IST day. frame_utc carries
+    # seconds (ordering within a 15-min bucket); frame_ist is minute
+    # precision ("YYYY-MM-DD HH:MM IST").
+    frame_rows = con.execute(
+        "SELECT frame_utc, frame_ist FROM frames ORDER BY frame_utc").fetchall()
     con.close()
 
+    day_frames: dict[str, list[dict]] = {}
+    frame_idx: dict[str, int] = {}  # frame_utc -> index within its day
+    for frame_utc, frame_ist in frame_rows:
+        m = re.search(r"(\d{4}-\d{2}-\d{2})\s+(\d{1,2}):(\d{2})",
+                      frame_ist or "")
+        if not m:
+            continue
+        date = m.group(1)
+        lst = day_frames.setdefault(date, [])
+        try:
+            utc_dt = datetime.datetime.strptime(
+                (frame_utc or "").strip(), "%Y-%m-%d %H:%M:%SZ")
+        except ValueError:
+            utc_dt = None
+        if utc_dt is not None:
+            ist = utc_dt + datetime.timedelta(hours=5, minutes=30)
+            minute = ist.hour * 60 + ist.minute + ist.second / 60.0
+            short = f"{ist.hour:02d}:{ist.minute:02d}"
+        else:
+            minute = int(m.group(2)) * 60 + int(m.group(3))
+            short = f"{int(m.group(2)):02d}:{m.group(3)}"
+        frame_idx[(frame_utc or "").strip()] = len(lst)
+        lst.append({"utc": (frame_utc or "").strip(),
+                    "min": round(minute, 2), "t": short})
+
+    # Sparse echo map: (date, place_key) -> {frame_idx: dbz}.
+    # Keyed by exact frame_utc (frame grain, seconds precision) so two
+    # frames sharing one IST minute label never misattribute.
+    echo: dict[tuple[str, tuple[str, str]], dict[int, float]] = {}
+    for name_en, district, frame_utc, frame_ist, max_dbz in rows:
+        if max_dbz is None:
+            continue  # dry is implied, not stored
+        m = re.search(r"(\d{4}-\d{2}-\d{2})\s+(\d{1,2}):(\d{2})",
+                      frame_ist or "")
+        if not m:
+            continue
+        date = m.group(1)
+        if date not in day_frames:
+            continue
+        j = frame_idx.get((frame_utc or "").strip())
+        if j is None:
+            continue
+        echo.setdefault((date, (name_en, district)), {})[j] = max_dbz
+
     per_day: dict[str, dict] = {}
-    for name_en, district, frame_ist, max_dbz, cat in rows:
+    for name_en, district, frame_utc, frame_ist, max_dbz in rows:
         m = re.search(r"(\d{4}-\d{2}-\d{2})\s+(\d{1,2}):(\d{2})", frame_ist or "")
         if not m:
             continue
@@ -857,11 +914,18 @@ def export_rain_json(db: Path,
                 cells.append({"dbz": v, "color": dbz_to_color(v),
                               "cat": category_of(v, True)})
             rain_rows.append({"place": p["name_en"], "district": p["district"],
-                              "cells": cells, "max": day_max})
+                              "cells": cells, "max": day_max,
+                              "spec": [[j, echo[(date, (p["name_en"],
+                                                       p["district"]))][j]]
+                                       for j in sorted(
+                                           echo.get((date, (p["name_en"],
+                                                             p["district"])),
+                                                    {}))]})
         rain_rows.sort(key=lambda r: ((r["max"] is None), -(r["max"] or 0),
                                       r["district"], r["place"]))
         days.append({"date": date, "hours_with_data": hours_with_data,
                      "n_frames_hours": sum(hours_with_data),
+                     "frames": day_frames.get(date, []),
                      "rows": rain_rows})
     days.sort(key=lambda d: d["date"], reverse=True)
 
@@ -872,6 +936,7 @@ def export_rain_json(db: Path,
             datetime.timezone(datetime.timedelta(hours=5, minutes=30))
         ).strftime("%Y-%m-%d %H:%M IST"),
         "hours": list(range(24)),
+        "resolutions": [240, 60, 30, 15],
         "lut": [{"dbz": dbz, "color": color} for dbz, color in DBZ_LUT],
         "places": places,
         "days": days,

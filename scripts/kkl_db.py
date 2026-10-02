@@ -29,12 +29,31 @@ import argparse
 import csv
 import datetime
 import json
-import math
 import re
 import sqlite3
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from PIL import Image
+
+from rain_finder import (
+    CATEGORIES,
+    DBZ_LUT,
+    DRY_LABEL,
+    NOMINAL_CX,
+    NOMINAL_CY,
+    NOMINAL_KM_PER_PX,
+    OUT_OF_RANGE_LABEL,
+    RADAR_LAT,
+    RADAR_LON,
+    FrameGeom,
+    RainFinder,
+    calibrate,
+    category_of,
+    dbz_to_color,
+)
+
+IST = ZoneInfo("Asia/Kolkata")
 
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_DB = ROOT / "data" / "kkl.db"
@@ -46,38 +65,42 @@ MASTER_JSON = ROOT / "data" / "places.json"
 # else needs to change; init upserts it into SQLite and backfill/export
 # refresh the rain table + CSVs.
 LAST_RE = re.compile(r"(\d{4})-UTC_(\d{4})-IST_last\.png$")
-
-RADAR_LAT, RADAR_LON = 10.9327, 79.8319
-R_EARTH = 6371.0
-
-# IMD KKL MAX_Z 16-step dBZ colorbar, sampled from a full-resolution PNG
-# frame's own legend (right-hand colorbar). Used to color the rain-table
-# cells exactly like the radar image. Sorted high -> low.
-DBZ_LUT: list[tuple[float, str]] = [
-    (60.0, "#c80039"),
-    (57.3, "#d30d07"),
-    (54.7, "#ff3e1f"),
-    (52.0, "#ff3a00"),
-    (49.3, "#ff4000"),
-    (46.7, "#ff7d00"),
-    (44.0, "#ffb600"),
-    (41.3, "#ffde00"),
-    (38.7, "#fff6a6"),
-    (36.0, "#c3efff"),
-    (33.3, "#40c1ff"),
-    (30.7, "#1499ff"),
-    (28.0, "#006dff"),
-    (25.3, "#002ef8"),
-    (22.7, "#0301c7"),
-    (20.0, "#3600a2"),
-]
+IST_FRAME_RE = re.compile(r"(\d{4}-\d{2}-\d{2})\s+(\d{1,2}):(\d{2})")
 
 
-def dbz_to_color(max_dbz: float | None) -> str | None:
-    """Nearest radar-legend color for a dBZ value; None when no echo."""
-    if max_dbz is None:
+def category_case(col: str = "MAX(r.max_dbz)") -> str:
+    """SQL CASE mirroring category_of(), for rebuild_hourly()."""
+    whens = "\n".join(
+        f"                  WHEN {col} >= {th:g} THEN '{label}'"
+        for th, label in CATEGORIES[:-1])
+    else_label = CATEGORIES[-1][1]
+    return (f"CASE\n"
+            f"                  WHEN {col} IS NULL\n"
+            f"                       AND SUM(CASE WHEN r.category = '{OUT_OF_RANGE_LABEL}'\n"
+            f"                                    THEN 1 ELSE 0 END) = COUNT(*)\n"
+            f"                    THEN '{OUT_OF_RANGE_LABEL}'\n"
+            f"                  WHEN {col} IS NULL THEN '{DRY_LABEL}'\n"
+            f"{whens}\n"
+            f"                  ELSE '{else_label}'\n"
+            f"                END")
+
+
+def parse_frame_ist(frame_ist: str | None) -> tuple[str, int] | None:
+    """(date, hour) from an IST label; None when unparseable."""
+    m = IST_FRAME_RE.search(frame_ist or "")
+    if not m:
         return None
-    return min(DBZ_LUT, key=lambda kv: abs(kv[0] - max_dbz))[1]
+    return m.group(1), int(m.group(2))
+
+
+def ist_label(date: str, hour: int, minute: int) -> str:
+    return f"{date} {hour:02d}:{minute:02d} IST"
+
+
+def utc_str_from_ist(ist_dt: datetime.datetime) -> str:
+    """UTC label for a naive IST datetime, via ZoneInfo, not arithmetic."""
+    aware = ist_dt.replace(tzinfo=IST)
+    return aware.astimezone(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%SZ")
 
 SCHEMA = """
 PRAGMA journal_mode=WAL;
@@ -167,24 +190,12 @@ def migrate(con: sqlite3.Connection) -> None:
     if "calib_method" not in cols:
         con.execute("ALTER TABLE frames ADD COLUMN "
                     "calib_method TEXT NOT NULL DEFAULT 'ring-labels'")
-    # hourly_rain was added after readings: create it on old DBs.
-    for stmt in SCHEMA.split(";"):
-        if "CREATE TABLE IF NOT EXISTS hourly_rain" in stmt:
-            con.execute(stmt)
-        if "CREATE INDEX IF NOT EXISTS idx_hourly_place_day" in stmt:
-            con.execute(stmt)
-    # Views are derived state: rebuild so old DBs pick up column changes.
-    views = [r[0] for r in con.execute(
-        "SELECT name FROM sqlite_master WHERE type='view'")]
-    if "place_timeseries" in views:
-        con.execute("DROP VIEW place_timeseries")
-    if "latest_per_place" in views:
-        con.execute("DROP VIEW latest_per_place")
-    if "hourly_timeseries" in views:
-        con.execute("DROP VIEW hourly_timeseries")
-    for stmt in SCHEMA.split(";"):
-        if "CREATE VIEW" in stmt:
-            con.execute(stmt)
+    # Every object is CREATE ... IF NOT EXISTS, so a full executescript is
+    # both the installer and the migrator. Views are derived state: drop
+    # them first so old DBs pick up column changes.
+    for v in ("place_timeseries", "latest_per_place", "hourly_timeseries"):
+        con.execute(f"DROP VIEW IF EXISTS {v}")
+    con.executescript(SCHEMA)
     con.commit()
 
 
@@ -193,29 +204,8 @@ def init_db(db: Path) -> None:
     con.executescript(SCHEMA)
     migrate(con)
     places = json.loads(MASTER_JSON.read_text())
-    # Support both the canonical list format and (transitional) the legacy
-    # dict format keyed by "Name, X District, ..." so an old checkout still
-    # seeds instead of crashing.
     if isinstance(places, dict):
-        tamil: dict[str, str] = {}
-        try:
-            tamil = {r["place"]: r.get("name_ta", "") for r in
-                     json.loads((ROOT / "samples" / "kkl-jaffna" /
-                                 "master_places_dbz.json").read_text())}
-        except (OSError, ValueError):
-            pass
-        items = []
-        for key, v in places.items():
-            parts = key.split(",")
-            name = parts[0].strip()
-            if name.endswith("_dup"):
-                name = name[:-4]
-            district = parts[1].strip().replace(" District", "") if len(parts) > 1 else ""
-            items.append({"name_en": name, "district": district,
-                          "lat": v["lat"], "lon": v["lon"],
-                          "name_ta": tamil.get(name, ""),
-                          "place_type": (v.get("place") or "").split("/")[-1]})
-        places = items
+        raise ValueError("data/places.json must be a list of places")
     seen: set[str] = set()
     n = 0
     for p in places:
@@ -241,60 +231,6 @@ def init_db(db: Path) -> None:
     print(f"init {db}: schema ready, {n} places")
 
 
-def latlon_to_km(lat, lon, lat0, lon0) -> tuple[float, float]:
-    la0, lo0, la, lo = map(math.radians, (lat0, lon0, lat, lon))
-    dlo = lo - lo0
-    cosc = math.sin(la0) * math.sin(la) + math.cos(la0) * math.cos(la) * math.cos(dlo)
-    c = math.acos(min(1.0, max(-1.0, cosc)))
-    k = 1.0 if c == 0 else c / math.sin(c)
-    return (k * math.cos(la) * math.sin(dlo) * R_EARTH,
-            k * (math.cos(la0) * math.sin(la)
-                 - math.sin(la0) * math.cos(la) * math.cos(dlo)) * R_EARTH)
-
-
-# Verified 2026-09-14 sample geometry; used only when a frame's ring labels
-# are obscured AND the DB has no prior frames to borrow from.
-NOMINAL_CX, NOMINAL_CY, NOMINAL_KM_PER_PX = 259.70, 259.38, 0.9614
-
-
-def calibrate(im: Image.Image, fallback: tuple[float, float, float] | None = None):
-    """Fit PPI center + km/px from the six orange 200km labels.
-
-    Returns (crop, cx, cy, km_per_px, method). Heavy echoes can bury a label;
-    then reuse caller-supplied fallback geometry instead of failing the run.
-    """
-    import numpy as np
-    W, H = im.size
-    x0, y0 = 0, int(round(H * 200 / 720))
-    x1, y1 = int(round(W * 519 / 880)), int(round(H * 719 / 720))
-    A = np.array(im.crop((x0, y0, x1, y1)).convert("RGB")).astype(np.int16)
-    R, G, B = A[:, :, 0], A[:, :, 1], A[:, :, 2]
-    ys, xs = np.where((R > 200) & (G > 100) & (G < 200) & (B < 100))
-    clusters: list[list[tuple[int, int]]] = []
-    for x, y in sorted(zip(xs, ys)):
-        for c in clusters:
-            mx = sum(p[0] for p in c) / len(c)
-            my = sum(p[1] for p in c) / len(c)
-            if abs(x - mx) < 30 and abs(y - my) < 20:
-                c.append((x, y))
-                break
-        else:
-            clusters.append([(x, y)])
-    centers = [(sum(p[0] for p in c) / len(c), sum(p[1] for p in c) / len(c))
-               for c in clusters if len(c) >= 50]
-    if len(centers) == 6:
-        cx = sum(c[0] for c in centers) / len(centers)
-        cy = sum(c[1] for c in centers) / len(centers)
-        r200 = sum(math.hypot(x - cx, y - cy) for x, y in centers) / len(centers)
-        return (x0, y0, x1, y1), cx, cy, 200.0 / r200, "ring-labels"
-    if fallback is None:
-        raise ValueError(f"only {len(centers)} of 6 '200' labels visible "
-                         "and no fallback geometry available")
-    print(f"warn: only {len(centers)}/6 ring labels visible, "
-          f"reusing fallback geometry {fallback}")
-    return (x0, y0, x1, y1), *fallback, "ring-labels-fallback"
-
-
 def recent_geometry(con: sqlite3.Connection,
                     ) -> tuple[float, float, float] | None:
     """Median (cx, cy, km/px) of the last 10 label-calibrated frames."""
@@ -310,59 +246,19 @@ def recent_geometry(con: sqlite3.Connection,
             statistics.median(r[2] for r in rows))
 
 
-def segment(im: Image.Image, cx: float, cy: float, km_per_px: float):
-    """Extract echo overlay (RGBA) + per-pixel dBZ using the frame's legend."""
-    import numpy as np
-    W, H = im.size
-    cbx = int(round(W * 790 / 880))
-    band_ys = [379, 394, 409, 424, 439, 454, 469, 484, 497, 509,
-               524, 539, 554, 569, 584, 599]
-    dbzs = [60.0, 57.3, 54.7, 52.0, 49.3, 46.7, 44.0, 41.3,
-            38.7, 36.0, 33.3, 30.7, 28.0, 25.3, 22.7, 20.0]
-    full = np.array(im.convert("RGB")).astype(int)
-    LUT = []
-    for yref, dbz in zip(band_ys, dbzs):
-        y = int(round(H * yref / 720))
-        patch = full[max(0, y - 2):y + 3, cbx - 3:cbx + 4, :]
-        LUT.append((dbz, tuple(int(v) for v in patch.reshape(-1, 3).mean(axis=0))))
-    LUT_RGB = np.array([c for _, c in LUT])
-
-    x0, y0 = 0, int(round(H * 200 / 720))
-    x1, y1 = int(round(W * 519 / 880)), int(round(H * 719 / 720))
-    A = np.array(im.crop((x0, y0, x1, y1)).convert("RGB")).astype(np.int16)
-    d2 = ((A[:, :, None, :] - LUT_RGB[None, None, :, :]) ** 2).sum(axis=3)
-    best = d2.argmin(axis=2)
-    echo = np.sqrt(d2.min(axis=2)) < 55.0
-    ph, pw = echo.shape
-    YY, XX = np.mgrid[0:ph, 0:pw]
-    inside = np.sqrt((XX - cx) ** 2 + (YY - cy) ** 2) <= (250.0 / km_per_px + 2)
-    echo &= inside
-    R, G, B = A[:, :, 0], A[:, :, 1], A[:, :, 2]
-    e = echo.astype(np.int8)
-    pad = np.pad(e, 1)
-    nb = (pad[:-2, :-2] + pad[:-2, 1:-1] + pad[:-2, 2:] + pad[1:-1, :-2]
-          + pad[1:-1, 2:] + pad[2:, :-2] + pad[2:, 1:-1] + pad[2:, 2:])
-    echo |= ((R < 30) & (G < 30) & (B < 30)) & (nb >= 5) & inside
-
-    dbz_arr = np.array([d for d, _ in LUT])[best]
-    return echo, dbz_arr, {tuple(map(int, c)): d for d, c in LUT}, (x0, y0, x1, y1)
-
-
-def category_of(max_dbz, in_range: bool) -> str:
-    if max_dbz is None:
-        return "out of range" if not in_range else "no echo (<20 dBZ)"
-    if max_dbz >= 50:
-        return "very heavy (>50 dBZ)"
-    if max_dbz >= 40:
-        return "heavy (40-50 dBZ)"
-    if max_dbz >= 30:
-        return "moderate (30-40 dBZ)"
-    return "light (20-30 dBZ)"
+def insert_reading(con: sqlite3.Connection, frame_id: int, place_id: int,
+                   dist_km: float, max_dbz, cover_pct: float,
+                   nearest: float, category: str, window_px: int) -> None:
+    con.execute(
+        "INSERT OR IGNORE INTO readings (frame_id, place_id, dist_km, "
+        "max_dbz, cover_pct, nearest_echo_km, category, window_px) "
+        "VALUES (?,?,?,?,?,?,?,?)",
+        (frame_id, place_id, dist_km, max_dbz, cover_pct,
+         nearest, category, window_px))
 
 
 def ingest(db: Path, src: Path, frame_utc: str, frame_ist: str,
            window_px: int = 5) -> int:
-    import numpy as np
     con = connect(db)
     migrate(con)
     if con.execute("SELECT 1 FROM frames WHERE frame_utc = ?",
@@ -376,34 +272,18 @@ def ingest(db: Path, src: Path, frame_utc: str, frame_ist: str,
         src_path = ROOT / src_path
     im = Image.open(src_path).convert("RGB")
     fb = recent_geometry(con) or (NOMINAL_CX, NOMINAL_CY, NOMINAL_KM_PER_PX)
-    (x0, y0, x1, y1), cx, cy, km_per_px, method = calibrate(im, fallback=fb)
-    echo, dbz_arr, lut, _ = segment(im, cx, cy, km_per_px)
-    ph, pw = echo.shape
-    R250 = 250.0 / km_per_px
-
-    # lat/lon grids (azimuthal equidistant about radar)
-    YY, XX = np.mgrid[0:ph, 0:pw]
-    dx_km = (XX - cx) * km_per_px
-    dy_km = (cy - YY) * km_per_px
-    rho = np.sqrt(dx_km ** 2 + dy_km ** 2)
-    c = rho / R_EARTH
-    la0 = math.radians(RADAR_LAT)
-    LAT = np.degrees(np.arcsin(np.cos(c) * math.sin(la0)
-                               + np.where(rho == 0, 0,
-                                          dy_km * np.sin(c) * math.cos(la0) / rho)))
-    LON = np.degrees(math.radians(RADAR_LON) + np.arctan2(
-        dx_km * np.sin(c),
-        rho * math.cos(la0) * np.cos(c) - dy_km * math.sin(la0) * np.sin(c)))
-    eys, exs = np.where(echo)
+    finder = RainFinder.from_image(
+        im, calibrate(im, fallback=fb), window_px=window_px)
+    geom = finder.geom
 
     cur = con.execute(
         "INSERT OR IGNORE INTO frames (frame_utc, frame_ist, src_path, radar_lat, "
         "radar_lon, center_px_x, center_px_y, km_per_px, calib_method, "
         "echo_pixels, max_dbz_frame) "
         "VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-        (frame_utc, frame_ist, str(src), RADAR_LAT, RADAR_LON, cx, cy, km_per_px,
-         method, int(echo.sum()),
-         float(dbz_arr[echo].max()) if echo.any() else None))
+        (frame_utc, frame_ist, str(src), RADAR_LAT, RADAR_LON,
+         geom.cx, geom.cy, geom.km_per_px, geom.method, finder.echo_pixels,
+         finder.max_dbz_frame))
     if cur.rowcount == 0:
         print(f"frame {frame_utc} already ingested, skipping")
         con.commit()
@@ -411,42 +291,16 @@ def ingest(db: Path, src: Path, frame_utc: str, frame_ist: str,
         return 0
     frame_id = cur.lastrowid
 
-    h = window_px // 2
     n = 0
     for pid, name, lat, lon in con.execute("SELECT place_id, name_en, lat, lon FROM places"):
-        ek, nk = latlon_to_km(lat, lon, RADAR_LAT, RADAR_LON)
-        dist_km = math.hypot(ek, nk)
-        px, py = cx + ek / km_per_px, cy - nk / km_per_px
-        in_range = math.hypot(px - cx, py - cy) <= R250 + 2
-        in_panel = 0 <= int(round(px)) < pw and 0 <= int(round(py)) < ph
-        max_dbz, cover = None, 0.0
-        if in_range and in_panel:
-            ix, iy = int(round(px)), int(round(py))
-            max_dbz, cover = ov_win(echo, dbz_arr, ix, iy, h)
-        drow = np.hypot((LAT[eys, exs] - lat) * 111.0,
-                        (LON[eys, exs] - lon) * 111.0 * math.cos(math.radians(lat)))
-        # Fully echo-free frames have no echo pixels: nearest echo undefined.
-        nearest = round(float(drow.min()), 1) if drow.size else 999.9
-        con.execute(
-            "INSERT INTO readings (frame_id, place_id, dist_km, max_dbz, cover_pct, "
-            "nearest_echo_km, category, window_px) VALUES (?,?,?,?,?,?,?,?)",
-            (frame_id, pid, round(dist_km, 1), max_dbz, round(cover * 100, 1),
-             nearest, category_of(max_dbz, in_range), window_px))
+        insert_reading(con, frame_id, pid,
+                       *finder.reading_for(lat, lon), window_px)
         n += 1
     con.commit()
     con.close()
     print(f"ingested {frame_utc}: {n} readings "
-          f"(echo px={int(echo.sum())}, km/px={km_per_px:.4f})")
+          f"(echo px={finder.echo_pixels}, km/px={geom.km_per_px:.4f})")
     return n
-
-
-def ov_win(echo, dbz_arr, ix: int, iy: int, h: int):
-    m = echo[max(0, iy - h):iy + h + 1, max(0, ix - h):ix + h + 1]
-    cover = float(m.mean())
-    if not m.any():
-        return None, cover
-    return float(dbz_arr[max(0, iy - h):iy + h + 1,
-                         max(0, ix - h):ix + h + 1][m].max()), cover
 
 
 def last_snapshots() -> list[tuple[datetime.datetime, Path, str, str]]:
@@ -470,12 +324,12 @@ def last_snapshots() -> list[tuple[datetime.datetime, Path, str, str]]:
             utc_hm, ist_hm = m.group(1), m.group(2)
             ist_dt = datetime.datetime.combine(
                 day_d, datetime.time(int(ist_hm[:2]), int(ist_hm[2:])))
-            utc_dt = ist_dt - datetime.timedelta(hours=5, minutes=30)
+            frame_utc = utc_str_from_ist(ist_dt)
+            utc_dt = datetime.datetime.strptime(frame_utc, "%Y-%m-%d %H:%M:%SZ")
             if utc_dt.strftime("%H%M") != utc_hm:
                 print(f"warn: {p}: filename UTC {utc_hm} != IST-5:30 "
                       f"({utc_dt:%H%M}), trusting IST")
-            out.append((ist_dt, p,
-                        utc_dt.strftime("%Y-%m-%d %H:%M:%SZ"),
+            out.append((ist_dt, p, frame_utc,
                         ist_dt.strftime("%Y-%m-%d %H:%M IST")))
     out.sort()
     return out
@@ -520,10 +374,13 @@ def png_frame_sources() -> list[tuple[datetime.datetime, Path, str, str]]:
             except ValueError:
                 continue
             # Normalize IST label to minute precision ("YYYY-MM-DD HH:MM IST").
-            m = re.search(r"(\d{4}-\d{2}-\d{2})\s+(\d{1,2}):(\d{2})", t_ist)
-            if not m:
+            parsed = parse_frame_ist(t_ist)
+            if not parsed:
                 continue
-            frame_ist = f"{m.group(1)} {int(m.group(2)):02d}:{m.group(3)} IST"
+            date, hour = parsed
+            m = IST_FRAME_RE.search(t_ist)
+            assert m is not None
+            frame_ist = ist_label(date, hour, int(m.group(3)))
             out.append((sort_key, src, t_utc.strip(), frame_ist))
     # Snapshot PNGs carry minute-precision UTC; frame PNGs carry seconds, so
     # no key collision between the two sets.
@@ -608,7 +465,6 @@ def fill_missing(db: Path, window_px: int = 5,
     echo-free frames skip image work entirely. Idempotent: pairs already
     present are never touched.
     """
-    import numpy as np
     con = connect(db)
     migrate(con)
     q = ("SELECT f.frame_id FROM frames f WHERE EXISTS "
@@ -622,7 +478,6 @@ def fill_missing(db: Path, window_px: int = 5,
         print("fill-missing: no gaps")
         con.close()
         return 0
-    h = window_px // 2
     done = 0
     for fid in frame_ids:
         fr = con.execute(
@@ -635,20 +490,13 @@ def fill_missing(db: Path, window_px: int = 5,
         if not miss:
             continue
         frame_utc, src, cx, cy, km_per_px, echo_pixels = fr
-        R250 = 250.0 / km_per_px
+        geom = FrameGeom(0, 0, 0, 0, cx, cy, km_per_px, "stored")
         if echo_pixels is not None and not echo_pixels:
             # Echo-free frame: dry rows without touching the image.
+            finder = RainFinder.echo_free(geom, window_px)
             for pid, lat, lon in miss:
-                ek, nk = latlon_to_km(lat, lon, RADAR_LAT, RADAR_LON)
-                dist_km = math.hypot(ek, nk)
-                px, py = cx + ek / km_per_px, cy - nk / km_per_px
-                in_range = math.hypot(px - cx, py - cy) <= R250 + 2
-                con.execute(
-                    "INSERT OR IGNORE INTO readings (frame_id, place_id, dist_km, "
-                    "max_dbz, cover_pct, nearest_echo_km, category, window_px) "
-                    "VALUES (?,?,?,?,?,?,?,?)",
-                    (fid, pid, round(dist_km, 1), None, 0.0, 999.9,
-                     category_of(None, in_range), window_px))
+                insert_reading(con, fid, pid,
+                               *finder.reading_for(lat, lon), window_px)
                 done += 1
             con.commit()
             continue
@@ -662,46 +510,16 @@ def fill_missing(db: Path, window_px: int = 5,
             continue
         try:
             im = Image.open(src_path).convert("RGB")
-            echo, dbz_arr, lut, _ = segment(im, cx, cy, km_per_px)
+            finder = RainFinder.from_image(im, geom, window_px)
         finally:
             if is_temp:
                 try:
                     src_path.unlink()
                 except OSError:
                     pass
-        ph, pw = echo.shape
-        YY, XX = np.mgrid[0:ph, 0:pw]
-        dx_km = (XX - cx) * km_per_px
-        dy_km = (cy - YY) * km_per_px
-        rho = np.sqrt(dx_km ** 2 + dy_km ** 2)
-        ang = rho / R_EARTH
-        la0 = math.radians(RADAR_LAT)
-        LAT = np.degrees(np.arcsin(np.cos(ang) * math.sin(la0)
-                                   + np.where(rho == 0, 0,
-                                              dy_km * np.sin(ang) * math.cos(la0) / rho)))
-        LON = np.degrees(math.radians(RADAR_LON) + np.arctan2(
-            dx_km * np.sin(ang),
-            rho * math.cos(la0) * np.cos(ang) - dy_km * math.sin(la0) * np.sin(ang)))
-        eys, exs = np.where(echo)
         for pid, lat, lon in miss:
-            ek, nk = latlon_to_km(lat, lon, RADAR_LAT, RADAR_LON)
-            dist_km = math.hypot(ek, nk)
-            px, py = cx + ek / km_per_px, cy - nk / km_per_px
-            in_range = math.hypot(px - cx, py - cy) <= R250 + 2
-            in_panel = 0 <= int(round(px)) < pw and 0 <= int(round(py)) < ph
-            max_dbz, cover = None, 0.0
-            if in_range and in_panel:
-                max_dbz, cover = ov_win(echo, dbz_arr,
-                                        int(round(px)), int(round(py)), h)
-            drow = np.hypot((LAT[eys, exs] - lat) * 111.0,
-                            (LON[eys, exs] - lon) * 111.0 * math.cos(math.radians(lat)))
-            nearest = round(float(drow.min()), 1) if drow.size else 999.9
-            con.execute(
-                "INSERT OR IGNORE INTO readings (frame_id, place_id, dist_km, "
-                "max_dbz, cover_pct, nearest_echo_km, category, window_px) "
-                "VALUES (?,?,?,?,?,?,?,?)",
-                (fid, pid, round(dist_km, 1), max_dbz, round(cover * 100, 1),
-                 nearest, category_of(max_dbz, in_range), window_px))
+            insert_reading(con, fid, pid,
+                           *finder.reading_for(lat, lon), window_px)
             done += 1
         con.commit()
     con.close()
@@ -720,7 +538,7 @@ def rebuild_hourly(db: Path) -> int:
     con = connect(db)
     migrate(con)
     con.execute("DELETE FROM hourly_rain")
-    con.execute("""
+    con.execute(f"""
         INSERT INTO hourly_rain
             (place_id, date_ist, hour_ist, max_dbz, max_cover_pct,
              n_frames, category)
@@ -730,17 +548,7 @@ def rebuild_hourly(db: Path) -> int:
                MAX(r.max_dbz),
                MAX(r.cover_pct),
                COUNT(*),
-               CASE
-                 WHEN MAX(r.max_dbz) IS NULL
-                      AND SUM(CASE WHEN r.category = 'out of range'
-                                   THEN 1 ELSE 0 END) = COUNT(*)
-                   THEN 'out of range'
-                 WHEN MAX(r.max_dbz) IS NULL THEN 'no echo (<20 dBZ)'
-                 WHEN MAX(r.max_dbz) >= 50 THEN 'very heavy (>50 dBZ)'
-                 WHEN MAX(r.max_dbz) >= 40 THEN 'heavy (40-50 dBZ)'
-                 WHEN MAX(r.max_dbz) >= 30 THEN 'moderate (30-40 dBZ)'
-                 ELSE 'light (20-30 dBZ)'
-               END
+               {category_case()}
         FROM readings r JOIN frames f ON f.frame_id = r.frame_id
         WHERE f.frame_ist GLOB '????-??-?? ??:?? IST'
         GROUP BY r.place_id, date_ist, hour_ist
@@ -833,24 +641,26 @@ def export_rain_json(db: Path,
     day_frames: dict[str, list[dict]] = {}
     frame_idx: dict[str, int] = {}  # frame_utc -> index within its day
     for frame_utc, frame_ist in frame_rows:
-        m = re.search(r"(\d{4}-\d{2}-\d{2})\s+(\d{1,2}):(\d{2})",
-                      frame_ist or "")
-        if not m:
+        parsed = parse_frame_ist(frame_ist)
+        if not parsed:
             continue
-        date = m.group(1)
+        date, hour = parsed
+        m = IST_FRAME_RE.search(frame_ist or "")
+        assert m is not None
         lst = day_frames.setdefault(date, [])
         try:
             utc_dt = datetime.datetime.strptime(
-                (frame_utc or "").strip(), "%Y-%m-%d %H:%M:%SZ")
+                (frame_utc or "").strip(), "%Y-%m-%d %H:%M:%SZ").replace(
+                    tzinfo=datetime.timezone.utc)
         except ValueError:
             utc_dt = None
         if utc_dt is not None:
-            ist = utc_dt + datetime.timedelta(hours=5, minutes=30)
+            ist = utc_dt.astimezone(IST)
             minute = ist.hour * 60 + ist.minute + ist.second / 60.0
             short = f"{ist.hour:02d}:{ist.minute:02d}"
         else:
-            minute = int(m.group(2)) * 60 + int(m.group(3))
-            short = f"{int(m.group(2)):02d}:{m.group(3)}"
+            minute = hour * 60 + int(m.group(3))
+            short = f"{hour:02d}:{m.group(3)}"
         frame_idx[(frame_utc or "").strip()] = len(lst)
         lst.append({"utc": (frame_utc or "").strip(),
                     "min": round(minute, 2), "t": short})
@@ -862,11 +672,10 @@ def export_rain_json(db: Path,
     for name_en, district, frame_utc, frame_ist, max_dbz in rows:
         if max_dbz is None:
             continue  # dry is implied, not stored
-        m = re.search(r"(\d{4}-\d{2}-\d{2})\s+(\d{1,2}):(\d{2})",
-                      frame_ist or "")
-        if not m:
+        parsed = parse_frame_ist(frame_ist)
+        if not parsed:
             continue
-        date = m.group(1)
+        date, _ = parsed
         if date not in day_frames:
             continue
         j = frame_idx.get((frame_utc or "").strip())
@@ -876,10 +685,10 @@ def export_rain_json(db: Path,
 
     per_day: dict[str, dict] = {}
     for name_en, district, frame_utc, frame_ist, max_dbz in rows:
-        m = re.search(r"(\d{4}-\d{2}-\d{2})\s+(\d{1,2}):(\d{2})", frame_ist or "")
-        if not m:
+        parsed = parse_frame_ist(frame_ist)
+        if not parsed:
             continue
-        date, hour = m.group(1), int(m.group(2))
+        date, hour = parsed
         day = per_day.setdefault(date, {})
         key = (name_en, district)
         cell = day.setdefault(key, {})
@@ -906,7 +715,7 @@ def export_rain_json(db: Path,
                     continue
                 if h not in cell:
                     cells.append({"dbz": None, "color": None,
-                                  "cat": "no echo (<20 dBZ)"})
+                                  "cat": DRY_LABEL})
                     continue
                 v = cell[h]
                 if v is not None and (day_max is None or v > day_max):
@@ -932,9 +741,7 @@ def export_rain_json(db: Path,
     payload = {
         "radar": "KKL_MAXZ (Karaikal)",
         "source": "https://mausam.imd.gov.in/Radar/animation/Converted/KKL_MAXZ.gif",
-        "updated_ist": datetime.datetime.now(
-            datetime.timezone(datetime.timedelta(hours=5, minutes=30))
-        ).strftime("%Y-%m-%d %H:%M IST"),
+        "updated_ist": datetime.datetime.now(IST).strftime("%Y-%m-%d %H:%M IST"),
         "hours": list(range(24)),
         "resolutions": [240, 60, 30, 15],
         "lut": [{"dbz": dbz, "color": color} for dbz, color in DBZ_LUT],

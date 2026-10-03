@@ -62,12 +62,19 @@ jobs:
           # HEAD are recovered from git blobs.
           python scripts/kkl_db.py fill-missing
           python scripts/kkl_db.py export
+          # PAC daily accumulation: IMD issues at ~08:30 IST, so the
+          # first run after 09:30 IST freezes docs/archive/YYYY-MM-DD/
+          # pac.png + docs/data/pac.json entry under the issue date.
+          # Earlier runs refresh the previous issue; a live frame still
+          # identical to it is never frozen as a new day (IMD delays).
+          # Failure here must not fail the hourly MAXZ archive.
+          python scripts/pac_rain.py fetch || echo "pac fetch failed, keeping last frozen day"
 
       - name: Commit + push
         run: |
           git config user.name "kkl-archiver[bot]"
           git config user.email "kkl-archiver[bot]@users.noreply.github.com"
-          git add docs/archive docs/data/index.json docs/data/rain.json data/latest.csv data/timeseries.csv data/frames.csv
+          git add docs/archive docs/data/index.json docs/data/rain.json docs/data/pac.json data/latest.csv data/timeseries.csv data/frames.csv
           git diff --cached --quiet && echo "nothing new" && exit 0
           git commit -m "[bot] KKL $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
           # Remote may have moved between checkout and push (manual commit or

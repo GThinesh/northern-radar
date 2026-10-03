@@ -39,7 +39,7 @@
 
 <main class="deck deck-full">
   <section class="controlbar card" aria-label="Day">
-    <div class="cb-group">
+    <div class="cb-group" id="dayGroup">
       <label class="vh" for="daySel">Day (IST)</label>
       <div class="day-stepper">
         <button id="prevDay" type="button" aria-label="Older day">←</button>
@@ -48,7 +48,21 @@
       </div>
       <span id="themeSlot" class="theme-slot"></span>
     </div>
-    <div class="cb-group">
+    <div class="cb-group" id="modeGroup">
+      <span class="flabel" id="modeLabel">Mode</span>
+      <div class="seg" role="radiogroup" aria-labelledby="modeLabel" id="modeSeg">
+        <button type="button" role="radio" aria-checked="true" data-mode="hourly" title="Hourly dBZ spectrum">Hourly</button>
+        <button type="button" role="radio" aria-checked="false" data-mode="accum" title="Daily accumulated mm">Accumulate</button>
+      </div>
+    </div>
+    <div class="cb-group" id="weekGroup" hidden>
+      <div class="day-stepper">
+        <button id="prevWeek" type="button" aria-label="Older week">←</button>
+        <span id="weekLabel" class="mono" aria-live="polite"></span>
+        <button id="nextWeek" type="button" aria-label="Newer week">→</button>
+      </div>
+    </div>
+    <div class="cb-group" id="resGroup">
       <span class="flabel" id="resLabel">Detail</span>
       <div class="seg" role="radiogroup" aria-labelledby="resLabel" id="resSeg">
         <button type="button" role="radio" aria-checked="false" data-res="240" title="4-hour spectrum columns">4H</button>
@@ -57,25 +71,25 @@
         <button type="button" role="radio" aria-checked="false" data-res="15" title="15-minute spectrum columns">15M</button>
       </div>
     </div>
-    <div class="cb-group">
+    <div class="cb-group" id="wetGroup">
       <label class="switch"><input type="checkbox" id="wetOnly"> Rained only</label>
     </div>
-    <div class="cb-group">
+    <div class="cb-group" id="distGroup">
       <label class="flabel" for="distSel">District</label>
       <select id="distSel" aria-label="Filter by district"></select>
     </div>
-    <div class="cb-group">
+    <div class="cb-group" id="placeGroup">
       <label class="flabel" for="placeSel">Place</label>
       <select id="placeSel" aria-label="Filter by place"></select>
     </div>
-    <div class="cb-group">
+    <div class="cb-group" id="searchGroup">
       <label class="vh" for="q">Search places</label>
       <input type="search" id="q" placeholder="Search place" autocomplete="off" aria-label="Search places">
     </div>
     <p id="daySummary" class="mono summary" aria-live="polite"></p>
   </section>
 
-  <section class="card tablecard" aria-label="Hourly rain">
+  <section class="card tablecard" aria-label="Hourly rain" id="hourlyCard">
     <div class="tablewrap" id="tablewrap">
       <table id="raintable">
         <caption class="vh">Radar echo spectrum per place, IST</caption>
@@ -86,6 +100,15 @@
     <div class="tablefoot">
       <span class="dbscale" id="dbscale" aria-hidden="true"></span>
       <span class="mono scalelabels"><span>20</span><span>dBZ</span><span>60</span></span>
+    </div>
+  </section>
+
+  <section class="card tablecard pac-below" aria-label="Daily accumulation" id="pacCard" hidden>
+    <div class="tablewrap pac-wrap">
+      <figure class="pac-figure">
+        <img id="pacImg" alt="PAC daily accumulation">
+        <figcaption id="pacCap" class="mono"></figcaption>
+      </figure>
     </div>
   </section>
 </main>

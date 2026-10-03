@@ -157,19 +157,23 @@ input[type="range"]{accent-color:var(--signal);width:100%;height:2rem}
    Zebra fill separates rows (no per-row rules); radar legend colors are
    data encoding and stay saturated in both themes. */
 .tablecard{overflow:hidden}
-.tablewrap{overflow:auto;max-height:70vh;border-bottom:1px solid var(--line)}
-#raintable{border-collapse:collapse;width:100%;font-family:var(--mono);font-size:.78rem}
+.tablewrap{overflow:auto;max-height:70vh;border-bottom:1px solid var(--line);-webkit-overflow-scrolling:touch}
+#raintable{border-collapse:collapse;width:100%;min-width:38rem;font-family:var(--mono);font-size:.78rem}
 #raintable thead th{
   position:sticky;top:0;z-index:3;background:var(--card);
   font-weight:500;color:var(--muted);font-size:.72rem;
   padding:.5rem .35rem;min-width:2.4rem;
   border-bottom:1px solid var(--line2)}
 #raintable thead th.nodata{color:var(--faint)}
+#raintable thead th.corner{
+  position:sticky;top:0;left:0;z-index:4;background:var(--card);
+  text-align:left;padding-left:.9rem;min-width:11rem}
 #raintable tbody th.place{
   position:sticky;left:0;z-index:2;background:var(--card);
   text-align:left;font-family:var(--body);
   padding:.32rem .8rem .32rem .9rem;white-space:nowrap;
-  border-right:1px solid var(--line2)}
+  border-right:1px solid var(--line2);
+  min-width:11rem;max-width:16rem;overflow:hidden;text-overflow:ellipsis}
 #raintable tbody tr:nth-child(even) th.place,
 #raintable tbody tr:nth-child(even) td.dry,
 #raintable tbody tr:nth-child(even) td.nodata{background:var(--card2)}
@@ -203,10 +207,28 @@ input[type="range"]{accent-color:var(--signal);width:100%;height:2rem}
   border:1px solid var(--line2);border-radius:var(--r-s);
   padding:.55rem .7rem;font-family:var(--mono);font-size:.82rem;
   min-height:2.75rem;width:11rem;max-width:40vw}
+.cb-group[hidden]{display:none !important}
+#daySummary{flex-basis:100%;margin:.2rem 0 0}
+#weekLabel{white-space:nowrap}
+/* PAC accumulation image lives below the table */
+.pac-below{overflow:hidden}
+.pac-wrap{border-bottom:0;max-height:none}
+.pac-figure{margin:0;padding:var(--s4);display:grid;gap:var(--s2);min-width:0}
+.pac-figure img{width:100%;height:auto;max-width:100%;border-radius:8px;
+  background:var(--scope-bg);display:block;object-fit:contain}
+.pac-figure figcaption{color:var(--muted);overflow-wrap:anywhere}
 @media (max-width:720px){
-  #raintable{font-size:.72rem}
-  #raintable tbody th.place{padding:.3rem .6rem}
+  #raintable{font-size:.72rem;min-width:34rem}
+  #raintable tbody th.place{min-width:9rem;max-width:11rem;padding:.3rem .6rem}
+  #raintable thead th.corner{min-width:9rem;padding-left:.6rem}
+  #raintable td.spec{height:1.6rem}
+  .tablewrap{max-height:62vh}
   .tablefoot{padding:var(--s2)}
+  .controlbar{gap:.5rem}
+  .controlbar input[type="search"]{width:100%;max-width:none;flex:1}
+  #searchGroup{flex:1 1 100%}
+  #daySummary{font-size:.72rem}
+  .pac-figure{padding:var(--s2)}
 }
 
 footer{border-top:1px solid var(--line);padding:var(--s4) var(--s5);color:var(--muted);width:100%;box-sizing:border-box}

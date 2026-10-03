@@ -11,7 +11,8 @@ const MODES = [
   { min: 15, label: "15M" },
 ];
 
-const state = { rain: null, day: null, res: 60, wetOnly: false, district: "all", place: "all", q: "" };
+const PAC_LIVE = "https://mausam.imd.gov.in/Radar/pac_kkl.gif";
+const state = { rain: null, pac: null, day: null, res: 60, wetOnly: false, district: "all", place: "all", q: "", mode: "hourly", week: 0 };
 
 async function load() {
   const meta = $("meta");
@@ -94,13 +95,31 @@ async function load() {
   dist.onchange = () => { state.district = dist.value; render(); };
   psel.onchange = () => { state.place = psel.value; render(); };
   $("q").oninput = (e) => { state.q = e.target.value.trim().toLowerCase(); render(); };
+  try {
+    const pr = await fetch("data/pac.json", { cache: "no-store" });
+    if (pr.ok) state.pac = await pr.json();
+  } catch {}
+  if (q.get("mode") === "accum") state.mode = "accum";
   syncResSeg();
+  syncModeSeg();
   $("resSeg").addEventListener("click", (e) => {
     const b = e.target.closest("button[data-res]");
     if (!b) return;
     const v = parseInt(b.dataset.res, 10);
     if (v !== state.res) { state.res = v; syncResSeg(); render(); }
   });
+  $("modeSeg").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-mode]");
+    if (!b) return;
+    if (b.dataset.mode !== state.mode) {
+      state.mode = b.dataset.mode;
+      state.week = 0;
+      syncModeSeg();
+      render();
+    }
+  });
+  $("prevWeek").onclick = () => stepWeek(1);
+  $("nextWeek").onclick = () => stepWeek(-1);
   $("themeBtn").onclick = toggleTheme;
   try {
     const saved = localStorage.getItem("kkl-theme-v2");
@@ -241,7 +260,145 @@ function bucketTip(segs, peak) {
   return `${head} — ${parts.join(", ")}`;
 }
 
+function syncModeSeg() {
+  for (const b of $("modeSeg").querySelectorAll("button[data-mode]")) {
+    const on = b.dataset.mode === state.mode;
+    b.setAttribute("aria-checked", String(on));
+    b.classList.toggle("on", on);
+  }
+  const accum = state.mode === "accum";
+  // Hourly = minimal bar: day stepper + mode + search only.
+  // Accum = full filters: week stepper + wet/district/place + search.
+  // Detail (res) stays hidden: hourly is fixed at 1H for a responsive table.
+  $("weekGroup").hidden = !accum;
+  $("resGroup").hidden = true;
+  $("wetGroup").hidden = !accum;
+  $("distGroup").hidden = !accum;
+  $("placeGroup").hidden = !accum;
+  $("pacCard").hidden = !accum;
+  $("daySel").disabled = accum;
+  $("prevDay").disabled = accum;
+  $("nextDay").disabled = accum;
+  $("dayGroup").style.opacity = accum ? ".45" : "";
+}
+
+function stepWeek(dir) {
+  const n = (state.pac?.days?.length || 0);
+  const maxW = Math.max(0, Math.ceil(n / 7) - 1);
+  state.week = Math.min(maxW, Math.max(0, state.week + dir));
+  render();
+}
+
+function istToday() {
+  try {
+    return new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Asia/Kolkata", year: "numeric", month: "2-digit", day: "2-digit",
+    }).format(new Date());
+  } catch { return ""; }
+}
+
+function renderAccum() {
+  const days = [...(state.pac?.days || [])].sort((a, b) => b.date < a.date ? -1 : 1);
+  const weekDays = days.slice(state.week * 7, state.week * 7 + 7).reverse();
+  const maxW = Math.max(0, Math.ceil(days.length / 7) - 1);
+  $("weekLabel").textContent = weekDays.length
+    ? `${weekDays[0].date} to ${weekDays[weekDays.length - 1].date}`
+    : "no data yet";
+  $("prevWeek").disabled = state.week >= maxW;
+  $("nextWeek").disabled = state.week <= 0;
+  const byDate = new Map(days.map((d) => [d.date, d]));
+  const needle = state.q;
+  const places = (state.pac?.places || state.rain.places || [])
+    .map((p) => ({ name_en: p.name_en ?? p.place, district: p.district }))
+    .filter((p) =>
+      (state.district === "all" || p.district === state.district) &&
+      (state.place === "all" || p.name_en === state.place) &&
+      (!needle || p.name_en.toLowerCase().includes(needle) ||
+        p.district.toLowerCase().includes(needle)))
+    .sort((a, b) => a.name_en.localeCompare(b.name_en));
+  let rows = places.map((p) => {
+    let total = 0, wet = 0;
+    const cells = weekDays.map((d) => {
+      const r = (byDate.get(d.date)?.rows || [])
+        .find((x) => x.place === p.name_en && x.district === p.district);
+      if (r?.mm != null) { total += r.mm; wet++; return r; }
+      return null;
+    });
+    return { p, cells, total, wet };
+  });
+  if (state.wetOnly) rows = rows.filter((r) => r.wet > 0);
+  $("daySummary").textContent =
+    `${rows.filter((r) => r.wet > 0).length} of ${places.length} rained this week · mm total per day`;
+  const head = $("rainHead");
+  head.innerHTML = "";
+  const corner = document.createElement("th");
+  corner.scope = "col";
+  corner.className = "corner";
+  corner.textContent = "Place";
+  head.appendChild(corner);
+  for (const d of weekDays) {
+    const th = document.createElement("th");
+    th.scope = "col";
+    th.textContent = shortDate(d.date);
+    th.title = d.date + (d.captured_ist ? ` · frozen ${d.captured_ist}` : "");
+    head.appendChild(th);
+  }
+  const body = $("rainBody");
+  body.innerHTML = "";
+  const frag = document.createDocumentFragment();
+  for (const r of rows) {
+    const tr = document.createElement("tr");
+    const th = document.createElement("th");
+    th.scope = "row";
+    th.className = "place";
+    const nm = document.createElement("span");
+    nm.className = "pname";
+    nm.textContent = r.p.name_en ?? r.p.place ?? "";
+    const ds = document.createElement("span");
+    ds.className = "pdist";
+    ds.textContent = `${r.p.district} · Σ${Math.round(r.total * 10) / 10}`;
+    th.append(nm, ds);
+    tr.appendChild(th);
+    for (const c of r.cells) {
+      const td = document.createElement("td");
+      if (c == null || c.mm == null) {
+        td.className = "dry";
+        td.textContent = "–";
+      } else {
+        td.className = "wet";
+        td.style.background = c.color || "#888";
+        td.style.color = inkFor(c.color);
+        td.textContent = String(c.mm >= 100 ? "100+" : c.mm);
+        td.title = `${c.mm} mm`;
+      }
+      tr.appendChild(td);
+    }
+    frag.appendChild(tr);
+  }
+  body.appendChild(frag);
+  const show = weekDays[weekDays.length - 1] || days[0];
+  const img = $("pacImg"), cap = $("pacCap");
+  if (show) {
+    const today = istToday();
+    const isToday = show.date === today;
+    img.src = isToday ? PAC_LIVE : show.image;
+    img.alt = `PAC 24H accumulation for ${show.date}`;
+    cap.textContent = isToday
+      ? `${show.date} · live now · frozen ${show.captured_ist || "pending"}`
+      : `${show.date} · frozen ${show.captured_ist || ""}`;
+  } else {
+    img.removeAttribute("src");
+    cap.textContent = "No PAC day frozen yet. The first run after midnight IST creates it.";
+  }
+  try {
+    const p = new URLSearchParams({ mode: "accum" });
+    if (state.week) p.set("week", String(state.week));
+    history.replaceState(null, "", `?${p}`);
+  } catch {}
+}
+
 function render() {
+  if (state.mode === "accum") return renderAccum();
   const sel = $("daySel");
   const day = state.rain.days.find((d) => d.date === sel.value);
   state.day = day;

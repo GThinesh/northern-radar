@@ -55,6 +55,7 @@ a{color:var(--link);text-underline-offset:.2em}
 .scope-mark{color:var(--muted);display:grid;place-items:center;border:1px solid var(--line2);border-radius:50%;padding:.3rem;background:var(--card);flex:none}
 .kicker{margin:0;font-family:var(--mono);font-size:.72rem;color:var(--muted)}
 .brand-name{margin:0;font-family:var(--disp);font-weight:600;font-size:clamp(1.4rem,2.6vw,2rem);line-height:1.1;letter-spacing:-.02em}
+.brand-name[lang="ta"]{font-family:"Noto Serif Tamil","Latha","Nirmala UI",serif;font-weight:600;font-size:clamp(1.2rem,2.2vw,1.7rem);letter-spacing:0;line-height:1.6}
 .brand-name span{font-weight:400;color:var(--muted)}
 .live{display:grid;gap:.3rem;font-family:var(--mono);font-size:.82rem;
   border:1px solid var(--line);padding:.45rem .8rem;border-radius:var(--r-s);background:var(--card);
@@ -227,6 +228,7 @@ dialog::backdrop{background:rgb(0 0 0 / 44%)}
   .topbar{padding:var(--s2);gap:var(--s2)}
   .kicker,.top-actions{display:none}
   .brand-name{font-size:1.15rem}
+  .brand-name[lang="ta"]{font-size:1rem}
   .scope-mark{display:none}
   .live{font-size:.72rem;padding:.35rem .6rem;min-width:0;flex:1}
   .theme-slot{display:inline-flex;margin-inline-start:auto;gap:.5rem;align-items:center}

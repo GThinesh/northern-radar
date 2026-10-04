@@ -1,8 +1,11 @@
-/* KKL ops log — day viewer with scrub + lightbox. No deps. */
+/* KKL ops log — day viewer with scrub + lightbox. No deps.
+   Modes: hourly = frame reel (play/scrub/filmstrip);
+   accum = PAC 24H accumulation image, day-step navigation only, no reel. */
 const $ = (id) => document.getElementById(id);
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-const state = { idx: null, day: null, slotIx: 0, playing: false };
+const PAC_LIVE = "https://mausam.imd.gov.in/Radar/pac_kkl.gif";
+const state = { idx: null, pac: null, day: null, slotIx: 0, playing: false, mode: "hourly" };
 let playTimer = null;
 const FRAME_MS = 900;
 function stopTimer() { if (playTimer) { clearInterval(playTimer); playTimer = null; } }
@@ -32,31 +35,33 @@ async function load() {
     wrap.append(p);
     return;
   }
+  try {
+    const pr = await fetch("data/pac.json", { cache: "no-store" });
+    if (pr.ok) state.pac = await pr.json();
+  } catch {}
   const { idx } = state;
   meta.textContent = `${shortTime(idx.updated_ist)} · ${idx.days.length}d`;
   meta.title = `${idx.radar} · ${idx.updated_ist} · ${idx.days.length} day(s)`;
 
-  const sel = $("daySel");
-  sel.innerHTML = "";
-  for (const d of idx.days) {
-    const o = document.createElement("option");
-    o.value = d.date;
-    const n = (d.frames && d.frames.length) || (d.slots && d.slots.length)
-      || (d.daily_gif || d.strip ? 1 : 0);
-    o.textContent = `${shortDate(d.date)} · ${n}`;
-    o.title = `${d.date} · ${n} frames`;
-    sel.appendChild(o);
-  }
-  const q = new URLSearchParams(location.search).get("date");
-  if (q && [...sel.options].some((o) => o.value === q)) sel.value = q;
-  else if (sel.options.length) sel.selectedIndex = 0;
+  const q = new URLSearchParams(location.search);
+  if (q.get("mode") === "accum") state.mode = "accum";
 
+  const sel = $("daySel");
   sel.onchange = () => render(true);
   // days sorted newest-first (index 0 = newest): older day is +1.
   $("prevDay").onclick = () => stepDay(1);
   $("nextDay").onclick = () => stepDay(-1);
   $("playBtn").onclick = togglePlay;
   $("scrub").oninput = (e) => { pause(); setSlot(+e.target.value); };
+  $("modeSeg").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-mode]");
+    if (!b || b.dataset.mode === state.mode) return;
+    state.mode = b.dataset.mode;
+    pause();
+    buildDayOptions();
+    syncModeSeg();
+    render(true);
+  });
   $("themeBtn").onclick = () => {
     const html = document.documentElement;
     const toDark = html.dataset.theme !== "dark";
@@ -84,22 +89,30 @@ async function load() {
   placeTheme();
   syncThemeBtn();
 
-  // filmstrip arrow-key scrub
+  // filmstrip arrow-key scrub (hourly only)
   $("film").addEventListener("keydown", (e) => {
+    if (state.mode !== "hourly") return;
     if (e.key === "ArrowRight") { e.preventDefault(); pause(); setSlot(state.slotIx + 1); }
     if (e.key === "ArrowLeft") { e.preventDefault(); pause(); setSlot(state.slotIx - 1); }
   });
 
-  // Global keys: space = play, ←/→ = frame, shift+←/→ = day.
+  // Global keys: space = play (hourly), ←/→ = frame in hourly, day in accum,
+  // shift+←/→ = day in both modes.
   document.addEventListener("keydown", (e) => {
     const t = e.target;
     if (t && (t.tagName === "INPUT" || t.tagName === "SELECT" || t.tagName === "TEXTAREA")) return;
-    if (e.key === " ") { e.preventDefault(); togglePlay(); }
+    if (e.key === " ") {
+      if (state.mode !== "hourly") return;
+      e.preventDefault(); togglePlay();
+    }
     else if (e.key === "ArrowRight" && e.shiftKey) { e.preventDefault(); stepDay(-1); }
     else if (e.key === "ArrowLeft" && e.shiftKey) { e.preventDefault(); stepDay(1); }
+    else if (e.key === "ArrowRight" && state.mode === "accum") { e.preventDefault(); stepDay(-1); }
+    else if (e.key === "ArrowLeft" && state.mode === "accum") { e.preventDefault(); stepDay(1); }
   });
 
-  // Swipe on scope: horizontal = scrub, edge-swipe at ends = day.
+  // Swipe on scope: hourly = scrub (edge-swipe at ends = day),
+  // accum = day navigation only.
   const scope = document.querySelector(".scope");
   let tx = null;
   scope.addEventListener("touchstart", (e) => { tx = e.touches[0].clientX; }, { passive: true });
@@ -108,6 +121,7 @@ async function load() {
     const dx = e.changedTouches[0].clientX - tx;
     tx = null;
     if (Math.abs(dx) < 32) return;
+    if (state.mode === "accum") { stepDay(dx < 0 ? -1 : 1); return; }
     const n = currentSlots().length;
     if (dx < 0) {
       if (state.slotIx < n - 1) { pause(); setSlot(state.slotIx + 1); }
@@ -123,6 +137,8 @@ async function load() {
   $("heroImg").addEventListener("keydown", (e) => { if (e.key === "Enter") openHero(); });
   $("expandBtn").onclick = openHero;
 
+  buildDayOptions(q.get("date"));
+  syncModeSeg();
   render(true);
 }
 
@@ -133,6 +149,7 @@ function stepDay(dir) {
 }
 
 function togglePlay() {
+  if (state.mode !== "hourly") return;
   state.playing = !state.playing;
   syncPlayBtn();
   if (state.playing) {
@@ -166,6 +183,63 @@ function shortDate(iso) {
 function shortTime(s) {
   const m = /(\d{2}):(\d{2})/.exec(s || "");
   return m ? `${m[1]}:${m[2]}` : (s || "…");
+}
+function istToday() {
+  try {
+    return new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Asia/Kolkata", year: "numeric", month: "2-digit", day: "2-digit",
+    }).format(new Date());
+  } catch { return ""; }
+}
+
+/* Day selector follows the active mode: hourly days come from index.json,
+   accum days from pac.json (both newest-first). */
+function buildDayOptions(wantDate) {
+  const sel = $("daySel");
+  sel.innerHTML = "";
+  if (state.mode === "accum") {
+    const days = [...(state.pac?.days || [])].sort((a, b) =>
+      String(b.date).localeCompare(String(a.date)));
+    for (const d of days) {
+      const o = document.createElement("option");
+      o.value = d.date;
+      o.textContent = `${shortDate(d.date)} · PAC`;
+      o.title = `${d.date} · PAC 24H accumulation`;
+      sel.appendChild(o);
+    }
+  } else {
+    for (const d of state.idx.days) {
+      const o = document.createElement("option");
+      o.value = d.date;
+      const n = (d.frames && d.frames.length) || (d.slots && d.slots.length)
+        || (d.daily_gif || d.strip ? 1 : 0);
+      o.textContent = `${shortDate(d.date)} · ${n}`;
+      o.title = `${d.date} · ${n} frames`;
+      sel.appendChild(o);
+    }
+  }
+  const q = wantDate ?? new URLSearchParams(location.search).get("date");
+  if (q && [...sel.options].some((o) => o.value === q)) sel.value = q;
+  else if (sel.options.length) sel.selectedIndex = 0;
+}
+
+function syncModeSeg() {
+  for (const b of $("modeSeg").querySelectorAll("button[data-mode]")) {
+    const on = b.dataset.mode === state.mode;
+    b.setAttribute("aria-checked", String(on));
+    b.classList.toggle("on", on);
+  }
+  const accum = state.mode === "accum";
+  // Accum = single image + day stepper only: no reel (play/scrub/film),
+  // no hourly coverage tick. Light scope backdrop (PAC map is light).
+  pause();
+  document.querySelector(".scope").classList.toggle("accum", accum);
+  $("transport").style.display = accum ? "none" : "";
+  $("filmHead").style.display = accum ? "none" : "";
+  $("film").style.display = accum ? "none" : "";
+  for (const el of document.querySelectorAll(".daytick, .daylabels")) {
+    el.style.display = accum ? "none" : "";
+  }
 }
 
 function hourOf(t) {
@@ -231,6 +305,52 @@ function dayHasPerFrame(day) {
 }
 
 function render(resetSlot) {
+  if (state.mode === "accum") return renderAccum();
+  return renderHourly(resetSlot);
+}
+
+/* Accumulate mode: one frozen PAC 24H image per day, stepped with the
+   day stepper (←/→, swipe, shift+←/→). No play, scrub, or filmstrip. */
+function renderAccum() {
+  const sel = $("daySel");
+  const days = [...(state.pac?.days || [])].sort((a, b) =>
+    String(b.date).localeCompare(String(a.date)));
+  const day = days.find((d) => d.date === sel.value) || null;
+  state.day = day;
+  try {
+    const p = new URLSearchParams({ date: sel.value, mode: "accum" });
+    history.replaceState(null, "", `?${p}`);
+  } catch {}
+  const hero = $("heroImg");
+  const pos = sel.options.length ? `${sel.selectedIndex + 1}/${sel.options.length}` : "0/0";
+  if (!day) {
+    hero.removeAttribute("src");
+    hero.alt = "No accumulation image yet";
+    $("viewerCap").textContent = "No PAC day yet";
+    $("viewerCap").title = "No PAC day frozen yet";
+    $("heroBadge").textContent = pos;
+    $("filmSub").textContent = "—";
+    return;
+  }
+  const today = istToday();
+  const isToday = day.date === today;
+  hero.src = isToday ? PAC_LIVE : day.image;
+  hero.alt = `PAC 24H accumulation for ${day.date}, ${pos}`;
+  $("viewerCap").textContent = `${shortDate(day.date)} · PAC 24H`;
+  $("viewerCap").title = isToday
+    ? `${day.date} · live now · frozen ${day.captured_ist || "pending"}`
+    : `${day.date} · PAC 24H · frozen ${day.captured_ist || ""}`;
+  $("heroBadge").textContent = pos;
+  $("filmSub").textContent = `PAC 24H · frozen ${day.captured_ist || "—"}`;
+  $("filmSub").title = `${day.date} · PAC 24H accumulation`;
+  // Preload neighbours for instant day-stepping.
+  for (const d of [-1, 1]) {
+    const nx = days[sel.selectedIndex + d];
+    if (nx && nx.image && nx.date !== istToday()) { const im = new Image(); im.src = nx.image; }
+  }
+}
+
+function renderHourly(resetSlot) {
   const sel = $("daySel");
   const day = state.idx.days.find((d) => d.date === sel.value);
   state.day = day;
@@ -286,6 +406,7 @@ function buildFilm() {
 }
 
 function setSlot(i) {
+  if (state.mode !== "hourly") return;
   const frames = currentSlots();
   if (!frames.length) return;
   state.slotIx = (i + frames.length) % frames.length;

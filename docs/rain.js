@@ -11,7 +11,6 @@ const MODES = [
   { min: 15, label: "15M" },
 ];
 
-const PAC_LIVE = "https://mausam.imd.gov.in/Radar/pac_kkl.gif";
 const state = { rain: null, pac: null, day: null, res: 60, wetOnly: false, district: "all", place: "all", q: "", mode: "hourly", week: 0 };
 
 async function load() {
@@ -114,6 +113,18 @@ async function load() {
     if (b.dataset.mode !== state.mode) {
       state.mode = b.dataset.mode;
       state.week = 0;
+      if (state.mode === "accum") {
+        // Accum has no filter controls: clear hourly filters so they
+        // can't silently filter the week table.
+        state.wetOnly = false;
+        state.district = "all";
+        state.place = "all";
+        state.q = "";
+        $("wetOnly").checked = false;
+        $("distSel").value = "all";
+        $("placeSel").value = "all";
+        $("q").value = "";
+      }
       syncModeSeg();
       render();
     }
@@ -267,19 +278,18 @@ function syncModeSeg() {
     b.classList.toggle("on", on);
   }
   const accum = state.mode === "accum";
-  // Hourly = minimal bar: day stepper + mode + search only.
-  // Accum = full filters: week stepper + wet/district/place + search.
+  // Hourly = day stepper + rained-only + district + place + search + table.
+  // Accum = week navigator + district filter + week rain table.
   // Detail (res) stays hidden: hourly is fixed at 1H for a responsive table.
   $("weekGroup").hidden = !accum;
   $("resGroup").hidden = true;
-  $("wetGroup").hidden = !accum;
-  $("distGroup").hidden = !accum;
-  $("placeGroup").hidden = !accum;
-  $("pacCard").hidden = !accum;
-  $("daySel").disabled = accum;
-  $("prevDay").disabled = accum;
-  $("nextDay").disabled = accum;
-  $("dayGroup").style.opacity = accum ? ".45" : "";
+  $("dayGroup").hidden = accum;
+  $("wetGroup").hidden = accum;
+  $("distGroup").hidden = false;
+  $("placeGroup").hidden = accum;
+  $("searchGroup").hidden = accum;
+  $("daySummary").hidden = false;
+  $("hourlyCard").hidden = false;
 }
 
 function stepWeek(dir) {
@@ -287,14 +297,6 @@ function stepWeek(dir) {
   const maxW = Math.max(0, Math.ceil(n / 7) - 1);
   state.week = Math.min(maxW, Math.max(0, state.week + dir));
   render();
-}
-
-function istToday() {
-  try {
-    return new Intl.DateTimeFormat("en-CA", {
-      timeZone: "Asia/Kolkata", year: "numeric", month: "2-digit", day: "2-digit",
-    }).format(new Date());
-  } catch { return ""; }
 }
 
 function renderAccum() {
@@ -353,11 +355,8 @@ function renderAccum() {
     th.className = "place";
     const nm = document.createElement("span");
     nm.className = "pname";
-    nm.textContent = r.p.name_en ?? r.p.place ?? "";
-    const ds = document.createElement("span");
-    ds.className = "pdist";
-    ds.textContent = `${r.p.district} · Σ${Math.round(r.total * 10) / 10}`;
-    th.append(nm, ds);
+    nm.textContent = `${r.p.name_en ?? r.p.place ?? ""} · Σ${Math.round(r.total * 10) / 10}`;
+    th.append(nm);
     tr.appendChild(th);
     for (const c of r.cells) {
       const td = document.createElement("td");
@@ -376,20 +375,6 @@ function renderAccum() {
     frag.appendChild(tr);
   }
   body.appendChild(frag);
-  const show = weekDays[weekDays.length - 1] || days[0];
-  const img = $("pacImg"), cap = $("pacCap");
-  if (show) {
-    const today = istToday();
-    const isToday = show.date === today;
-    img.src = isToday ? PAC_LIVE : show.image;
-    img.alt = `PAC 24H accumulation for ${show.date}`;
-    cap.textContent = isToday
-      ? `${show.date} · live now · frozen ${show.captured_ist || "pending"}`
-      : `${show.date} · frozen ${show.captured_ist || ""}`;
-  } else {
-    img.removeAttribute("src");
-    cap.textContent = "No PAC day frozen yet. The first run after midnight IST creates it.";
-  }
   try {
     const p = new URLSearchParams({ mode: "accum" });
     if (state.week) p.set("week", String(state.week));
@@ -484,12 +469,9 @@ function render() {
     th.className = "place";
     const nm = document.createElement("span");
     nm.className = "pname";
-    nm.textContent = r.place;
-    const ds = document.createElement("span");
-    ds.className = "pdist";
-    ds.textContent = r.district;
-    th.append(nm, ds);
-    if (r.max != null) th.title = `${r.place} · peak ${r.max} dBZ`;
+    nm.textContent = r.max != null ? `${r.place} · ${Math.round(r.max)}` : r.place;
+    th.append(nm);
+    th.title = `${r.place}, ${r.district}` + (r.max != null ? ` · peak ${r.max} dBZ` : " · dry");
     tr.appendChild(th);
     const echo = new Map(r.spec || []);
     buckets.forEach((js) => {
@@ -554,11 +536,9 @@ function renderLegacy(day, sel) {
     th.className = "place";
     const nm = document.createElement("span");
     nm.className = "pname";
-    nm.textContent = r.place;
-    const ds = document.createElement("span");
-    ds.className = "pdist";
-    ds.textContent = r.district;
-    th.append(nm, ds);
+    nm.textContent = r.max != null ? `${r.place} · ${Math.round(r.max)}` : r.place;
+    th.append(nm);
+    th.title = `${r.place}, ${r.district}` + (r.max != null ? ` · peak ${r.max} dBZ` : "");
     tr.appendChild(th);
     (r.cells || []).forEach((c) => {
       const td = document.createElement("td");

@@ -49,6 +49,13 @@
       </div>
       <span id="themeSlot" class="theme-slot"></span>
     </div>
+    <div class="cb-group" id="modeGroup">
+      <span class="flabel" id="modeLabel">Mode</span>
+      <div class="seg" role="radiogroup" aria-labelledby="modeLabel" id="modeSeg">
+        <button type="button" role="radio" aria-checked="true" data-mode="hourly" title="Hourly radar frames">Hourly</button>
+        <button type="button" role="radio" aria-checked="false" data-mode="accum" title="Daily accumulated rainfall">Accumulate</button>
+      </div>
+    </div>
   </section>
 
   <section class="stage" aria-label="Radar">
@@ -62,7 +69,7 @@
         <img id="heroImg" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Selected radar frame" fetchpriority="high" tabindex="0">
         <button id="expandBtn" class="expand" type="button" aria-label="Expand frame">Expand</button>
       </div>
-      <div class="transport">
+      <div class="transport" id="transport">
         <button id="playBtn" type="button" aria-pressed="false" aria-label="Play">Play</button>
         <label class="scrub"><span class="vh">Scrub time</span>
           <input id="scrub" type="range" min="0" max="0" value="0" step="1" list="slotTicks" aria-label="Scrub time">
@@ -70,7 +77,7 @@
         </label>
         <span id="scrubVal" class="mono" aria-live="polite">—</span>
       </div>
-      <div class="film-head">
+      <div class="film-head" id="filmHead">
         <h2 id="filmH">Day</h2>
         <p id="filmSub" class="mono"></p>
       </div>

@@ -128,6 +128,11 @@ select{background:var(--bg);color:var(--text);border:1px solid var(--line2);bord
 .scope{position:relative;margin:var(--s2) var(--s4) 0;border-radius:var(--r-s);overflow:hidden;
   border:1px solid var(--line2);background:var(--scope-bg);display:grid;place-items:center;min-height:200px}
 .scope img{width:100%;height:auto;max-height:clamp(200px,46vh,560px);object-fit:contain;display:block;cursor:zoom-in;background:var(--scope-bg)}
+/* Accumulate mode: the PAC map is a light image — show it big on the card
+   background instead of the black scope, filling the viewport height while
+   keeping its proportions, centered horizontally. */
+.scope.accum{background:var(--card)}
+.scope.accum img{width:auto;max-width:100%;height:auto;max-height:72vh;background:transparent}
 .expand{position:absolute;right:10px;bottom:10px;min-width:2.75rem;border-radius:8px}
 .badge{font-family:var(--mono);font-size:.7rem;background:var(--surface2);color:var(--text);
   border:1px solid var(--line);padding:.3rem .7rem;border-radius:999px;font-weight:500;white-space:nowrap}
@@ -210,6 +215,13 @@ input[type="range"]{accent-color:var(--signal);width:100%;height:2rem}
 .cb-group[hidden]{display:none !important}
 #daySummary{flex-basis:100%;margin:.2rem 0 0}
 #weekLabel{white-space:nowrap}
+/* Hourly day image: small responsive thumbnail above the table */
+.hourly-figure{margin:0;padding:var(--s4) var(--s4) 0;max-width:22rem;position:relative}
+.hourly-figure img{width:100%;height:auto;display:block;border-radius:8px;
+  background:var(--scope-bg);cursor:zoom-in;object-fit:contain}
+.hourly-figure figcaption{display:flex;align-items:center;gap:var(--s2);
+  padding-top:var(--s2);color:var(--muted);position:relative}
+.hourly-figure .expand{position:static;margin-left:auto;flex:none}
 /* PAC accumulation image lives below the table */
 .pac-below{overflow:hidden}
 .pac-wrap{border-bottom:0;max-height:none}
@@ -218,6 +230,7 @@ input[type="range"]{accent-color:var(--signal);width:100%;height:2rem}
   background:var(--scope-bg);display:block;object-fit:contain}
 .pac-figure figcaption{color:var(--muted);overflow-wrap:anywhere}
 @media (max-width:720px){
+  .hourly-figure{max-width:none}
   #raintable{font-size:.72rem;min-width:34rem}
   #raintable tbody th.place{min-width:9rem;max-width:11rem;padding:.3rem .6rem}
   #raintable thead th.corner{min-width:9rem;padding-left:.6rem}
@@ -244,6 +257,7 @@ dialog::backdrop{background:rgb(0 0 0 / 44%)}
   .controlbar{padding:var(--s2)}
   .stats{margin-inline-start:0}
   .scope img{max-height:38vh}
+  .scope.accum img{max-height:60vh}
   .transport{position:sticky;bottom:0;z-index:10;background:var(--bg);border-top:1px solid var(--line);margin:var(--s2) calc(var(--s4) * -1) 0;padding:var(--s2) var(--s4)}
   #scrubVal{min-width:0;font-size:.75rem}
   /* minimal titlebar: title + date only */

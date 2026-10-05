@@ -9,7 +9,10 @@
   "e4884ce964601245",
   "efff2f531faefa23",
   "75d96ffa5ecf20dc",
-  "54e253e862c207bc"
+  "54e253e862c207bc",
+  "f48b43e6aeb5ee25",
+  "4135029cb5d892d2",
+  "eb43d4c3dc7aa86e"
  ],
  "frames": [
   {
@@ -91,6 +94,30 @@
    "img": "frames/021223_009.png",
    "slot": "02:00",
    "estimated": true
+  },
+  {
+   "h": "f48b43e6aeb5ee25",
+   "t_utc": "2026-10-05 21:12:22Z",
+   "t_ist": "2026-10-06 02:42 IST",
+   "img": "frames/024222_010.png",
+   "slot": "02:30",
+   "estimated": false
+  },
+  {
+   "h": "4135029cb5d892d2",
+   "t_utc": "2026-10-05 21:22:23Z",
+   "t_ist": "2026-10-06 02:52 IST",
+   "img": "frames/025223_011.png",
+   "slot": "02:30",
+   "estimated": false
+  },
+  {
+   "h": "eb43d4c3dc7aa86e",
+   "t_utc": "2026-10-05 21:32:22Z",
+   "t_ist": "2026-10-06 03:02 IST",
+   "img": "frames/030222_012.png",
+   "slot": "03:00",
+   "estimated": false
   }
  ],
  "slots": [
@@ -123,17 +150,30 @@
    "time": "02:02",
    "img": "frames/020223_008.png",
    "estimated": false
+  },
+  {
+   "slot": "02:30",
+   "time": "02:42",
+   "img": "frames/024222_010.png",
+   "estimated": false
+  },
+  {
+   "slot": "03:00",
+   "time": "03:02",
+   "img": "frames/030222_012.png",
+   "estimated": false
   }
  ],
  "stats": {
-  "snapshots": 2,
-  "decoded_total": 38,
-  "unique_frames": 10,
-  "dupes_dropped": 16
+  "snapshots": 3,
+  "decoded_total": 57,
+  "unique_frames": 13,
+  "dupes_dropped": 32
  },
  "blob_shas": [
   "0caa3b3c2da2056b5191f742362771b0601dd61bb5a317936c20d381b80d9ab1",
-  "0be2a81278e71a6f2dc1b98de722cb2a738d92ab105a76e806f7145d3be63969"
+  "0be2a81278e71a6f2dc1b98de722cb2a738d92ab105a76e806f7145d3be63969",
+  "4b1d6ec103c274a664271d0fe0fe0a6907b7490358a48f21f9101ef768bfc3f4"
  ],
  "ocr_v": 3,
  "ocr": {
@@ -163,6 +203,15 @@
   },
   "75d96ffa5ecf20dc": {
    "t_utc": "2026-10-05 20:32:23Z"
+  },
+  "f48b43e6aeb5ee25": {
+   "t_utc": "2026-10-05 21:12:22Z"
+  },
+  "4135029cb5d892d2": {
+   "t_utc": "2026-10-05 21:22:23Z"
+  },
+  "eb43d4c3dc7aa86e": {
+   "t_utc": "2026-10-05 21:32:22Z"
   }
  }
 }

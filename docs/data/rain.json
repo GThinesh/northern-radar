@@ -1,7 +1,7 @@
 {
  "radar": "KKL_MAXZ (Karaikal)",
  "source": "https://mausam.imd.gov.in/Radar/animation/Converted/KKL_MAXZ.gif",
- "updated_ist": "2026-10-14 04:31 IST",
+ "updated_ist": "2026-10-14 05:31 IST",
  "hours": [
   0,
   1,
@@ -519,7 +519,7 @@
     true,
     true,
     true,
-    false,
+    true,
     false,
     false,
     false,
@@ -539,7 +539,7 @@
     false,
     false
    ],
-   "n_frames_hours": 5,
+   "n_frames_hours": 6,
    "frames": [
     {
      "utc": "2026-10-13 18:32:22Z",
@@ -640,6 +640,31 @@
      "utc": "2026-10-13 22:52:22Z",
      "min": 262.37,
      "t": "04:22"
+    },
+    {
+     "utc": "2026-10-13 23:02:23Z",
+     "min": 272.38,
+     "t": "04:32"
+    },
+    {
+     "utc": "2026-10-13 23:12:22Z",
+     "min": 282.37,
+     "t": "04:42"
+    },
+    {
+     "utc": "2026-10-13 23:22:22Z",
+     "min": 292.37,
+     "t": "04:52"
+    },
+    {
+     "utc": "2026-10-13 23:32:22Z",
+     "min": 302.37,
+     "t": "05:02"
+    },
+    {
+     "utc": "2026-10-13 23:42:23Z",
+     "min": 312.38,
+     "t": "05:12"
     }
    ],
    "rows": [
@@ -668,11 +693,15 @@
        "cat": "moderate (30-40 dBZ)"
       },
       {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
+       "dbz": 36.0,
+       "color": "#c3efff",
+       "cat": "moderate (30-40 dBZ)"
       },
-      null,
+      {
+       "dbz": 36.0,
+       "color": "#c3efff",
+       "cat": "moderate (30-40 dBZ)"
+      },
       null,
       null,
       null,
@@ -713,6 +742,26 @@
       [
        13,
        30.7
+      ],
+      [
+       20,
+       30.7
+      ],
+      [
+       21,
+       36.0
+      ],
+      [
+       22,
+       36.0
+      ],
+      [
+       23,
+       36.0
+      ],
+      [
+       24,
+       22.7
       ]
      ]
     },
@@ -745,7 +794,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -810,7 +863,11 @@
        "color": "#006dff",
        "cat": "light (20-30 dBZ)"
       },
-      null,
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -855,6 +912,14 @@
       [
        19,
        25.3
+      ],
+      [
+       20,
+       25.3
+      ],
+      [
+       24,
+       20.0
       ]
      ]
     },
@@ -887,7 +952,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -948,7 +1017,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -1009,7 +1082,11 @@
        "color": "#1499ff",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
+      {
+       "dbz": 33.3,
+       "color": "#40c1ff",
+       "cat": "moderate (30-40 dBZ)"
+      },
       null,
       null,
       null,
@@ -1066,6 +1143,26 @@
       [
        19,
        25.3
+      ],
+      [
+       20,
+       20.0
+      ],
+      [
+       21,
+       30.7
+      ],
+      [
+       22,
+       30.7
+      ],
+      [
+       23,
+       33.3
+      ],
+      [
+       24,
+       20.0
       ]
      ]
     },
@@ -1094,11 +1191,15 @@
        "cat": "light (20-30 dBZ)"
       },
       {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
+       "dbz": 28.0,
+       "color": "#006dff",
+       "cat": "light (20-30 dBZ)"
       },
-      null,
+      {
+       "dbz": 33.3,
+       "color": "#40c1ff",
+       "cat": "moderate (30-40 dBZ)"
+      },
       null,
       null,
       null,
@@ -1139,6 +1240,22 @@
       [
        17,
        20.0
+      ],
+      [
+       21,
+       20.0
+      ],
+      [
+       22,
+       28.0
+      ],
+      [
+       23,
+       33.3
+      ],
+      [
+       24,
+       33.3
       ]
      ]
     },
@@ -1171,7 +1288,11 @@
        "color": "#40c1ff",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
+      {
+       "dbz": 25.3,
+       "color": "#002ef8",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -1204,6 +1325,26 @@
       [
        19,
        28.0
+      ],
+      [
+       20,
+       25.3
+      ],
+      [
+       21,
+       22.7
+      ],
+      [
+       22,
+       25.3
+      ],
+      [
+       23,
+       25.3
+      ],
+      [
+       24,
+       22.7
       ]
      ]
     },
@@ -1236,7 +1377,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": 30.7,
+       "color": "#1499ff",
+       "cat": "moderate (30-40 dBZ)"
+      },
       null,
       null,
       null,
@@ -1269,6 +1414,95 @@
       [
        15,
        20.0
+      ],
+      [
+       23,
+       20.0
+      ],
+      [
+       24,
+       30.7
+      ]
+     ]
+    },
+    {
+     "place": "Akkarayankulam",
+     "district": "Kilinochchi",
+     "cells": [
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 25.3,
+       "color": "#002ef8",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 30.7,
+       "color": "#1499ff",
+       "cat": "moderate (30-40 dBZ)"
+      },
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "max": 30.7,
+     "spec": [
+      [
+       0,
+       22.7
+      ],
+      [
+       1,
+       20.0
+      ],
+      [
+       21,
+       25.3
+      ],
+      [
+       22,
+       25.3
+      ],
+      [
+       23,
+       30.7
+      ],
+      [
+       24,
+       30.7
       ]
      ]
     },
@@ -1301,7 +1535,11 @@
        "color": "#1499ff",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -1326,67 +1564,22 @@
       [
        19,
        30.7
-      ]
-     ]
-    },
-    {
-     "place": "Uruthirapuram",
-     "district": "Kilinochchi",
-     "cells": [
-      {
-       "dbz": 28.0,
-       "color": "#006dff",
-       "cat": "light (20-30 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-     ],
-     "max": 28.0,
-     "spec": [
+      ],
       [
-       0,
+       20,
        28.0
       ],
       [
-       1,
-       20.0
+       21,
+       30.7
+      ],
+      [
+       22,
+       30.7
+      ],
+      [
+       23,
+       22.7
       ]
      ]
     },
@@ -1415,11 +1608,15 @@
        "cat": "light (20-30 dBZ)"
       },
       {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
       },
-      null,
+      {
+       "dbz": 30.7,
+       "color": "#1499ff",
+       "cat": "moderate (30-40 dBZ)"
+      },
       null,
       null,
       null,
@@ -1439,7 +1636,7 @@
       null,
       null
      ],
-     "max": 28.0,
+     "max": 30.7,
      "spec": [
       [
        8,
@@ -1456,6 +1653,22 @@
       [
        15,
        25.3
+      ],
+      [
+       20,
+       22.7
+      ],
+      [
+       22,
+       20.0
+      ],
+      [
+       23,
+       30.7
+      ],
+      [
+       24,
+       30.7
       ]
      ]
     },
@@ -1488,7 +1701,165 @@
        "color": "#3600a2",
        "cat": "light (20-30 dBZ)"
       },
+      {
+       "dbz": 28.0,
+       "color": "#006dff",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "max": 28.0,
+     "spec": [
+      [
+       0,
+       25.3
+      ],
+      [
+       1,
+       22.7
+      ],
+      [
+       19,
+       20.0
+      ],
+      [
+       20,
+       20.0
+      ],
+      [
+       21,
+       20.0
+      ],
+      [
+       23,
+       20.0
+      ],
+      [
+       24,
+       28.0
+      ]
+     ]
+    },
+    {
+     "place": "Uruthirapuram",
+     "district": "Kilinochchi",
+     "cells": [
+      {
+       "dbz": 28.0,
+       "color": "#006dff",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "max": 28.0,
+     "spec": [
+      [
+       0,
+       28.0
+      ],
+      [
+       1,
+       20.0
+      ],
+      [
+       20,
+       20.0
+      ]
+     ]
+    },
+    {
+     "place": "Valvettithurai",
+     "district": "Jaffna",
+     "cells": [
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 25.3,
+       "color": "#002ef8",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -1512,15 +1883,15 @@
      "spec": [
       [
        0,
-       25.3
+       20.0
       ],
       [
        1,
        22.7
       ],
       [
-       19,
-       20.0
+       24,
+       25.3
       ]
      ]
     },
@@ -1553,7 +1924,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -1610,7 +1985,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -1647,6 +2026,79 @@
      ]
     },
     {
+     "place": "Mallavi",
+     "district": "Mullaitivu",
+     "cells": [
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 25.3,
+       "color": "#002ef8",
+       "cat": "light (20-30 dBZ)"
+      },
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "max": 25.3,
+     "spec": [
+      [
+       21,
+       20.0
+      ],
+      [
+       22,
+       22.7
+      ],
+      [
+       23,
+       25.3
+      ],
+      [
+       24,
+       20.0
+      ]
+     ]
+    },
+    {
      "place": "Mullaitivu",
      "district": "Mullaitivu",
      "cells": [
@@ -1675,7 +2127,11 @@
        "color": "#002ef8",
        "cat": "light (20-30 dBZ)"
       },
-      null,
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -1703,6 +2159,95 @@
       ],
       [
        18,
+       25.3
+      ],
+      [
+       23,
+       22.7
+      ],
+      [
+       24,
+       22.7
+      ]
+     ]
+    },
+    {
+     "place": "Nayaru",
+     "district": "Mullaitivu",
+     "cells": [
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 25.3,
+       "color": "#002ef8",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 25.3,
+       "color": "#002ef8",
+       "cat": "light (20-30 dBZ)"
+      },
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "max": 25.3,
+     "spec": [
+      [
+       19,
+       22.7
+      ],
+      [
+       20,
+       22.7
+      ],
+      [
+       21,
+       25.3
+      ],
+      [
+       22,
+       20.0
+      ],
+      [
+       23,
+       25.3
+      ],
+      [
+       24,
        25.3
       ]
      ]
@@ -1736,7 +2281,11 @@
        "color": "#002ef8",
        "cat": "light (20-30 dBZ)"
       },
-      null,
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -1768,6 +2317,18 @@
       ],
       [
        19,
+       20.0
+      ],
+      [
+       21,
+       20.0
+      ],
+      [
+       23,
+       22.7
+      ],
+      [
+       24,
        20.0
       ]
      ]
@@ -1801,7 +2362,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -1826,128 +2391,6 @@
       [
        0,
        22.7
-      ]
-     ]
-    },
-    {
-     "place": "Valvettithurai",
-     "district": "Jaffna",
-     "cells": [
-      {
-       "dbz": 22.7,
-       "color": "#0301c7",
-       "cat": "light (20-30 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-     ],
-     "max": 22.7,
-     "spec": [
-      [
-       0,
-       20.0
-      ],
-      [
-       1,
-       22.7
-      ]
-     ]
-    },
-    {
-     "place": "Akkarayankulam",
-     "district": "Kilinochchi",
-     "cells": [
-      {
-       "dbz": 22.7,
-       "color": "#0301c7",
-       "cat": "light (20-30 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-     ],
-     "max": 22.7,
-     "spec": [
-      [
-       0,
-       22.7
-      ],
-      [
-       1,
-       20.0
       ]
      ]
     },
@@ -1980,7 +2423,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -2013,13 +2460,22 @@
       [
        7,
        20.0
+      ],
+      [
+       24,
+       22.7
       ]
      ]
     },
     {
-     "place": "Nayaru",
+     "place": "Mulliyawalai",
      "district": "Mullaitivu",
      "cells": [
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       {
        "dbz": null,
        "color": null,
@@ -2062,13 +2518,81 @@
       null,
       null,
       null,
+      null
+     ],
+     "max": 22.7,
+     "spec": [
+      [
+       23,
+       22.7
+      ]
+     ]
+    },
+    {
+     "place": "Thunukkai",
+     "district": "Mullaitivu",
+     "cells": [
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
       null,
       null
      ],
      "max": 22.7,
      "spec": [
       [
-       19,
+       1,
+       20.0
+      ],
+      [
+       20,
+       20.0
+      ],
+      [
+       21,
        22.7
       ]
      ]
@@ -2102,7 +2626,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2159,7 +2687,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2216,7 +2748,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2273,7 +2809,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2330,7 +2870,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2387,7 +2931,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2444,7 +2992,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2501,11 +3053,15 @@
        "cat": "light (20-30 dBZ)"
       },
       {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
        "dbz": null,
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
       null,
       null,
       null,
@@ -2534,62 +3090,9 @@
       [
        16,
        20.0
-      ]
-     ]
-    },
-    {
-     "place": "Thunukkai",
-     "district": "Mullaitivu",
-     "cells": [
-      {
-       "dbz": 20.0,
-       "color": "#3600a2",
-       "cat": "light (20-30 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-     ],
-     "max": 20.0,
-     "spec": [
+      ],
       [
-       1,
+       22,
        20.0
       ]
      ]
@@ -2623,7 +3126,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2675,7 +3182,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2727,7 +3238,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2779,7 +3294,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2831,7 +3350,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2883,7 +3406,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2935,7 +3462,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2987,7 +3518,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3039,7 +3574,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3091,7 +3630,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3143,7 +3686,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3195,7 +3742,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3247,7 +3798,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3299,7 +3854,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3351,7 +3910,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3403,7 +3966,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3455,7 +4022,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3507,7 +4078,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3559,7 +4134,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3611,7 +4190,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3663,7 +4246,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3715,7 +4302,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3767,7 +4358,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3819,7 +4414,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3871,7 +4470,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3923,7 +4526,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3975,7 +4582,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -4027,7 +4638,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -4079,7 +4694,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -4131,7 +4750,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -4183,7 +4806,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -4235,7 +4862,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -4287,7 +4918,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -4339,111 +4974,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-     ],
-     "max": null,
-     "spec": []
-    },
-    {
-     "place": "Mallavi",
-     "district": "Mullaitivu",
-     "cells": [
       {
        "dbz": null,
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-     ],
-     "max": null,
-     "spec": []
-    },
-    {
-     "place": "Mulliyawalai",
-     "district": "Mullaitivu",
-     "cells": [
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      null,
       null,
       null,
       null,
@@ -4495,7 +5030,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,

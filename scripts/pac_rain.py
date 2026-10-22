@@ -88,13 +88,10 @@ def mm_to_color(mm: float | None) -> str | None:
 def download_pac(retries: int = 3) -> bytes:
     import requests
 
-    from fetch_kkl import ca_bundle
-
-    verify = ca_bundle()
     last_err = None
     for i in range(retries):
         try:
-            r = requests.get(PAC_URL, headers=HEADERS, timeout=60, verify=verify)
+            r = requests.get(PAC_URL, headers=HEADERS, timeout=60)
             r.raise_for_status()
             if r.content[:6] not in (b"GIF87a", b"GIF89a",
                                      b"\x89PNG\r\n"):

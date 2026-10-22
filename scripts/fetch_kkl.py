@@ -28,12 +28,10 @@ import io
 import json
 import re
 import sys
-import tempfile
 import time
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-import certifi
 import requests
 from PIL import Image
 
@@ -51,32 +49,6 @@ HEADERS = {
     "Referer": "https://mausam.imd.gov.in/",
 }
 
-# IMD chains its TLS cert to the eMudhra "emSign" roots, which Mozilla/NSS
-# still trusts but certifi 2026.10.18 dropped (117 roots vs Mozilla's 121).
-# requests then fails with "certificate verify failed: self-signed
-# certificate in certificate chain". imd_ca.pem pins those roots; ca_bundle()
-# merges them onto certifi so verification keeps working regardless of
-# certifi regressions. See scripts/imd_ca.pem for provenance.
-IMD_CA = Path(__file__).resolve().parent / "imd_ca.pem"
-_CA_BUNDLE: str | None = None
-
-
-def ca_bundle() -> str:
-    """Path to a CA bundle of certifi's roots plus IMD's pinned roots."""
-    global _CA_BUNDLE
-    if _CA_BUNDLE is None:
-        parts = []
-        for p in (certifi.where(), IMD_CA):
-            try:
-                parts.append(Path(p).read_text(encoding="utf-8"))
-            except OSError:
-                continue
-        bundle = Path(tempfile.gettempdir()) / "kkl_ca_bundle.pem"
-        bundle.write_text("\n".join(parts), encoding="utf-8")
-        _CA_BUNDLE = str(bundle)
-    return _CA_BUNDLE
-
-
 def now_ist() -> datetime.datetime:
     return datetime.datetime.now(datetime.timezone.utc).astimezone(IST)
 
@@ -85,8 +57,7 @@ def download(retries: int = 3) -> bytes:
     last_err = None
     for i in range(retries):
         try:
-            r = requests.get(URL, headers=HEADERS, timeout=60,
-                             verify=ca_bundle())
+            r = requests.get(URL, headers=HEADERS, timeout=60)
             r.raise_for_status()
             ct = r.headers.get("Content-Type", "")
             if "gif" not in ct.lower() and not r.content[:6] in (b"GIF87a", b"GIF89a"):

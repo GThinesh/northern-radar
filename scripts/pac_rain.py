@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import datetime
 import json
+import math
 import sys
 import time
 from pathlib import Path
@@ -125,32 +126,34 @@ def calibrate_pac(im):
     range rings + radial spokes, which rain never paints over:
 
     - radar center = intersection of the N-S and E-W spokes, i.e. the
-      dominant column / row of sea-masked black pixels (legend panel
-      excluded so its borders can't win);
-    - scale = concentric-circle fit of the radial histogram peaks to
-      the 100:150:200:250 ratio.
+      dominant column / row of black pixels (frame border and legend
+      panel excluded so they can't win);
+    - scale = radial histogram scored against the 100:150:200:250 ratio.
+
+    Spokes and rings come from *all* black pixels, not just those over
+    grey sea: on a heavy-rain day the echo covers the sea, so a
+    sea-masked detection loses the spokes (the 2026-10-20..22 freeze) and
+    the surviving land clutter skews the ring fit. Black map labels are
+    sparse enough not to outvote a full-width dotted spoke.
 
     All pixel thresholds scale with frame size, so any IMD-served
     resolution works. Raises ValueError when the rings aren't found.
     """
     import numpy as np
-    from PIL import Image, ImageFilter
 
     from rain_finder import FrameGeom
 
     W, H = im.size
     a = np.array(im.convert("RGB")).astype(np.int16)
-    R, G, B = a[:, :, 0], a[:, :, 1], a[:, :, 2]
-    black = (R < 60) & (G < 60) & (B < 60)
-    grey = ((R >= 180) & (R <= 202) & (G >= 180) & (G <= 202)
-            & (B >= 180) & (B <= 202))
-    k = max(3, int(round(7 * W / 880.0)))
-    if k % 2 == 0:
-        k += 1
-    sea = np.array(Image.fromarray(grey)
-                   .filter(ImageFilter.MaxFilter(k))) > 0
+    black = ((a[:, :, 0] < 60) & (a[:, :, 1] < 60)
+             & (a[:, :, 2] < 60))
+
     panel_x = int(round(W * 0.80))
-    m = black & sea
+    border = max(1, int(round(2 * W / 880.0)))
+    m = black.copy()
+    m[:border, :] = False
+    m[-border:, :] = False
+    m[:, :border] = False
     m[:, panel_x:] = False
 
     # Raw counts: the spokes are dotted 1px lines, so any smoothing
@@ -173,45 +176,34 @@ def calibrate_pac(im):
     if row[cy] < max(20.0, 60.0 * W / 880.0) or row[cy] < 1.5 * _second_peak(row, cy, 8):
         raise ValueError(f"weak E-W spoke: peak={row[cy]:.0f}")
 
+    # Score candidate 250km radii by black-pixel density at all four ring
+    # radii, normalized by circumference. Picking discrete histogram peaks
+    # instead let land clutter outrank a rain-covered 250km ring, skewing
+    # the scale by up to 10%.
     ys, xs = np.where(m)
-    r = np.hypot(xs.astype(float) - cx, ys.astype(float) - cy)
+    r = np.hypot(xs.astype(float) - cx, ys.astype(float) - cy).astype(int)
     rmax = int(min(W, H) * 0.55)
-    hist, _ = np.histogram(r, bins=np.arange(rmax + 1))
-    sm = (np.pad(hist.astype(float), 1, mode="edge")[:-2]
-          + hist.astype(float)
-          + np.pad(hist.astype(float), 1, mode="edge")[2:]) / 3.0
-    lo = int(0.06 * W)
-    peaks: list[int] = []
-    for i in range(lo, rmax):
-        if sm[i] == sm[max(lo, i - 4):i + 5].max() and sm[i] >= 0.12 * sm[lo:].max():
-            peaks.append(i)
-    peaks.sort(key=lambda i: sm[i], reverse=True)
-    peaks = peaks[:12]
+    hist = np.bincount(r, minlength=rmax + 1).astype(float)
+    sm = np.convolve(hist, np.ones(5), "same")  # dotted rings: +-2px
 
-    best: tuple[float, float] | None = None  # (err, px_per_km)
-    for n in (4, 3):
-        if len(peaks) < n:
-            continue
-        from itertools import combinations
-
-        for combo in combinations(peaks, n):
-            rr = sorted(combo)
-            ring_opts = [PAC_RING_KM] if n == 4 else [
-                tuple(kk for j, kk in enumerate(PAC_RING_KM) if j != skip)
-                for skip in range(4)]
-            for rings in ring_opts:
-                base = sum(r_ / k_ for r_, k_ in zip(rr, rings)) / n
-                err = max(abs(r_ / k_ - base) / base for r_, k_ in zip(rr, rings))
-                if err < 0.04 and (best is None or err < best[0]):
-                    best = (err, base)
-        if best is not None:
-            break
+    ring_fracs = tuple(k / max(PAC_RING_KM) for k in PAC_RING_KM)
+    lo = int(0.30 * W)
+    hi = min(rmax, int(0.50 * W))
+    best: tuple[float, int] | None = None
+    for r250 in range(lo, hi + 1):
+        ring_r = [int(round(r250 * f)) for f in ring_fracs]
+        score = sum(sm[q] / max(q, 1) for q in ring_r)
+        if best is None or score > best[0]:
+            best = (score, r250)
     if best is None:
         raise ValueError(f"no concentric PAC rings at ({cx},{cy})")
-    km_per_px = 1.0 / best[1]
-    r250 = 250.0 / km_per_px
-    if not (0.30 * W <= r250 <= 0.50 * W):
-        raise ValueError(f"implausible PAC scale: {km_per_px:.4f} km/px")
+    _, r250 = best
+    ring_r = [int(round(r250 * f)) for f in ring_fracs]
+    # Every ring must actually carry black dots; a blank/no-ring frame
+    # would otherwise return a plausible-looking bogus scale.
+    if min(sm[q] for q in ring_r) < 0.15 * 2 * math.pi * min(ring_r):
+        raise ValueError(f"no concentric PAC rings at ({cx},{cy})")
+    km_per_px = 250.0 / r250
     x0 = max(0, int(round(cx - r250 - 2)))
     y0 = max(0, int(round(cy - r250 - 2)))
     x1 = min(W, int(round(cx + r250 + 3)))

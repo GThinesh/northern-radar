@@ -37,6 +37,25 @@ class TestLut(unittest.TestCase):
         self.assertAlmostEqual(geom.y0 + geom.cy, 359, delta=3)
         self.assertAlmostEqual(geom.km_per_px, 0.697, delta=0.02)
 
+    def test_calibrate_with_rain_over_sea(self):
+        from PIL import Image
+        import numpy as np
+
+        src = ROOT / "docs" / "archive" / "2026-10-03" / "pac.png"
+        self.assertTrue(src.is_file(), "need frozen PAC frame")
+        a = np.array(Image.open(src).convert("RGB"))
+        # Repaint the grey sea with a rain colour, keeping the black
+        # spokes/rings: a heavy-rain day hides the sea mask that the old
+        # calibration depended on (2026-10-20..22 freeze).
+        grey = ((a[:, :, 0] >= 180) & (a[:, :, 0] <= 202)
+                & (a[:, :, 1] >= 180) & (a[:, :, 1] <= 202)
+                & (a[:, :, 2] >= 180) & (a[:, :, 2] <= 202))
+        a[grey] = (88, 0, 160)
+        geom = P.calibrate_pac(Image.fromarray(a))
+        self.assertAlmostEqual(geom.x0 + geom.cx, 360, delta=3)
+        self.assertAlmostEqual(geom.y0 + geom.cy, 359, delta=3)
+        self.assertAlmostEqual(geom.km_per_px, 0.697, delta=0.02)
+
     def test_jaffna_wet_on_sample_frame(self):
         from PIL import Image
 
@@ -68,13 +87,21 @@ class TestLut(unittest.TestCase):
         except ImportError:
             self.skipTest("tesseract not installed")
             return
+        from unittest import mock
+
+        import datetime
         from PIL import Image
 
         src = ROOT / "docs" / "archive" / "2026-10-03" / "pac.png"
         self.assertTrue(src.is_file(), "need frozen PAC frame")
         # Panel stamp "03:00:00Z 3 OCT 2026 UTC" -> IST issue date.
-        self.assertEqual(P.ocr_pac_issue_date(Image.open(src)),
-                         "2026-10-03")
+        # Pin "now" to the frame's own date: the parser rejects stamps
+        # more than a day from today, so the test must not go stale.
+        ist = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
+        frozen = datetime.datetime(2026, 10, 3, 12, 0, tzinfo=ist)
+        with mock.patch.object(P, "now_ist", return_value=frozen):
+            self.assertEqual(P.ocr_pac_issue_date(Image.open(src)),
+                             "2026-10-03")
 
     def test_export_shape(self):
         out = P.export_pac_json()

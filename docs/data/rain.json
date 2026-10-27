@@ -1,7 +1,7 @@
 {
  "radar": "KKL_MAXZ (Karaikal)",
  "source": "https://mausam.imd.gov.in/Radar/animation/Converted/KKL_MAXZ.gif",
- "updated_ist": "2026-10-28 01:32 IST",
+ "updated_ist": "2026-10-28 02:32 IST",
  "hours": [
   0,
   1,
@@ -570,11 +570,21 @@
      "utc": "2026-10-27 19:52:20Z",
      "min": 82.33,
      "t": "01:22"
+    },
+    {
+     "utc": "2026-10-27 20:12:24Z",
+     "min": 102.4,
+     "t": "01:42"
+    },
+    {
+     "utc": "2026-10-27 20:22:24Z",
+     "min": 112.4,
+     "t": "01:52"
     }
    ],
    "rows": [
     {
-     "place": "Analaitivu",
+     "place": "Atchuvely",
      "district": "Jaffna",
      "cells": [
       {
@@ -583,9 +593,9 @@
        "cat": "no echo (<20 dBZ)"
       },
       {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
       },
       null,
       null,
@@ -610,11 +620,16 @@
       null,
       null
      ],
-     "max": null,
-     "spec": []
+     "max": 20.0,
+     "spec": [
+      [
+       7,
+       20.0
+      ]
+     ]
     },
     {
-     "place": "Atchuvely",
+     "place": "Analaitivu",
      "district": "Jaffna",
      "cells": [
       {

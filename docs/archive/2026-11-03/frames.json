@@ -8,7 +8,11 @@
   "8ea43fdcf6c21b46",
   "b22deb22095be4cc",
   "95c07dec34b1bb7f",
-  "434c3d80d10c038e"
+  "434c3d80d10c038e",
+  "b37b1adaa8e36d1e",
+  "b01174a2054dcc3b",
+  "476ba71840ac7126",
+  "8ab7137c439e333a"
  ],
  "frames": [
   {
@@ -82,6 +86,38 @@
    "img": "frames/012311_008.png",
    "slot": "01:00",
    "estimated": true
+  },
+  {
+   "h": "b37b1adaa8e36d1e",
+   "t_utc": "2026-11-02 21:12:26Z",
+   "t_ist": "2026-11-03 02:42 IST",
+   "img": "frames/024226_009.png",
+   "slot": "02:30",
+   "estimated": true
+  },
+  {
+   "h": "b01174a2054dcc3b",
+   "t_utc": "2026-11-02 21:22:26Z",
+   "t_ist": "2026-11-03 02:52 IST",
+   "img": "frames/025226_010.png",
+   "slot": "02:30",
+   "estimated": true
+  },
+  {
+   "h": "476ba71840ac7126",
+   "t_utc": "2026-11-02 21:32:26Z",
+   "t_ist": "2026-11-03 03:02 IST",
+   "img": "frames/030226_011.png",
+   "slot": "03:00",
+   "estimated": true
+  },
+  {
+   "h": "8ab7137c439e333a",
+   "t_utc": "2026-11-02 21:42:26Z",
+   "t_ist": "2026-11-03 03:12 IST",
+   "img": "frames/031226_012.png",
+   "slot": "03:00",
+   "estimated": false
   }
  ],
  "slots": [
@@ -102,19 +138,36 @@
    "time": "01:03",
    "img": "frames/010311_006.png",
    "estimated": true
+  },
+  {
+   "slot": "02:30",
+   "time": "02:42",
+   "img": "frames/024226_009.png",
+   "estimated": true
+  },
+  {
+   "slot": "03:00",
+   "time": "03:02",
+   "img": "frames/030226_011.png",
+   "estimated": true
   }
  ],
  "stats": {
-  "snapshots": 3,
-  "decoded_total": 56,
-  "unique_frames": 9,
-  "dupes_dropped": 26
+  "snapshots": 4,
+  "decoded_total": 74,
+  "unique_frames": 13,
+  "dupes_dropped": 40
  },
  "blob_shas": [
   "57b54f097c023789d4ea981e95e79d7c3191eba6b3866dbc891d46c55605d92e",
   "4890dda05bdbbaba620391f3e97da07ba67a1a57cceababd09222530a86f720c",
-  "8713213b7d0eee4a568da56437d8a423d679563eb77a438a2bd97cc08acfd065"
+  "8713213b7d0eee4a568da56437d8a423d679563eb77a438a2bd97cc08acfd065",
+  "66fb3f7ebf0daf20f5e857ec5aea95d8ca35665e3bf961845fd0ff16fe30330b"
  ],
  "ocr_v": 3,
- "ocr": {}
+ "ocr": {
+  "8ab7137c439e333a": {
+   "t_utc": "2026-11-02 21:42:26Z"
+  }
+ }
 }

@@ -1,7 +1,12 @@
 {
  "hashes": [
   "126e1f5ced4cabd1",
-  "f966047c1b8ab35c"
+  "f966047c1b8ab35c",
+  "8533f2c9e726a340",
+  "86d20fa3ebbd62d1",
+  "e8e43dcd8704efc8",
+  "b26905fdc4851d1e",
+  "785f9c0f13b5073d"
  ],
  "frames": [
   {
@@ -19,6 +24,46 @@
    "img": "frames/001225_001.png",
    "slot": "00:00",
    "estimated": false
+  },
+  {
+   "h": "8533f2c9e726a340",
+   "t_utc": "2026-11-03 18:52:25Z",
+   "t_ist": "2026-11-04 00:22 IST",
+   "img": "frames/002225_002.png",
+   "slot": "00:00",
+   "estimated": true
+  },
+  {
+   "h": "86d20fa3ebbd62d1",
+   "t_utc": "2026-11-03 19:02:25Z",
+   "t_ist": "2026-11-04 00:32 IST",
+   "img": "frames/003225_003.png",
+   "slot": "00:30",
+   "estimated": true
+  },
+  {
+   "h": "e8e43dcd8704efc8",
+   "t_utc": "2026-11-03 19:12:25Z",
+   "t_ist": "2026-11-04 00:42 IST",
+   "img": "frames/004225_004.png",
+   "slot": "00:30",
+   "estimated": true
+  },
+  {
+   "h": "b26905fdc4851d1e",
+   "t_utc": "2026-11-03 19:22:25Z",
+   "t_ist": "2026-11-04 00:52 IST",
+   "img": "frames/005225_005.png",
+   "slot": "00:30",
+   "estimated": true
+  },
+  {
+   "h": "785f9c0f13b5073d",
+   "t_utc": "2026-11-03 19:32:25Z",
+   "t_ist": "2026-11-04 01:02 IST",
+   "img": "frames/010225_006.png",
+   "slot": "01:00",
+   "estimated": true
   }
  ],
  "slots": [
@@ -27,16 +72,29 @@
    "time": "00:00",
    "img": "frames/000045_000.png",
    "estimated": true
+  },
+  {
+   "slot": "00:30",
+   "time": "00:32",
+   "img": "frames/003225_003.png",
+   "estimated": true
+  },
+  {
+   "slot": "01:00",
+   "time": "01:02",
+   "img": "frames/010225_006.png",
+   "estimated": true
   }
  ],
  "stats": {
-  "snapshots": 1,
-  "decoded_total": 19,
-  "unique_frames": 2,
-  "dupes_dropped": 4
+  "snapshots": 2,
+  "decoded_total": 38,
+  "unique_frames": 7,
+  "dupes_dropped": 11
  },
  "blob_shas": [
-  "7f3300d6fe106fb286de38bef25c05ef09e9cedba4dd3dfd50c90beb6b0e72cf"
+  "7f3300d6fe106fb286de38bef25c05ef09e9cedba4dd3dfd50c90beb6b0e72cf",
+  "f79ec1b067c27220274a54aa5b848d38df7de4197f9dd087a3ef820d903c3faa"
  ],
  "ocr_v": 3,
  "ocr": {

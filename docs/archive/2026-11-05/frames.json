@@ -21,7 +21,12 @@
   "857b9ad9b3a8260b",
   "d1265709e1c008bc",
   "1e9293609abad959",
-  "7d86e075ab1a2852"
+  "7d86e075ab1a2852",
+  "12bb9348ed59486c",
+  "e2b488b6711b7f09",
+  "1adde120e5552ce3",
+  "d9a620b651ba17cd",
+  "49b498ce1fc5713b"
  ],
  "frames": [
   {
@@ -199,6 +204,46 @@
    "img": "frames/051225_021.png",
    "slot": "05:00",
    "estimated": false
+  },
+  {
+   "h": "12bb9348ed59486c",
+   "t_utc": "2026-11-04 23:52:25Z",
+   "t_ist": "2026-11-05 05:22 IST",
+   "img": "frames/052225_022.png",
+   "slot": "05:00",
+   "estimated": true
+  },
+  {
+   "h": "e2b488b6711b7f09",
+   "t_utc": "2026-11-05 00:02:25Z",
+   "t_ist": "2026-11-05 05:32 IST",
+   "img": "frames/053225_023.png",
+   "slot": "05:30",
+   "estimated": true
+  },
+  {
+   "h": "1adde120e5552ce3",
+   "t_utc": "2026-11-05 00:12:25Z",
+   "t_ist": "2026-11-05 05:42 IST",
+   "img": "frames/054225_024.png",
+   "slot": "05:30",
+   "estimated": true
+  },
+  {
+   "h": "d9a620b651ba17cd",
+   "t_utc": "2026-11-05 00:22:25Z",
+   "t_ist": "2026-11-05 05:52 IST",
+   "img": "frames/055225_025.png",
+   "slot": "05:30",
+   "estimated": true
+  },
+  {
+   "h": "49b498ce1fc5713b",
+   "t_utc": "2026-11-05 00:32:25Z",
+   "t_ist": "2026-11-05 06:02 IST",
+   "img": "frames/060225_026.png",
+   "slot": "06:00",
+   "estimated": true
   }
  ],
  "slots": [
@@ -267,13 +312,25 @@
    "time": "05:12",
    "img": "frames/051225_021.png",
    "estimated": false
+  },
+  {
+   "slot": "05:30",
+   "time": "05:32",
+   "img": "frames/053225_023.png",
+   "estimated": true
+  },
+  {
+   "slot": "06:00",
+   "time": "06:02",
+   "img": "frames/060225_026.png",
+   "estimated": true
   }
  ],
  "stats": {
-  "snapshots": 7,
-  "decoded_total": 133,
-  "unique_frames": 22,
-  "dupes_dropped": 88
+  "snapshots": 8,
+  "decoded_total": 152,
+  "unique_frames": 27,
+  "dupes_dropped": 102
  },
  "blob_shas": [
   "f436b95921a5f2009c067d52c85dc88e09aa8e46ed034937b72b7075d511472d",
@@ -282,7 +339,8 @@
   "2767cc3132d5400439f41e04162288f064a5bcb5977855bb477ef74b653acdd9",
   "369df68c32e7fc113dd23935b917e23971648584b8e5e73500608b13ab0b2b1c",
   "7ce1007abb17e69218ba018dda4c9ef419a04aa1e57b9525aab0415ad5dc71ad",
-  "f6a0a479540e31a520034ede14a4340e4f646933044a324c2b7c3719db12836b"
+  "f6a0a479540e31a520034ede14a4340e4f646933044a324c2b7c3719db12836b",
+  "4f52afa2f1437b118fed3197c6215e3091148e75c8c85df99215140e0d343ced"
  ],
  "ocr_v": 3,
  "ocr": {

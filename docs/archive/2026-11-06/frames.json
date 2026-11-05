@@ -2,7 +2,10 @@
  "hashes": [
   "f5d6d2cfecdf1b5a",
   "f37cadd1b9c7ce60",
-  "d10687d76bc5894d"
+  "d10687d76bc5894d",
+  "f50ea0cf3afe89d4",
+  "b72e3079af09fff7",
+  "0612cf9bd7084d10"
  ],
  "frames": [
   {
@@ -28,6 +31,30 @@
    "img": "frames/011223_002.png",
    "slot": "01:00",
    "estimated": false
+  },
+  {
+   "h": "f50ea0cf3afe89d4",
+   "t_utc": "2026-11-05 20:12:22Z",
+   "t_ist": "2026-11-06 01:42 IST",
+   "img": "frames/014222_003.png",
+   "slot": "01:30",
+   "estimated": false
+  },
+  {
+   "h": "b72e3079af09fff7",
+   "t_utc": "2026-11-05 20:32:22Z",
+   "t_ist": "2026-11-06 02:02 IST",
+   "img": "frames/020222_004.png",
+   "slot": "02:00",
+   "estimated": false
+  },
+  {
+   "h": "0612cf9bd7084d10",
+   "t_utc": "2026-11-05 20:42:22Z",
+   "t_ist": "2026-11-06 02:12 IST",
+   "img": "frames/021222_005.png",
+   "slot": "02:00",
+   "estimated": false
   }
  ],
  "slots": [
@@ -48,18 +75,31 @@
    "time": "01:12",
    "img": "frames/011223_002.png",
    "estimated": false
+  },
+  {
+   "slot": "01:30",
+   "time": "01:42",
+   "img": "frames/014222_003.png",
+   "estimated": false
+  },
+  {
+   "slot": "02:00",
+   "time": "02:02",
+   "img": "frames/020222_004.png",
+   "estimated": false
   }
  ],
  "stats": {
-  "snapshots": 3,
-  "decoded_total": 57,
-  "unique_frames": 3,
-  "dupes_dropped": 25
+  "snapshots": 4,
+  "decoded_total": 76,
+  "unique_frames": 6,
+  "dupes_dropped": 38
  },
  "blob_shas": [
   "fc08ab055e7a60dac101b4159cfcdd1135470553ac762934ada2cb072ce1395e",
   "5b06ad6ddff6a96584831d1e7b6c328695c134ebcc3d2bf133cc4bb27820c39e",
-  "b544a8e986d523aafa4c46ea6d73d5b65026ec20076fdf85b1e6caca831c99b5"
+  "b544a8e986d523aafa4c46ea6d73d5b65026ec20076fdf85b1e6caca831c99b5",
+  "5125e5bc6e7a0d915281d5d7abd413fde5e0b72547ce45d579d6d7360b490f71"
  ],
  "ocr_v": 3,
  "ocr": {
@@ -71,6 +111,15 @@
   },
   "d10687d76bc5894d": {
    "t_utc": "2026-11-05 19:42:23Z"
+  },
+  "f50ea0cf3afe89d4": {
+   "t_utc": "2026-11-05 20:12:22Z"
+  },
+  "b72e3079af09fff7": {
+   "t_utc": "2026-11-05 20:32:22Z"
+  },
+  "0612cf9bd7084d10": {
+   "t_utc": "2026-11-05 20:42:22Z"
   }
  }
 }

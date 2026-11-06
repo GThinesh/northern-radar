@@ -27,7 +27,11 @@
   "e2da7685f2f57402",
   "c3eb7f93be8e7457",
   "3ded8ee444809b25",
-  "9adcd09e1c6b4073"
+  "9adcd09e1c6b4073",
+  "359c9c1e81659e03",
+  "a7458779f4f8c301",
+  "827d683269b12a26",
+  "2fdb9667b26f1640"
  ],
  "frames": [
   {
@@ -253,6 +257,38 @@
    "img": "frames/123222_027.png",
    "slot": "12:30",
    "estimated": true
+  },
+  {
+   "h": "359c9c1e81659e03",
+   "t_utc": "2026-11-06 07:52:22Z",
+   "t_ist": "2026-11-06 13:22 IST",
+   "img": "frames/132222_028.png",
+   "slot": "13:00",
+   "estimated": true
+  },
+  {
+   "h": "a7458779f4f8c301",
+   "t_utc": "2026-11-06 08:22:22Z",
+   "t_ist": "2026-11-06 13:52 IST",
+   "img": "frames/135222_029.png",
+   "slot": "13:30",
+   "estimated": false
+  },
+  {
+   "h": "827d683269b12a26",
+   "t_utc": "2026-11-06 08:32:22Z",
+   "t_ist": "2026-11-06 14:02 IST",
+   "img": "frames/140222_030.png",
+   "slot": "14:00",
+   "estimated": false
+  },
+  {
+   "h": "2fdb9667b26f1640",
+   "t_utc": "2026-11-06 08:52:22Z",
+   "t_ist": "2026-11-06 14:22 IST",
+   "img": "frames/142222_031.png",
+   "slot": "14:00",
+   "estimated": false
   }
  ],
  "slots": [
@@ -381,13 +417,31 @@
    "time": "12:32",
    "img": "frames/123222_027.png",
    "estimated": true
+  },
+  {
+   "slot": "13:00",
+   "time": "13:22",
+   "img": "frames/132222_028.png",
+   "estimated": true
+  },
+  {
+   "slot": "13:30",
+   "time": "13:52",
+   "img": "frames/135222_029.png",
+   "estimated": false
+  },
+  {
+   "slot": "14:00",
+   "time": "14:02",
+   "img": "frames/140222_030.png",
+   "estimated": false
   }
  ],
  "stats": {
-  "snapshots": 15,
-  "decoded_total": 285,
-  "unique_frames": 28,
-  "dupes_dropped": 225
+  "snapshots": 16,
+  "decoded_total": 304,
+  "unique_frames": 32,
+  "dupes_dropped": 240
  },
  "blob_shas": [
   "fc08ab055e7a60dac101b4159cfcdd1135470553ac762934ada2cb072ce1395e",
@@ -404,7 +458,8 @@
   "83d792b660e1c1b680abe318304df358df069d8407d45211a982703cd9e9c90b",
   "d621acd196d8c5f3baea206374cbea99f7901df43f23552c9c5bb6d523dfca91",
   "6e509a3a00cf0271bffee0cfe4c85d8fc96bbbfece59f478847b1b6434c94bc7",
-  "6f5dc99b7bb2952089e5c71bfd318e687617c991e912cff7bb983659077530c9"
+  "6f5dc99b7bb2952089e5c71bfd318e687617c991e912cff7bb983659077530c9",
+  "a9f3ad172de71fe31e2779674f5fbac212a29b9fd06db5140fa0fc4fd3c58937"
  ],
  "ocr_v": 3,
  "ocr": {
@@ -488,6 +543,15 @@
   },
   "3ded8ee444809b25": {
    "t_utc": "2026-11-06 06:52:22Z"
+  },
+  "a7458779f4f8c301": {
+   "t_utc": "2026-11-06 08:22:22Z"
+  },
+  "827d683269b12a26": {
+   "t_utc": "2026-11-06 08:32:22Z"
+  },
+  "2fdb9667b26f1640": {
+   "t_utc": "2026-11-06 08:52:22Z"
   }
  }
 }

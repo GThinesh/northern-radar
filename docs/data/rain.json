@@ -1,7 +1,7 @@
 {
  "radar": "KKL_MAXZ (Karaikal)",
  "source": "https://mausam.imd.gov.in/Radar/animation/Converted/KKL_MAXZ.gif",
- "updated_ist": "2026-11-08 09:31 IST",
+ "updated_ist": "2026-11-08 10:31 IST",
  "hours": [
   0,
   1,
@@ -523,8 +523,8 @@
     true,
     true,
     true,
-    false,
-    false,
+    true,
+    true,
     false,
     false,
     false,
@@ -539,7 +539,7 @@
     false,
     false
    ],
-   "n_frames_hours": 9,
+   "n_frames_hours": 11,
    "frames": [
     {
      "utc": "2026-11-07 18:32:21Z",
@@ -715,6 +715,21 @@
      "utc": "2026-11-08 03:12:22Z",
      "min": 522.37,
      "t": "08:42"
+    },
+    {
+     "utc": "2026-11-08 04:12:22Z",
+     "min": 582.37,
+     "t": "09:42"
+    },
+    {
+     "utc": "2026-11-08 04:32:22Z",
+     "min": 602.37,
+     "t": "10:02"
+    },
+    {
+     "utc": "2026-11-08 04:52:22Z",
+     "min": 622.37,
+     "t": "10:22"
     }
    ],
    "rows": [
@@ -767,8 +782,16 @@
        "color": "#ffb600",
        "cat": "heavy (40-50 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -828,6 +851,10 @@
       [
        34,
        44.0
+      ],
+      [
+       36,
+       20.0
       ]
      ]
     },
@@ -880,8 +907,16 @@
        "color": "#ffb600",
        "cat": "heavy (40-50 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -929,6 +964,10 @@
       [
        34,
        22.7
+      ],
+      [
+       35,
+       20.0
       ]
      ]
     },
@@ -981,8 +1020,16 @@
        "color": "#ffb600",
        "cat": "heavy (40-50 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -1082,8 +1129,16 @@
        "color": "#ffb600",
        "cat": "heavy (40-50 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -1191,8 +1246,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -1243,6 +1306,10 @@
       ],
       [
        29,
+       20.0
+      ],
+      [
+       35,
        20.0
       ]
      ]
@@ -1296,8 +1363,16 @@
        "color": "#ffb600",
        "cat": "heavy (40-50 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -1353,6 +1428,10 @@
       [
        34,
        38.7
+      ],
+      [
+       35,
+       20.0
       ]
      ]
     },
@@ -1405,8 +1484,16 @@
        "color": "#ffb600",
        "cat": "heavy (40-50 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -1498,8 +1585,16 @@
        "color": "#ffde00",
        "cat": "heavy (40-50 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -1551,6 +1646,10 @@
       [
        34,
        38.7
+      ],
+      [
+       37,
+       20.0
       ]
      ]
     },
@@ -1603,8 +1702,16 @@
        "color": "#40c1ff",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -1656,6 +1763,10 @@
       [
        34,
        33.3
+      ],
+      [
+       36,
+       20.0
       ]
      ]
     },
@@ -1708,8 +1819,16 @@
        "color": "#ffde00",
        "cat": "heavy (40-50 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -1761,6 +1880,18 @@
       [
        34,
        38.7
+      ],
+      [
+       35,
+       20.0
+      ],
+      [
+       36,
+       20.0
+      ],
+      [
+       37,
+       20.0
       ]
      ]
     },
@@ -1813,8 +1944,16 @@
        "color": "#ffde00",
        "cat": "heavy (40-50 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -1862,6 +2001,18 @@
       [
        34,
        38.7
+      ],
+      [
+       35,
+       20.0
+      ],
+      [
+       36,
+       20.0
+      ],
+      [
+       37,
+       20.0
       ]
      ]
     },
@@ -1914,8 +2065,16 @@
        "color": "#ffde00",
        "cat": "heavy (40-50 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -1971,6 +2130,10 @@
       [
        34,
        36.0
+      ],
+      [
+       36,
+       20.0
       ]
      ]
     },
@@ -2023,8 +2186,16 @@
        "color": "#ffde00",
        "cat": "heavy (40-50 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2076,6 +2247,10 @@
       [
        34,
        41.3
+      ],
+      [
+       35,
+       20.0
       ]
      ]
     },
@@ -2128,8 +2303,16 @@
        "color": "#ffde00",
        "cat": "heavy (40-50 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -2177,6 +2360,10 @@
       [
        34,
        41.3
+      ],
+      [
+       36,
+       20.0
       ]
      ]
     },
@@ -2229,8 +2416,16 @@
        "color": "#ffde00",
        "cat": "heavy (40-50 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -2274,6 +2469,10 @@
       [
        34,
        41.3
+      ],
+      [
+       36,
+       20.0
       ]
      ]
     },
@@ -2326,8 +2525,16 @@
        "color": "#fff6a6",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -2375,6 +2582,10 @@
       [
        34,
        36.0
+      ],
+      [
+       37,
+       20.0
       ]
      ]
     },
@@ -2427,8 +2638,16 @@
        "color": "#fff6a6",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -2484,6 +2703,10 @@
       [
        34,
        36.0
+      ],
+      [
+       36,
+       20.0
       ]
      ]
     },
@@ -2536,8 +2759,16 @@
        "color": "#1499ff",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -2585,6 +2816,18 @@
       [
        33,
        30.7
+      ],
+      [
+       35,
+       22.7
+      ],
+      [
+       36,
+       22.7
+      ],
+      [
+       37,
+       20.0
       ]
      ]
     },
@@ -2637,8 +2880,16 @@
        "color": "#40c1ff",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2742,8 +2993,16 @@
        "color": "#fff6a6",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2795,6 +3054,10 @@
       [
        34,
        36.0
+      ],
+      [
+       35,
+       20.0
       ]
      ]
     },
@@ -2847,8 +3110,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3000,8 +3271,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3113,8 +3392,16 @@
        "color": "#0301c7",
        "cat": "light (20-30 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3278,8 +3565,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -3351,6 +3646,14 @@
       [
        28,
        20.0
+      ],
+      [
+       35,
+       22.7
+      ],
+      [
+       36,
+       20.0
       ]
      ]
     },
@@ -3403,8 +3706,16 @@
        "color": "#c3efff",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3512,8 +3823,16 @@
        "color": "#c3efff",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3569,6 +3888,10 @@
       [
        33,
        22.7
+      ],
+      [
+       35,
+       20.0
       ]
      ]
     },
@@ -3621,8 +3944,16 @@
        "color": "#c3efff",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -3666,6 +3997,18 @@
       [
        34,
        36.0
+      ],
+      [
+       35,
+       22.7
+      ],
+      [
+       36,
+       22.7
+      ],
+      [
+       37,
+       20.0
       ]
      ]
     },
@@ -3718,8 +4061,16 @@
        "color": "#c3efff",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -3767,6 +4118,14 @@
       [
        34,
        36.0
+      ],
+      [
+       36,
+       20.0
+      ],
+      [
+       37,
+       20.0
       ]
      ]
     },
@@ -3819,8 +4178,16 @@
        "color": "#40c1ff",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3924,8 +4291,16 @@
        "color": "#c3efff",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 25.3,
+       "color": "#002ef8",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 25.3,
+       "color": "#002ef8",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -3961,6 +4336,18 @@
       [
        34,
        36.0
+      ],
+      [
+       35,
+       25.3
+      ],
+      [
+       36,
+       25.3
+      ],
+      [
+       37,
+       22.7
       ]
      ]
     },
@@ -4013,8 +4400,16 @@
        "color": "#3600a2",
        "cat": "light (20-30 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -4158,8 +4553,16 @@
        "color": "#0301c7",
        "cat": "light (20-30 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -4315,8 +4718,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 25.3,
+       "color": "#002ef8",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -4388,6 +4799,14 @@
       [
        29,
        20.0
+      ],
+      [
+       35,
+       25.3
+      ],
+      [
+       36,
+       20.0
       ]
      ]
     },
@@ -4440,8 +4859,16 @@
        "color": "#1499ff",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -4549,6 +4976,14 @@
       [
        34,
        28.0
+      ],
+      [
+       35,
+       22.7
+      ],
+      [
+       36,
+       20.0
       ]
      ]
     },
@@ -4601,8 +5036,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -4702,8 +5145,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -4819,8 +5270,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -4928,8 +5387,16 @@
        "color": "#0301c7",
        "cat": "light (20-30 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 25.3,
+       "color": "#002ef8",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -4969,6 +5436,18 @@
       [
        34,
        22.7
+      ],
+      [
+       35,
+       20.0
+      ],
+      [
+       36,
+       25.3
+      ],
+      [
+       37,
+       20.0
       ]
      ]
     },
@@ -5021,8 +5500,16 @@
        "color": "#40c1ff",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -5118,8 +5605,16 @@
        "color": "#40c1ff",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -5163,6 +5658,18 @@
       [
        33,
        33.3
+      ],
+      [
+       35,
+       22.7
+      ],
+      [
+       36,
+       20.0
+      ],
+      [
+       37,
+       20.0
       ]
      ]
     },
@@ -5215,8 +5722,16 @@
        "color": "#006dff",
        "cat": "light (20-30 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -5260,6 +5775,10 @@
       [
        34,
        25.3
+      ],
+      [
+       37,
+       20.0
       ]
      ]
     },
@@ -5312,8 +5831,16 @@
        "color": "#3600a2",
        "cat": "light (20-30 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -5360,6 +5887,10 @@
       ],
       [
        34,
+       20.0
+      ],
+      [
+       35,
        20.0
       ]
      ]
@@ -5413,8 +5944,16 @@
        "color": "#1499ff",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -5462,6 +6001,18 @@
       [
        34,
        28.0
+      ],
+      [
+       35,
+       20.0
+      ],
+      [
+       36,
+       20.0
+      ],
+      [
+       37,
+       20.0
       ]
      ]
     },
@@ -5514,8 +6065,16 @@
        "color": "#1499ff",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -5567,6 +6126,10 @@
       [
        33,
        30.7
+      ],
+      [
+       37,
+       20.0
       ]
      ]
     },
@@ -5619,8 +6182,16 @@
        "color": "#006dff",
        "cat": "light (20-30 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 28.0,
+       "color": "#006dff",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -5663,6 +6234,18 @@
       ],
       [
        34,
+       28.0
+      ],
+      [
+       35,
+       22.7
+      ],
+      [
+       36,
+       28.0
+      ],
+      [
+       37,
        28.0
       ]
      ]
@@ -5716,8 +6299,16 @@
        "color": "#40c1ff",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -5829,8 +6420,16 @@
        "color": "#006dff",
        "cat": "light (20-30 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -5894,6 +6493,10 @@
       [
        34,
        28.0
+      ],
+      [
+       35,
+       20.0
       ]
      ]
     },
@@ -5946,8 +6549,16 @@
        "color": "#002ef8",
        "cat": "light (20-30 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -6043,6 +6654,10 @@
       [
        34,
        25.3
+      ],
+      [
+       35,
+       20.0
       ]
      ]
     },
@@ -6095,8 +6710,16 @@
        "color": "#0301c7",
        "cat": "light (20-30 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -6264,8 +6887,16 @@
        "color": "#3600a2",
        "cat": "light (20-30 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -6393,8 +7024,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -6470,8 +7109,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -6591,8 +7238,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -6704,8 +7359,16 @@
        "color": "#3600a2",
        "cat": "light (20-30 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -6845,8 +7508,16 @@
        "color": "#1499ff",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 28.0,
+       "color": "#006dff",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -6890,6 +7561,18 @@
       [
        34,
        30.7
+      ],
+      [
+       35,
+       20.0
+      ],
+      [
+       36,
+       25.3
+      ],
+      [
+       37,
+       28.0
       ]
      ]
     },
@@ -6942,8 +7625,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -6991,6 +7682,14 @@
       [
        31,
        22.7
+      ],
+      [
+       36,
+       22.7
+      ],
+      [
+       37,
+       20.0
       ]
      ]
     },
@@ -7043,8 +7742,16 @@
        "color": "#006dff",
        "cat": "light (20-30 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -7156,6 +7863,10 @@
       [
        34,
        20.0
+      ],
+      [
+       35,
+       20.0
       ]
      ]
     },
@@ -7208,8 +7919,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -7289,8 +8008,16 @@
        "color": "#0301c7",
        "cat": "light (20-30 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -7350,6 +8077,10 @@
       [
        34,
        22.7
+      ],
+      [
+       35,
+       22.7
       ]
      ]
     },
@@ -7402,8 +8133,16 @@
        "color": "#0301c7",
        "cat": "light (20-30 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -7487,8 +8226,16 @@
        "color": "#3600a2",
        "cat": "light (20-30 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -7535,6 +8282,14 @@
       ],
       [
        34,
+       20.0
+      ],
+      [
+       35,
+       20.0
+      ],
+      [
+       36,
        20.0
       ]
      ]
@@ -7588,8 +8343,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -7677,8 +8440,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -7762,8 +8533,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -7871,8 +8650,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -7948,8 +8735,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -8016,8 +8811,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -8084,8 +8887,16 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,

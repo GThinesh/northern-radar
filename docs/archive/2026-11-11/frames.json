@@ -76,7 +76,10 @@
   "2cce7bde9c06ff1f",
   "3aeb7698eb0801d0",
   "efef3061fa85989b",
-  "acbf721461952be8"
+  "acbf721461952be8",
+  "4188e32b7355f372",
+  "8f41466aa0ba75d6",
+  "370989b9f157ca2f"
  ],
  "frames": [
   {
@@ -694,6 +697,30 @@
    "img": "frames/231222_076.png",
    "slot": "23:00",
    "estimated": false
+  },
+  {
+   "h": "4188e32b7355f372",
+   "t_utc": "2026-11-11 17:52:22Z",
+   "t_ist": "2026-11-11 23:22 IST",
+   "img": "frames/232222_077.png",
+   "slot": "23:00",
+   "estimated": false
+  },
+  {
+   "h": "8f41466aa0ba75d6",
+   "t_utc": "2026-11-11 18:12:22Z",
+   "t_ist": "2026-11-11 23:42 IST",
+   "img": "frames/234222_078.png",
+   "slot": "23:30",
+   "estimated": false
+  },
+  {
+   "h": "370989b9f157ca2f",
+   "t_utc": "2026-11-11 18:22:22Z",
+   "t_ist": "2026-11-11 23:52 IST",
+   "img": "frames/235222_079.png",
+   "slot": "23:30",
+   "estimated": false
   }
  ],
  "slots": [
@@ -942,13 +969,19 @@
    "time": "23:02",
    "img": "frames/230221_075.png",
    "estimated": false
+  },
+  {
+   "slot": "23:30",
+   "time": "23:42",
+   "img": "frames/234222_078.png",
+   "estimated": false
   }
  ],
  "stats": {
-  "snapshots": 21,
+  "snapshots": 22,
   "decoded_total": 399,
-  "unique_frames": 77,
-  "dupes_dropped": 296
+  "unique_frames": 80,
+  "dupes_dropped": 305
  },
  "blob_shas": [
   "8c3f5108c365c3ae9263f0503e05ac320c28da75aeed5a8d974b427f724e856e",
@@ -971,7 +1004,8 @@
   "2aba67728318f7b844be4fb2b0212e960786fa75b930694f78182d82cba8f55f",
   "f760956a955d083a7621eb6494fa138c9205f0a824914871a0309bd538ec67e8",
   "e042e336df4b540f71edd6876ed8f48d78870cd8ad2f83fd5c47962fd756a8be",
-  "a77659f58c8a7f5b25599a0128dbeb5dd8f235a7304772768a100077e0217950"
+  "a77659f58c8a7f5b25599a0128dbeb5dd8f235a7304772768a100077e0217950",
+  "9ef0672c81d00de8508049f5949d3a0ecaa654397c120593a177d75e79daa8cc"
  ],
  "ocr_v": 3,
  "ocr": {
@@ -1205,6 +1239,15 @@
   },
   "acbf721461952be8": {
    "t_utc": "2026-11-11 17:42:22Z"
+  },
+  "4188e32b7355f372": {
+   "t_utc": "2026-11-11 17:52:22Z"
+  },
+  "8f41466aa0ba75d6": {
+   "t_utc": "2026-11-11 18:12:22Z"
+  },
+  "370989b9f157ca2f": {
+   "t_utc": "2026-11-11 18:22:22Z"
   }
  }
 }

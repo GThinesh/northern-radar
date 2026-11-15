@@ -6,7 +6,10 @@
   "c9457b278a188796",
   "484f42fe03fc4aec",
   "bb693b167125176d",
-  "d08e5fba82b0f0a3"
+  "d08e5fba82b0f0a3",
+  "facc5f945eecba89",
+  "55959ea7307b0b41",
+  "da6ed79e81efb8dc"
  ],
  "frames": [
   {
@@ -64,6 +67,30 @@
    "img": "frames/012222_006.png",
    "slot": "01:00",
    "estimated": false
+  },
+  {
+   "h": "facc5f945eecba89",
+   "t_utc": "2026-11-15 20:12:22Z",
+   "t_ist": "2026-11-16 01:42 IST",
+   "img": "frames/014222_007.png",
+   "slot": "01:30",
+   "estimated": false
+  },
+  {
+   "h": "55959ea7307b0b41",
+   "t_utc": "2026-11-15 20:22:22Z",
+   "t_ist": "2026-11-16 01:52 IST",
+   "img": "frames/015222_008.png",
+   "slot": "01:30",
+   "estimated": false
+  },
+  {
+   "h": "da6ed79e81efb8dc",
+   "t_utc": "2026-11-15 20:42:22Z",
+   "t_ist": "2026-11-16 02:12 IST",
+   "img": "frames/021222_009.png",
+   "slot": "02:00",
+   "estimated": false
   }
  ],
  "slots": [
@@ -84,17 +111,30 @@
    "time": "01:02",
    "img": "frames/010221_004.png",
    "estimated": false
+  },
+  {
+   "slot": "01:30",
+   "time": "01:42",
+   "img": "frames/014222_007.png",
+   "estimated": false
+  },
+  {
+   "slot": "02:00",
+   "time": "02:12",
+   "img": "frames/021222_009.png",
+   "estimated": false
   }
  ],
  "stats": {
-  "snapshots": 2,
-  "decoded_total": 38,
-  "unique_frames": 7,
-  "dupes_dropped": 15
+  "snapshots": 3,
+  "decoded_total": 57,
+  "unique_frames": 10,
+  "dupes_dropped": 29
  },
  "blob_shas": [
   "df231b83230b832feec739bc8457177f4c851819f33e02245252c81d99f660f0",
-  "8c66850da582de42e9263937792e7485a44ea47c0428f243a8dddf62a1ba0ab6"
+  "8c66850da582de42e9263937792e7485a44ea47c0428f243a8dddf62a1ba0ab6",
+  "7b4df6cc7aae642607815daf6fa39b252aed802e616d60d560d832a5c9da1e1e"
  ],
  "ocr_v": 3,
  "ocr": {
@@ -118,6 +158,15 @@
   },
   "d08e5fba82b0f0a3": {
    "t_utc": "2026-11-15 19:52:22Z"
+  },
+  "facc5f945eecba89": {
+   "t_utc": "2026-11-15 20:12:22Z"
+  },
+  "55959ea7307b0b41": {
+   "t_utc": "2026-11-15 20:22:22Z"
+  },
+  "da6ed79e81efb8dc": {
+   "t_utc": "2026-11-15 20:42:22Z"
   }
  }
 }

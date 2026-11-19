@@ -1,7 +1,7 @@
 {
  "radar": "KKL_MAXZ (Karaikal)",
  "source": "https://mausam.imd.gov.in/Radar/animation/Converted/KKL_MAXZ.gif",
- "updated_ist": "2026-11-20 01:31 IST",
+ "updated_ist": "2026-11-20 02:31 IST",
  "hours": [
   0,
   1,
@@ -516,7 +516,7 @@
    "hours_with_data": [
     true,
     true,
-    false,
+    true,
     false,
     false,
     false,
@@ -539,7 +539,7 @@
     false,
     false
    ],
-   "n_frames_hours": 2,
+   "n_frames_hours": 3,
    "frames": [
     {
      "utc": "2026-11-19 18:32:22Z",
@@ -570,6 +570,31 @@
      "utc": "2026-11-19 19:42:22Z",
      "min": 72.37,
      "t": "01:12"
+    },
+    {
+     "utc": "2026-11-19 19:52:22Z",
+     "min": 82.37,
+     "t": "01:22"
+    },
+    {
+     "utc": "2026-11-19 20:12:22Z",
+     "min": 102.37,
+     "t": "01:42"
+    },
+    {
+     "utc": "2026-11-19 20:22:21Z",
+     "min": 112.35,
+     "t": "01:52"
+    },
+    {
+     "utc": "2026-11-19 20:32:20Z",
+     "min": 122.33,
+     "t": "02:02"
+    },
+    {
+     "utc": "2026-11-19 20:42:22Z",
+     "min": 132.37,
+     "t": "02:12"
     }
    ],
    "rows": [
@@ -587,7 +612,11 @@
        "color": "#ffb600",
        "cat": "heavy (40-50 dBZ)"
       },
-      null,
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -631,6 +660,22 @@
       [
        5,
        44.0
+      ],
+      [
+       6,
+       33.3
+      ],
+      [
+       7,
+       22.7
+      ],
+      [
+       8,
+       20.0
+      ],
+      [
+       10,
+       20.0
       ]
      ]
     },
@@ -648,7 +693,11 @@
        "color": "#fff6a6",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -692,6 +741,18 @@
       [
        5,
        38.7
+      ],
+      [
+       6,
+       36.0
+      ],
+      [
+       7,
+       25.3
+      ],
+      [
+       8,
+       33.3
       ]
      ]
     },
@@ -709,7 +770,11 @@
        "color": "#c3efff",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -745,6 +810,18 @@
       [
        5,
        36.0
+      ],
+      [
+       6,
+       30.7
+      ],
+      [
+       7,
+       20.0
+      ],
+      [
+       8,
+       30.7
       ]
      ]
     },
@@ -762,7 +839,11 @@
        "color": "#c3efff",
        "cat": "moderate (30-40 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -798,6 +879,335 @@
       [
        5,
        36.0
+      ],
+      [
+       6,
+       30.7
+      ],
+      [
+       7,
+       22.7
+      ],
+      [
+       8,
+       30.7
+      ]
+     ]
+    },
+    {
+     "place": "Ilavalai",
+     "district": "Jaffna",
+     "cells": [
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 33.3,
+       "color": "#40c1ff",
+       "cat": "moderate (30-40 dBZ)"
+      },
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "max": 33.3,
+     "spec": [
+      [
+       0,
+       22.7
+      ],
+      [
+       1,
+       22.7
+      ],
+      [
+       3,
+       20.0
+      ],
+      [
+       8,
+       33.3
+      ],
+      [
+       10,
+       22.7
+      ]
+     ]
+    },
+    {
+     "place": "Kokkuvil",
+     "district": "Jaffna",
+     "cells": [
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 33.3,
+       "color": "#40c1ff",
+       "cat": "moderate (30-40 dBZ)"
+      },
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "max": 33.3,
+     "spec": [
+      [
+       0,
+       20.0
+      ],
+      [
+       5,
+       25.3
+      ],
+      [
+       6,
+       20.0
+      ],
+      [
+       8,
+       33.3
+      ],
+      [
+       10,
+       22.7
+      ]
+     ]
+    },
+    {
+     "place": "Kondavil",
+     "district": "Jaffna",
+     "cells": [
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 33.3,
+       "color": "#40c1ff",
+       "cat": "moderate (30-40 dBZ)"
+      },
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "max": 33.3,
+     "spec": [
+      [
+       0,
+       20.0
+      ],
+      [
+       5,
+       25.3
+      ],
+      [
+       6,
+       20.0
+      ],
+      [
+       8,
+       33.3
+      ],
+      [
+       10,
+       22.7
+      ]
+     ]
+    },
+    {
+     "place": "Nallur",
+     "district": "Jaffna",
+     "cells": [
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 33.3,
+       "color": "#40c1ff",
+       "cat": "moderate (30-40 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "max": 33.3,
+     "spec": [
+      [
+       6,
+       20.0
+      ],
+      [
+       8,
+       33.3
+      ]
+     ]
+    },
+    {
+     "place": "Pandateruppu",
+     "district": "Jaffna",
+     "cells": [
+      {
+       "dbz": 28.0,
+       "color": "#006dff",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 33.3,
+       "color": "#40c1ff",
+       "cat": "moderate (30-40 dBZ)"
+      },
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "max": 33.3,
+     "spec": [
+      [
+       0,
+       28.0
+      ],
+      [
+       1,
+       22.7
+      ],
+      [
+       3,
+       20.0
+      ],
+      [
+       5,
+       20.0
+      ],
+      [
+       8,
+       33.3
+      ],
+      [
+       10,
+       22.7
       ]
      ]
     },
@@ -811,11 +1221,15 @@
        "cat": "moderate (30-40 dBZ)"
       },
       {
-       "dbz": 22.7,
-       "color": "#0301c7",
+       "dbz": 28.0,
+       "color": "#006dff",
        "cat": "light (20-30 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -859,13 +1273,26 @@
       [
        5,
        22.7
+      ],
+      [
+       6,
+       22.7
+      ],
+      [
+       7,
+       28.0
       ]
      ]
     },
     {
-     "place": "Pandateruppu",
+     "place": "Jaffna",
      "district": "Jaffna",
      "cells": [
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       {
        "dbz": 28.0,
        "color": "#006dff",
@@ -896,25 +1323,24 @@
       null,
       null,
       null,
-      null,
       null
      ],
      "max": 28.0,
      "spec": [
       [
        0,
-       28.0
-      ],
-      [
-       1,
-       22.7
-      ],
-      [
-       3,
        20.0
       ],
       [
-       5,
+       6,
+       20.0
+      ],
+      [
+       8,
+       28.0
+      ],
+      [
+       10,
        20.0
       ]
      ]
@@ -933,7 +1359,11 @@
        "color": "#006dff",
        "cat": "light (20-30 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -969,20 +1399,24 @@
      ]
     },
     {
-     "place": "Kokkuvil",
+     "place": "Chunnakam",
      "district": "Jaffna",
      "cells": [
       {
-       "dbz": 20.0,
-       "color": "#3600a2",
-       "cat": "light (20-30 dBZ)"
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
       },
       {
        "dbz": 25.3,
        "color": "#002ef8",
        "cat": "light (20-30 dBZ)"
       },
-      null,
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -1008,22 +1442,26 @@
      "max": 25.3,
      "spec": [
       [
-       0,
+       7,
        20.0
       ],
       [
-       5,
+       8,
        25.3
+      ],
+      [
+       10,
+       20.0
       ]
      ]
     },
     {
-     "place": "Kondavil",
+     "place": "Mallakam",
      "district": "Jaffna",
      "cells": [
       {
-       "dbz": 20.0,
-       "color": "#3600a2",
+       "dbz": 22.7,
+       "color": "#0301c7",
        "cat": "light (20-30 dBZ)"
       },
       {
@@ -1031,7 +1469,11 @@
        "color": "#002ef8",
        "cat": "light (20-30 dBZ)"
       },
-      null,
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -1058,11 +1500,23 @@
      "spec": [
       [
        0,
+       22.7
+      ],
+      [
+       1,
        20.0
       ],
       [
-       5,
+       7,
        25.3
+      ],
+      [
+       8,
+       25.3
+      ],
+      [
+       10,
+       22.7
       ]
      ]
     },
@@ -1080,7 +1534,11 @@
        "color": "#002ef8",
        "cat": "light (20-30 dBZ)"
       },
-      null,
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -1108,13 +1566,274 @@
       [
        5,
        25.3
+      ],
+      [
+       8,
+       22.7
+      ],
+      [
+       10,
+       22.7
       ]
      ]
     },
     {
-     "place": "Ilavalai",
+     "place": "Maviddapuram",
      "district": "Jaffna",
      "cells": [
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 25.3,
+       "color": "#002ef8",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "max": 25.3,
+     "spec": [
+      [
+       0,
+       22.7
+      ],
+      [
+       1,
+       22.7
+      ],
+      [
+       7,
+       25.3
+      ],
+      [
+       8,
+       22.7
+      ],
+      [
+       10,
+       22.7
+      ]
+     ]
+    },
+    {
+     "place": "Tellippalai",
+     "district": "Jaffna",
+     "cells": [
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 25.3,
+       "color": "#002ef8",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "max": 25.3,
+     "spec": [
+      [
+       0,
+       20.0
+      ],
+      [
+       1,
+       20.0
+      ],
+      [
+       7,
+       25.3
+      ],
+      [
+       8,
+       22.7
+      ]
+     ]
+    },
+    {
+     "place": "Varany",
+     "district": "Jaffna",
+     "cells": [
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 25.3,
+       "color": "#002ef8",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "max": 25.3,
+     "spec": [
+      [
+       0,
+       20.0
+      ],
+      [
+       3,
+       20.0
+      ],
+      [
+       5,
+       22.7
+      ],
+      [
+       6,
+       25.3
+      ],
+      [
+       7,
+       25.3
+      ],
+      [
+       8,
+       20.0
+      ]
+     ]
+    },
+    {
+     "place": "Chundikkulam",
+     "district": "Kilinochchi",
+     "cells": [
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 25.3,
+       "color": "#002ef8",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "max": 25.3,
+     "spec": [
+      [
+       3,
+       20.0
+      ],
+      [
+       6,
+       25.3
+      ]
+     ]
+    },
+    {
+     "place": "Chankanai",
+     "district": "Jaffna",
+     "cells": [
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       {
        "dbz": 22.7,
        "color": "#0301c7",
@@ -1125,7 +1844,6 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
       null,
       null,
       null,
@@ -1152,15 +1870,68 @@
      "spec": [
       [
        0,
-       22.7
-      ],
-      [
-       1,
-       22.7
-      ],
-      [
-       3,
        20.0
+      ],
+      [
+       5,
+       20.0
+      ],
+      [
+       8,
+       22.7
+      ]
+     ]
+    },
+    {
+     "place": "Kaithady",
+     "district": "Jaffna",
+     "cells": [
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "max": 22.7,
+     "spec": [
+      [
+       6,
+       22.7
+      ],
+      [
+       7,
+       22.7
       ]
      ]
     },
@@ -1174,11 +1945,15 @@
        "cat": "light (20-30 dBZ)"
       },
       {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
        "dbz": null,
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
       null,
       null,
       null,
@@ -1214,62 +1989,22 @@
       [
        2,
        20.0
-      ]
-     ]
-    },
-    {
-     "place": "Mallakam",
-     "district": "Jaffna",
-     "cells": [
-      {
-       "dbz": 22.7,
-       "color": "#0301c7",
-       "cat": "light (20-30 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-     ],
-     "max": 22.7,
-     "spec": [
-      [
-       0,
-       22.7
       ],
       [
-       1,
+       7,
        20.0
       ]
      ]
     },
     {
-     "place": "Maviddapuram",
+     "place": "Kodikamam",
      "district": "Jaffna",
      "cells": [
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       {
        "dbz": 22.7,
        "color": "#0301c7",
@@ -1300,25 +2035,25 @@
       null,
       null,
       null,
-      null,
       null
      ],
      "max": 22.7,
      "spec": [
       [
-       0,
-       22.7
-      ],
-      [
-       1,
+       6,
        22.7
       ]
      ]
     },
     {
-     "place": "Varany",
+     "place": "Kopay",
      "district": "Jaffna",
      "cells": [
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       {
        "dbz": 20.0,
        "color": "#3600a2",
@@ -1349,6 +2084,127 @@
       null,
       null,
       null,
+      null
+     ],
+     "max": 22.7,
+     "spec": [
+      [
+       0,
+       20.0
+      ],
+      [
+       5,
+       20.0
+      ],
+      [
+       6,
+       20.0
+      ],
+      [
+       7,
+       20.0
+      ],
+      [
+       8,
+       20.0
+      ],
+      [
+       10,
+       22.7
+      ]
+     ]
+    },
+    {
+     "place": "Navatkuli",
+     "district": "Jaffna",
+     "cells": [
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "max": 22.7,
+     "spec": [
+      [
+       6,
+       22.7
+      ],
+      [
+       7,
+       22.7
+      ]
+     ]
+    },
+    {
+     "place": "Uduvil",
+     "district": "Jaffna",
+     "cells": [
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
       null,
       null
      ],
@@ -1359,12 +2215,20 @@
        20.0
       ],
       [
-       3,
+       6,
        20.0
       ],
       [
-       5,
+       7,
+       20.0
+      ],
+      [
+       8,
        22.7
+      ],
+      [
+       10,
+       20.0
       ]
      ]
     },
@@ -1378,11 +2242,15 @@
        "cat": "light (20-30 dBZ)"
       },
       {
+       "dbz": 22.7,
+       "color": "#0301c7",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
        "dbz": null,
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
       null,
       null,
       null,
@@ -1410,62 +2278,22 @@
       [
        3,
        22.7
-      ]
-     ]
-    },
-    {
-     "place": "Chankanai",
-     "district": "Jaffna",
-     "cells": [
-      {
-       "dbz": 20.0,
-       "color": "#3600a2",
-       "cat": "light (20-30 dBZ)"
-      },
-      {
-       "dbz": 20.0,
-       "color": "#3600a2",
-       "cat": "light (20-30 dBZ)"
-      },
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-     ],
-     "max": 20.0,
-     "spec": [
-      [
-       0,
-       20.0
       ],
       [
-       5,
-       20.0
+       8,
+       22.7
       ]
      ]
     },
     {
-     "place": "Jaffna",
+     "place": "Atchuvely",
      "district": "Jaffna",
      "cells": [
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       {
        "dbz": 20.0,
        "color": "#3600a2",
@@ -1496,13 +2324,20 @@
       null,
       null,
       null,
-      null,
       null
      ],
      "max": 20.0,
      "spec": [
       [
-       0,
+       6,
+       20.0
+      ],
+      [
+       7,
+       20.0
+      ],
+      [
+       8,
        20.0
       ]
      ]
@@ -1521,7 +2356,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -1553,20 +2392,24 @@
      ]
     },
     {
-     "place": "Kopay",
+     "place": "Karaveddy",
      "district": "Jaffna",
      "cells": [
       {
-       "dbz": 20.0,
-       "color": "#3600a2",
-       "cat": "light (20-30 dBZ)"
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
       },
       {
        "dbz": 20.0,
        "color": "#3600a2",
        "cat": "light (20-30 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -1592,11 +2435,7 @@
      "max": 20.0,
      "spec": [
       [
-       0,
-       20.0
-      ],
-      [
-       5,
+       7,
        20.0
       ]
      ]
@@ -1615,7 +2454,11 @@
        "color": "#3600a2",
        "cat": "light (20-30 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -1656,46 +2499,6 @@
        "cat": "light (20-30 dBZ)"
       },
       {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-     ],
-     "max": 20.0,
-     "spec": [
-      [
-       0,
-       20.0
-      ]
-     ]
-    },
-    {
-     "place": "Tellippalai",
-     "district": "Jaffna",
-     "cells": [
-      {
        "dbz": 20.0,
        "color": "#3600a2",
        "cat": "light (20-30 dBZ)"
@@ -1705,7 +2508,6 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
       null,
       null,
       null,
@@ -1735,52 +2537,7 @@
        20.0
       ],
       [
-       1,
-       20.0
-      ]
-     ]
-    },
-    {
-     "place": "Uduvil",
-     "district": "Jaffna",
-     "cells": [
-      {
-       "dbz": 20.0,
-       "color": "#3600a2",
-       "cat": "light (20-30 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-     ],
-     "max": 20.0,
-     "spec": [
-      [
-       0,
+       8,
        20.0
       ]
      ]
@@ -1795,11 +2552,15 @@
        "cat": "light (20-30 dBZ)"
       },
       {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
       },
-      null,
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
       null,
       null,
       null,
@@ -1826,6 +2587,22 @@
      "spec": [
       [
        0,
+       20.0
+      ],
+      [
+       6,
+       20.0
+      ],
+      [
+       7,
+       20.0
+      ],
+      [
+       8,
+       20.0
+      ],
+      [
+       10,
        20.0
       ]
      ]
@@ -1844,7 +2621,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -1889,7 +2670,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -1921,20 +2706,24 @@
      ]
     },
     {
-     "place": "Chundikkulam",
-     "district": "Kilinochchi",
+     "place": "Velanai",
+     "district": "Jaffna",
      "cells": [
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       {
        "dbz": 20.0,
        "color": "#3600a2",
        "cat": "light (20-30 dBZ)"
       },
       {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
       },
-      null,
       null,
       null,
       null,
@@ -1960,7 +2749,11 @@
      "max": 20.0,
      "spec": [
       [
-       3,
+       8,
+       20.0
+      ],
+      [
+       10,
        20.0
       ]
      ]
@@ -1979,7 +2772,11 @@
        "color": "#3600a2",
        "cat": "light (20-30 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2028,7 +2825,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2073,7 +2874,11 @@
        "color": "#3600a2",
        "cat": "light (20-30 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2105,6 +2910,59 @@
      ]
     },
     {
+     "place": "Pooneryn",
+     "district": "Kilinochchi",
+     "cells": [
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      {
+       "dbz": 20.0,
+       "color": "#3600a2",
+       "cat": "light (20-30 dBZ)"
+      },
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+     ],
+     "max": 20.0,
+     "spec": [
+      [
+       6,
+       20.0
+      ],
+      [
+       10,
+       20.0
+      ]
+     ]
+    },
+    {
      "place": "Uruthirapuram",
      "district": "Kilinochchi",
      "cells": [
@@ -2118,7 +2976,11 @@
        "color": "#3600a2",
        "cat": "light (20-30 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2163,167 +3025,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-     ],
-     "max": null,
-     "spec": []
-    },
-    {
-     "place": "Atchuvely",
-     "district": "Jaffna",
-     "cells": [
       {
        "dbz": null,
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-     ],
-     "max": null,
-     "spec": []
-    },
-    {
-     "place": "Chunnakam",
-     "district": "Jaffna",
-     "cells": [
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-     ],
-     "max": null,
-     "spec": []
-    },
-    {
-     "place": "Kaithady",
-     "district": "Jaffna",
-     "cells": [
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-     ],
-     "max": null,
-     "spec": []
-    },
-    {
-     "place": "Karaveddy",
-     "district": "Jaffna",
-     "cells": [
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      null,
       null,
       null,
       null,
@@ -2363,47 +3069,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-     ],
-     "max": null,
-     "spec": []
-    },
-    {
-     "place": "Kodikamam",
-     "district": "Jaffna",
-     "cells": [
       {
        "dbz": null,
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      null,
       null,
       null,
       null,
@@ -2443,7 +3113,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2483,47 +3157,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-     ],
-     "max": null,
-     "spec": []
-    },
-    {
-     "place": "Nallur",
-     "district": "Jaffna",
-     "cells": [
       {
        "dbz": null,
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      null,
       null,
       null,
       null,
@@ -2563,47 +3201,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-     ],
-     "max": null,
-     "spec": []
-    },
-    {
-     "place": "Navatkuli",
-     "district": "Jaffna",
-     "cells": [
       {
        "dbz": null,
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      null,
       null,
       null,
       null,
@@ -2643,7 +3245,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2683,47 +3289,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-     ],
-     "max": null,
-     "spec": []
-    },
-    {
-     "place": "Velanai",
-     "district": "Jaffna",
-     "cells": [
       {
        "dbz": null,
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      null,
       null,
       null,
       null,
@@ -2763,7 +3333,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2803,7 +3377,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2843,7 +3421,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2883,7 +3465,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -2923,47 +3509,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-     ],
-     "max": null,
-     "spec": []
-    },
-    {
-     "place": "Pooneryn",
-     "district": "Kilinochchi",
-     "cells": [
       {
        "dbz": null,
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      {
-       "dbz": null,
-       "color": null,
-       "cat": "no echo (<20 dBZ)"
-      },
-      null,
       null,
       null,
       null,
@@ -3003,7 +3553,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3043,7 +3597,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3083,7 +3641,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3123,7 +3685,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3163,7 +3729,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3203,7 +3773,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3243,7 +3817,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3283,7 +3861,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3323,7 +3905,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3363,7 +3949,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3403,7 +3993,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3443,7 +4037,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3483,7 +4081,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3523,7 +4125,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
@@ -3563,7 +4169,11 @@
        "color": null,
        "cat": "no echo (<20 dBZ)"
       },
-      null,
+      {
+       "dbz": null,
+       "color": null,
+       "cat": "no echo (<20 dBZ)"
+      },
       null,
       null,
       null,
